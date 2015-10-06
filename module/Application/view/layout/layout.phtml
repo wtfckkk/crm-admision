@@ -1,3 +1,20 @@
+<?php
+//LLamaremos a la session
+use Zend\Session\Container;
+$sid = new Container('base');
+$url = $this->basePath();
+$urlHome = $sid->offsetGet('perfil');
+if ($sid->offsetGet('logueado')!="si"){     
+     header ("Location: $url/application/login/7");
+    exit;
+};
+if (isset($urlHome)){     
+     header ("Location: $url/$urlHome");
+    exit;
+};
+
+?>
+
 <?php echo $this->doctype(); ?>
 
 <html lang="en">

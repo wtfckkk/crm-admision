@@ -12,11 +12,12 @@ namespace Application\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\View\Model\JsonModel;
-use Sistema\Model\Entity\General\UsuarioTable;
-use Sistema\Model\Entity\General\PersonaTable;
-use Sistema\Model\Entity\General\SessionTable;
-use Sistema\Model\Entity\General\TokenTable;
-use Sistema\Model\Entity\General\DbTable;
+use Sistema\Model\Entity\Crm\UsuarioTable;
+use Sistema\Model\Entity\Crm\UsuarioPerfilTable;
+use Sistema\Model\Entity\Crm\PerfilTable;
+
+
+
 
 use Zend\Session\Container;
 use Zend\Mail\Message;
@@ -45,33 +46,25 @@ class LoginController extends AbstractActionController
         $id = (int) $this->params()->fromRoute('id', 0);
         $view = new ViewModel();
         if($id==1){
-            $mensaje="El usuario ingresado no se encuentra registrado en el sistema o la contraseña es incorrecta";
+            $mensaje="El usuario ingresado no se encuentra registrado en el sistema o la contrase&ntilde;a es incorrecta";
             $view = new ViewModel(array('mensaje'=>$mensaje));
         }
         if($id==2){
-            $mensaje="El usuario se encuentra desactivado";
+            $mensaje="El usuario no tiene perfil configurado";
             $view = new ViewModel(array('mensaje'=>$mensaje));
         }
         if($id==3){
-            $mensaje="Finalizó la sesión correctamente";
+            $mensaje="Perfil de usuario no existe en el sistema";
             $view = new ViewModel(array('mensaje'=>$mensaje));
         }
         if($id==4){
-            $mensaje="El usuario ya se encuentra en sesión en otro dispositivo, se alcanzó el limite permitido de sesión";
+            $mensaje="Finaliz&oacute; la sesi&oacute;n correctamente";
             $view = new ViewModel(array('mensaje'=>$mensaje));
         }
-        if($id==5){
-            $mensaje="El usuario esta habilitado, pero no esta asociado algun condominio";
-            $view = new ViewModel(array('mensaje'=>$mensaje));
-        } 
         if($id==6){
             $mensaje="Error en el cambio de clave, favor intente nuevamente o contacte nuestro soporte Telefónico";
             $view = new ViewModel(array('mensaje'=>$mensaje));
-        }
-        if($id==7){
-            $mensaje="Permiso Denegado. Perfil no autorizado";
-            $view = new ViewModel(array('mensaje'=>$mensaje));
-        }                    
+        }                 
             
             $this->layout('layout/login');
             return $view;
@@ -162,92 +155,131 @@ class LoginController extends AbstractActionController
     {                
         $data = $this->getRequest()->getPost();
         
-        if($data['usuariobecheck']!=null && $data['password2']!=null){
-            
+        if($data['usuario']!=null && $data['password2']!=null){
+            //Conectamos a BBDD
             $this->dbAdapter=$this->getServiceLocator()->get('Zend\Db\Adapter');
+            //Consultamos Usuario y Password en tabla USUARIOS
             $usuario = new UsuarioTable($this->dbAdapter);
-            $listaUsuario = $usuario->getUsuario($data['usuariobecheck'],strrev($data['password2']));
-            if(!empty($listaUsuario)){
-                
-                if($listaUsuario[0]['activo']=='1'){
-                    
-                    //Obtener la lista de edificios que pertenece
-                    $dbTable = new DbTable($this->dbAdapter);
-                    $listDb = $dbTable->listDBUser($this->dbAdapter,$listaUsuario[0]['id']);
-                    
-                    if(empty($listDb)){
-                      return $this->forward()->dispatch('Application\Controller\Login',array('action'=>'index','id'=>5));  
-                    }
-                    
-                    //Verificamos la licencia del usuario
-                    $nroSession = (int)$listDb[0]['nro_session'];
-                    $tsession = new SessionTable($this->dbAdapter);
-                    $nroSessionDB = count($tsession->obtenetSesion($listaUsuario[0]['id'],$listDb[0]['id']));
-                    
-                    if ($nroSession>0 && $nroSessionDB >= $nroSession){
-                      return $this->forward()->dispatch('Application\Controller\Login',array('action'=>'index','id'=>4));
-                    }else{
+            $listaUsuario = $usuario->getUsuario($data['usuario'],strrev($data['password2']));
+            //Validamos existencia
+            if(!empty($listaUsuario)){     
+                    //Consultamos perfil segun usuario
+                    $usuperfil = new UsuarioPerfilTable($this->dbAdapter);
+                    $listausuperfil = $usuperfil->getPerfil($listaUsuario[0]['USERNAME']);
+                    //Validamos existencia de perfil para usuario
+                    if(!empty($listausuperfil[0]['ID_PERFIL'])){                                                
+                        //Consultamos perfil segun usuario en tabla USUARIO_PERFIL
+                        $perfil = new PerfilTable($this->dbAdapter);
+                        $listaperfil = $perfil->getPerfil($listausuperfil[0]['ID_PERFIL']);
+                        //Validamos existencia de perfil en tabla PERFIL                        
+                        if(!empty($listaperfil[0]['ID_PERFIL'])){ 
+                                                                                                                                                                                                
+                        //return $this->forward()->dispatch('Application\Controller\Login',array('action'=>'index','id'=>4));                                                                                                                                  
                         //Iniciamos la session
                         $sid = new Container('base');
-                        $sid->offsetSet('usuario', $listaUsuario[0]['usuario']);
-                        $sid->offsetSet('id_usuario', $listaUsuario[0]['id']);
-                        $sid->offsetSet('id_db',$listDb[0]['id']); 
-                         
-                        
-                        
-                        //Usuario posee mas edificios
-                        if (count($listDb)>1){
-                           $sid->offsetSet('dbParam', $listDb);
-                           return $this->forward()->dispatch('Application\Controller\Index',array('action'=>'db')); 
-                         }else{
-                            $sid->offsetSet('nombreComercial', $listDb[0]['nombre']);
-                            $sid->offsetSet('id_db', $listDb[0]['id']); 
-                            $sid->offsetSet('perfil',$listDb[0]['perfil']);
-                         }
-                        
-                        // si posee un edificio insertamos la session con su respectiva db
-                        $valores = array('id_usuario'=>$listaUsuario[0]['id'],'id_db'=>$listDb[0]['id'],'ip_cliente'=>$_SERVER['REMOTE_ADDR'],'port_cliente'=>$_SERVER['REMOTE_PORT']);
-                        $sid->offsetSet('idSession',$tsession->crearSesion($valores));
-                        
-                        //Mapeamos la base de datos
-                            $sid->offsetSet('dbNombre',$listDb[0]['nombre_db']);                                                     
-                            $modulo = $usuario->getModulo($this->dbAdapter,$listDb[0]['id_perfil']);
-                            $sid->offsetSet('modulo', $modulo);
-                           
-                             if(count($modulo) > 1){
-                                $urlHome = 'application';
-                             }else{
-                                $urlHome = $modulo[0]['url'];
+                        $sid->offsetSet('usuario', $listaUsuario[0]['USERNAME']);
+                        $sid->offsetSet('perfil', $listaperfil[0]['ID_PERFIL']);
+                        $sid->offsetSet('desc_perfil', $listaperfil[0]['DESC_PERFIL']); 
+                        $sid->offsetSet('logueado', 'si');                                                                                                                       
+                                                
+                             if($listaperfil[0]['ID_PERFIL'] == "operador"){
+                                $urlHome = 'operador';
                              }
+                             if($listaperfil[0]['ID_PERFIL'] == "adminsede"){
+                                $urlHome = "adminsede";
+                             }
+                             if($listaperfil[0]['ID_PERFIL'] == "admcentral"){
+                                $urlHome = "admcentral";
+                             }                             
+                             $urlHome = 'operador';
                              $sid->offsetSet('urlHome',$urlHome);
                              
-                             return $this->redirect()->toUrl($this->getRequest()->getBaseUrl().'/'.$urlHome);
-                        
-                        
-                    }
-                    
-                     }
-                     
-                else{
+                             return $this->redirect()->toUrl($this->getRequest()->getBaseUrl().'/'.$urlHome); 
+                    }else{
+                        return $this->forward()->dispatch('Application\Controller\Login',array('action'=>'index','id'=>3));
+                    }                 
+                }else{
                     return $this->forward()->dispatch('Application\Controller\Login',array('action'=>'index','id'=>2));
-                }
-                
+                }                                                                                                    
             }else{
                 return $this->forward()->dispatch('Application\Controller\Login',array('action'=>'index','id'=>1));
-            }
-            
-            
+            }                        
        }else{
             return $this->forward()->dispatch('Application\Controller\Login',array('action'=>'index','id'=>1));
         }
+         //array('data'=>$idSession)                               
+        return new ViewModel();
+    }    
+    /*
+        public function sendAction()
+    {                
+        $data = $this->getRequest()->getPost();
         
-        
-        
-        
-        
-        return new ViewModel(array('data'=>$idSession));
+        if($data['usuario']!=null && $data['password2']!=null){
+            //Conectamos a BBDD
+            $this->dbAdapter=$this->getServiceLocator()->get('Zend\Db\Adapter');
+            //Consultamos Usuario y Password en tabla USUARIOS
+            $usuario = new UsuarioTable($this->dbAdapter);
+         //   $listaUsuario = $usuario->getUsuario($data['usuario'],strrev($data['password2']));
+            //Validamos existencia
+            $listaUsuario = array('0'=>array('USERNAME'=>'operador'));
+            if(!empty($listaUsuario)){     
+                    //Consultamos perfil segun usuario
+                    $usuperfil = new UsuarioPerfilTable($this->dbAdapter);
+                  //  $listausuperfil = $usuperfil->getPerfil($listaUsuario[0]['USERNAME']);
+                    //Validamos existencia de perfil para usuario
+                    $listausuperfil[0]['ID_PERFIL'] ="s";
+                    if(!empty($listausuperfil[0]['ID_PERFIL'])){                                                
+                        //Consultamos perfil segun usuario en tabla USUARIO_PERFIL
+                        $perfil = new PerfilTable($this->dbAdapter);
+                       // $listaperfil = $perfil->getPerfil($listausuperfil[0]['ID_PERFIL']);
+                        //Validamos existencia de perfil en tabla PERFIL
+                         $listaperfil[0]['ID_PERFIL'] = "operador";
+                        if(!empty($listaperfil[0]['ID_PERFIL'])){ 
+                                                                                                                                                                                                
+                        //return $this->forward()->dispatch('Application\Controller\Login',array('action'=>'index','id'=>4));                                                                                    
+                        
+                        $listaUsuario[0]['USERNAME'] = "operador";
+                        $listaperfil[0]['DESC_PERFIL'] = "Operador";
+                       
+                        
+                        //Iniciamos la session
+                        $sid = new Container('base');
+                        $sid->offsetSet('usuario', $listaUsuario[0]['USERNAME']);
+                        $sid->offsetSet('perfil', $listaperfil[0]['ID_PERFIL']);
+                        $sid->offsetSet('desc_perfil', $listaperfil[0]['DESC_PERFIL']); 
+                        $sid->offsetSet('logueado', 'si');                                                                                                                       
+                                                
+                             if($listaperfil[0]['ID_PERFIL'] == "operador"){
+                                $urlHome = 'operador';
+                             }
+                             if($listaperfil[0]['ID_PERFIL'] == "adminsede"){
+                                $urlHome = "adminsede";
+                             }
+                             if($listaperfil[0]['ID_PERFIL'] == "admcentral"){
+                                $urlHome = "admcentral";
+                             }                             
+                             $urlHome = 'operador';
+                             $sid->offsetSet('urlHome',$urlHome);
+                             
+                             return $this->redirect()->toUrl($this->getRequest()->getBaseUrl().'/'.$urlHome); 
+                    }else{
+                        return $this->forward()->dispatch('Application\Controller\Login',array('action'=>'index','id'=>3));
+                    }                 
+                }else{
+                    return $this->forward()->dispatch('Application\Controller\Login',array('action'=>'index','id'=>2));
+                }                                                                                                    
+            }else{
+                return $this->forward()->dispatch('Application\Controller\Login',array('action'=>'index','id'=>1));
+            }                        
+       }else{
+            return $this->forward()->dispatch('Application\Controller\Login',array('action'=>'index','id'=>1));
+        }
+         //array('data'=>$idSession)                               
+        return new ViewModel();
     }    
     
+    */
     /* public function cambiaclaveAction($data)
     {
         
@@ -290,7 +322,7 @@ class LoginController extends AbstractActionController
     {
         $mail = $_POST['mail'];
         $this->dbAdapter=$this->getServiceLocator()->get('Zend\Db\Adapter');
-        $usu = new PersonaTable($this->dbAdapter);
+        $usu = new UsuarioTable($this->dbAdapter);
         $existe = $usu->getDatosMail($mail);        
         if (count($existe)>0)
         {
@@ -305,8 +337,9 @@ class LoginController extends AbstractActionController
              $nuevotoken = array('token'=>$token,'mail'=>$mail);
              $tok = new TokenTable($this->dbAdapter);                         
              $tok->nuevoToken($nuevotoken);
-             $url = "www.becheck.cl/pmv/public/application/recuperar/index/".$token;                                          
-             $htmlMarkup = \HtmlCorreo::htmlPassword($existe[0]['nombre']." ".$existe[0]['apellido'],$url);                                       
+             $localhost = "";             
+             $url = $localhost."/crm/public/application/recuperar/index/".$token;                                          
+             $htmlMarkup = " html de correo recuperar contraseña"  ;                                  
              
           /*   $text = new MimePart($textContent);
              $text->type = "text/plain";*/
@@ -322,7 +355,7 @@ class LoginController extends AbstractActionController
         
              $message = new Message();
              $message->addTo($mail)
-             ->addFrom('soporte@becheck.cl', 'Sistema be check')
+             ->addFrom('noreply@crmadmision.cl', 'CRM-Admision')
              ->setSubject('Recuperar Contraseña')
              ->setBody($body);
 
@@ -339,14 +372,8 @@ class LoginController extends AbstractActionController
 }        
     public function salirAction()
     {
-       // llamamos la session para obtener el IDSession del aplicativo
+       //Instancia de sesion
        $sid = new Container('base');
-       $idSession = $sid->offsetGet('idSession');
-       
-       //Eliminamos la session registrado, para liberar licencia
-       $this->dbAdapter=$this->getServiceLocator()->get('Zend\Db\Adapter');
-       $tsession = new SessionTable($this->dbAdapter);
-       $tsession->eliminarSesion($idSession);
        
        //destruimos todas las sessiones
        $sid->getManager()->getStorage()->clear();
@@ -363,16 +390,8 @@ class LoginController extends AbstractActionController
             //setcookie('password', '', time() - 3600); // empty value and old timestamp
         }
         
-        return $this->forward()->dispatch('Application\Controller\Login',array('action'=>'index','id'=>3));
+        return $this->forward()->dispatch('Application\Controller\Login',array('action'=>'index','id'=>4));
         
        
-    }    
-     public function landingcontactoAction()
-    {
-        
-            $descripcion="test 1!!";    
-          $result = new JsonModel(array('descripcion'=>$descripcion));                                
-          return $result;
     }                           
-    
 }

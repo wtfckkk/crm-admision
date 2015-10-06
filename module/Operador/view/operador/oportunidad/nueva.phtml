@@ -1,0 +1,267 @@
+<?php
+//LLamaremos a la session
+use Zend\Session\Container;
+$sid = new Container('base');
+$usuario = $sid->offsetGet('usuario');
+?>
+<div class="row">
+					<div class="col-md-12">
+						<!-- BEGIN SAMPLE FORM PORTLET-->
+						<div class="portlet light">
+							<div class="portlet-title">
+								<div class="caption font-green-haze">
+									<i class="icon-star font-green-haze"></i>
+									<span class="caption-subject bold uppercase"> Ingreso de Oportunidad</span>
+								</div>
+								<div class="actions">
+									<a class="btn btn-circle btn-icon-only red" href="javascript:;">
+									<i class="icon-trash"></i>
+									</a>
+									<a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title="">
+									</a>
+								</div>
+							</div>
+							<div class="portlet-body form">                            
+								<form id="form_prospecto" action="<?php echo $this->basePath()?>/oportunidad/actualizardatos" role="form" class="form-horizontal">
+									<div class="form-body">
+                                                                        
+                                    <div id="alertok"></div>
+                                    <div id="alertnok"></div>
+                                                                        
+										<div class="form-group form-md-line-input">
+											<label class="col-md-2 control-label" for="form_control_1">Rut</label>
+											<div class="col-md-2">
+												<input type="text" class="form-control" id="form_control_1" name="rut">
+												<div class="form-control-focus">
+												</div>
+                                                <span class="help-block">Sin puntos ni DV</span>
+											</div>
+                                            <span class="input-group-btn btn-right">
+												            <button class="btn green-haze" type="button"><i class="fa fa-search"></i></button>
+			                                </span> 
+										</div>
+                                        
+										<div class="form-group form-md-line-input">
+											<label class="col-md-2 control-label" for="form_control_2">Nombre</label>
+											<div class="col-md-5">
+												<input type="text" class="form-control" id="form_control_2" name="NOMBRES">
+												<div class="form-control-focus">
+												</div>												
+											</div>
+										</div>
+										<div class="form-group form-md-line-input has-success">
+											<label class="col-md-2 control-label" for="form_control_3">Apellido Paterno</label>
+											<div class="col-md-5">
+												<input type="text" class="form-control" id="form_control_3" name="AP_PATERNO">
+												<div class="form-control-focus">
+												</div>
+											</div>
+										</div>
+										<div class="form-group form-md-line-input has-warning">
+											<label class="col-md-2 control-label" for="form_control_4">Apellido Materno</label>
+											<div class="col-md-5">
+												<input type="text" class="form-control" id="form_control_4" name="AP_MATERNO">
+												<div class="form-control-focus">
+												</div>
+                                                
+											</div>
+										</div>
+										<div class="form-group form-md-line-input has-error">
+											<label class="col-md-2 control-label" for="form_control_5">Estado</label>
+											<div class="col-md-2">
+												<input type="text" class="form-control" id="form_control_5" name="ESTADO" disabled>
+												<div class="form-control-focus">
+												</div>
+											</div>
+										</div>
+										<!--div class="form-group form-md-line-input">
+											<label class="col-md-2 control-label" for="form_control_1">Dropdown Input</label>
+											<div class="col-md-10">
+												<select class="form-control" id="form_control_1">
+													<option value=""></option>
+													<option value="">Option 1</option>
+													<option value="">Option 2</option>
+													<option value="">Option 3</option>
+													<option value="">Option 4</option>
+												</select>
+												<div class="form-control-focus">
+												</div>
+											</div>
+										</div-->
+										<!--div class="form-group form-md-line-input has-success">
+											<label class="col-md-2 control-label" for="form_control_1">Textarea</label>
+											<div class="col-md-10">
+												<textarea class="form-control" rows="3" placeholder="Enter more text"></textarea>
+												<div class="form-control-focus">
+												</div>
+											</div>
+										</div-->
+                                        <div class="form-group form-md-line-input has-error">
+											<label class="col-md-2 control-label" for="form_control_6">Correo</label>
+											<div class="col-md-5">                                            
+												<input type="text" class="form-control" id="form_control_6" name="CORREO" >
+												<div class="form-control-focus">
+												</div>
+											</div>
+										</div>
+                                        <div class="form-group form-md-line-input has-error">
+											<label class="col-md-2 control-label" for="form_control_7">Tel&eacute;fono</label>
+											<div class="col-md-5">
+												<input type="text" class="form-control" id="form_control_7" name="TELEFONO">
+												<div class="form-control-focus">
+												</div>
+											</div>
+										</div>
+                                        <div class="form-group form-md-line-input has-error">
+											<label class="col-md-2 control-label" for="form_control_8">Celular</label>
+											<div class="col-md-5">
+												<input type="text" class="form-control" id="form_control_8" name="CELULAR">
+												<div class="form-control-focus">
+												</div>
+											</div>
+										</div>
+                                        <div class="form-group form-md-line-input has-error">
+											<label class="col-md-2 control-label" for="form_control_9">Direcci&oacute;n</label>
+											<div class="col-md-5">
+												<input type="text" class="form-control" id="form_control_9" name="DIRECCION" >
+												<div class="form-control-focus">
+												</div>
+											</div>
+										</div>
+                                        <div class="form-group form-md-line-input has-error">
+											<label class="col-md-2 control-label" for="form_control_10">Emp./Establecimiento</label>
+											<div class="col-md-5">
+												<input type="text" class="form-control" id="form_control_10" name="EMPRESA_ESTABLEC" >
+                                                <input type="hidden" name="USERNAME_ACTUALIZACION" value="<?php echo $usuario?>" >
+												<div class="form-control-focus">
+												</div>
+											</div>
+										</div>									
+									</div>
+                                    <table class="table table-hover">
+									<thead>
+									<tr>
+										<th>
+											 Correo
+										</th>
+										<th>
+											 Tel&eacute;fono
+										</th>
+										<th>
+											 Celular
+										</th>
+										<th>
+											 Empresa/Establec.
+										</th>
+                                        <th>
+										     Direcci&oacute;n 
+										</th>
+                                        <th>
+										     Fecha 
+										</th>
+                                        <th>
+										     Usuario 
+										</th>
+									</tr>
+									</thead>
+									<tbody>
+                                        <!-- INFO TABLA AQUI !!-->
+									</tbody>
+									</table>
+									<div class="form-actions">
+										<div class="row">
+											<div class="col-md-offset-2 col-md-10">
+												<button type="button" class="btn default"><i class="fa fa-thumbs-down"></i> &nbsp; No le interesa</button>
+												<button type="button" class="btn blue"><i class="fa fa-save"></i> &nbsp; Actualizar Datos</button>
+                                                <button type="button" class="btn green">Paso 2 - Asignar Campa&ntilde;a/Sede/Carrera</button>                                                
+											</div>
+										</div>
+									</div>
+								</form>
+						<br />
+                        <br />                        
+                            
+              <div class="portlet-body form">
+								<form role="form">
+									<div class="form-body">
+                                    <div class="row text-center">
+										<div class="col-md-4 col-md-push-4 form-group form-md-line-input has-info ">
+											<select class="form-control" id="form_control_1">
+												<option value=""></option>
+												<option value="">Option 1</option>
+												<option value="">Option 2</option>
+												<option value="">Option 3</option>
+												<option value="">Option 4</option>
+											</select>
+											<label for="form_control_1"><strong>Campa&ntilde;a</strong></label>
+										</div>
+						             </div>
+                                     <div class="row text-center">
+										<div class="col-md-4 col-md-push-4 form-group form-md-line-input has-info ">
+											<select class="form-control" id="form_control_1">
+												<option value=""></option>
+												<option value="">Option 1</option>
+												<option value="">Option 2</option>
+												<option value="">Option 3</option>
+												<option value="">Option 4</option>
+											</select>
+											<label for="form_control_1"><strong>Carrera</strong></label>
+										</div>
+						             </div>
+                                     <div class="row text-center">
+										<div class="col-md-4 col-md-push-4 form-group form-md-line-input has-info ">
+											<select class="form-control" id="form_control_1">
+												<option value=""></option>
+												<option value="">Option 1</option>
+												<option value="">Option 2</option>
+												<option value="">Option 3</option>
+												<option value="">Option 4</option>
+											</select>
+											<label for="form_control_1"><strong>Jornada</strong></label>
+										</div>
+						             </div>                                                                          
+									<div class="form-actions noborder text-center">
+										<button type="button" class="btn default">Gestionar Otro RUT</button>
+                                        <button type="button" class="btn blue">Ingresar Oportunidad</button>										
+									</div>
+								</form>
+							</div>
+                </div>
+                            
+                            
+                            
+                            
+                          	</div>  
+                            
+                         	</div>                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+						</div>
+                                      
+
+       	</div>                     
+                                                                                                      
+<script>
+$("#form_prospecto").submit(function(e)
+{
+    var postData = $(this).serializeArray();
+    var formURL = $(this).attr("action");
+    $.ajax(
+    {
+        url : formURL,
+        type: "POST",
+        data : postData,
+        dataType : 'json',
+        success : function(response) {
+                    if(response.status!="ok"){
+                        $("#alertnok").htm('<span class="alert alert-danger">'+response.descripcion+'</span>'); 
+                    }else{
+                        $("#alertok").htm('<span class="alert alert-success">'+response.descripcion+'</span>');    
+                    }
+        },
+        error: function(jqXHR, textStatus, errorThrown) 
+        {
+            $("#alertnok").htm('<span class="alert alert-success">Error en el env&iacute;o de datos al servidor</span>');      
+        }
+    });
+    e.preventDefault(); //STOP default action    
+});
+</script>                            

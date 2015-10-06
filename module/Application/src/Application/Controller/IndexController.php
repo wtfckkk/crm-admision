@@ -15,12 +15,12 @@ class IndexController extends AbstractActionController
      public function indexAction()
     {
         //Conectamos a BBDD                                             
-        $this->dbAdapter=$this->getServiceLocator()->get('crm');      
-        
+        //$this->dbAdapter=$this->getServiceLocator()->get('crm');      
+        $this->dbAdapter=$this->getServiceLocator()->get('Zend\Db\Adapter');
         
        $test = new CarrerasTable($this->dbAdapter);        
                              
-//        $valores =  $test->fetchAll();                
+       // $valores =  $test->fetchAll();                
         
                                 
         return new ViewModel(array('valores'=>$valores));

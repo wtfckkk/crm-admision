@@ -15,26 +15,33 @@
 <!-- BEGIN LOGIN -->
 <div class="content">
 	<!-- BEGIN LOGIN FORM -->
-	<form class="login-form" action="index.html" method="post">
+	<form id="logueo" class="login-form" action="<?php echo $this->basePath()?>/application/login/send" method="post">
 		<h3 class="form-title">Ingresar al sistema</h3>
 		<div class="alert alert-danger display-hide">
 			<button class="close" data-close="alert"></button>
 			<span>
 			Ingrese usuario y contrase&ntilde;a. </span>
 		</div>
+        <?php if(isset($mensaje)){?>
+        <div id="alerta" class="alert alert-danger">
+			<button class="close" data-close="alert"></button>
+			<span><?php echo $mensaje ?></span>
+		</div>
+        <?php }?>
 		<div class="form-group">
 			<!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
 			<label class="control-label visible-ie8 visible-ie9">Usuario</label>
 			<div class="input-icon">
 				<i class="fa fa-user"></i>
-				<input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="Usuario" name="usuario"/>
+				<input id="uuario" class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="Usuario" name="usuario"/>
 			</div>
 		</div>
 		<div class="form-group">
 			<label class="control-label visible-ie8 visible-ie9">Password</label>
 			<div class="input-icon">
 				<i class="fa fa-lock"></i>
-				<input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="Contrase&ntilde;a" name="password"/>
+				<input id="password" class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="Contrase&ntilde;a" name="password"/>
+                <input class="form-control" name="password2" id="password2" type="hidden" />
 			</div>
 		</div>
 		<div class="form-actions">
@@ -426,9 +433,10 @@
 <!-- END LOGIN -->
 <!-- BEGIN COPYRIGHT -->
 <div class="copyright">
-	 <? echo date('Y');?> &copy; CRM Admisi&oacute;n - La araucana.
+	 <?php echo date('Y');?> &copy; CRM Admisi&oacute;n - La araucana.
 </div>
 </body>
+<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 <script>
     $(document).ready(function(e){
         $('#usuario').focus();
