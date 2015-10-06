@@ -20,7 +20,7 @@ class IndexController extends AbstractActionController
         
        $test = new CarrerasTable($this->dbAdapter);        
                              
-       // $valores =  $test->fetchAll();                
+        $valores =  $test->getDatos($this->dbAdapter);                
         
          $this->layout('layout/layout');                       
         return new ViewModel(array('valores'=>$valores));

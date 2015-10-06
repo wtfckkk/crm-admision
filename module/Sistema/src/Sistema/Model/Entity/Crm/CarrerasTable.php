@@ -41,7 +41,7 @@ class CarrerasTable extends TableGateway
     public function getDatos(Adapter $dbAdapter)
     {
        $this->dbAdapter = $dbAdapter;
-       $query = "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='dbo' AND TABLE_NAME='CARRERAS'";
+       $query = "SELECT * FROM CARRERAS";
                 
         $result=$this->dbAdapter->query($query,Adapter::QUERY_MODE_EXECUTE);
         return $result->toArray();

@@ -4,7 +4,7 @@ use Zend\Session\Container;
 $sid = new Container('base');
 $url = $this->basePath();
 $perfil = $sid->offsetGet('desc_perfil');
- if ($sid->offsetExists('usuario')!="operador"){
+ if ($sid->offsetExists('usuario')!="adminsede"){
     header ("Location: $url/application/login");
     exit;
  }
@@ -14,26 +14,15 @@ if ($sid->offsetGet('logueado')!="si"){
 };
 ?>
 <!DOCTYPE html>
-<!-- 
-Template Name: Metronic - Responsive Admin Dashboard Template build with Twitter Bootstrap 3.3.5
-Version: 4.1.0
-Author: KeenThemes
-Website: http://www.keenthemes.com/
-Contact: support@keenthemes.com
-Follow: www.twitter.com/keenthemes
-Like: www.facebook.com/keenthemes
-Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes
-License: You must have a valid license purchased only from themeforest(the above link) in order to legally use the theme for your project.
--->
 <!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
 <!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
 <!--[if !IE]><!-->
-<html lang="en" class="no-js">
+<html lang="es" class="no-js">
 <!--<![endif]-->
 <!-- BEGIN HEAD -->
 <head>
 <meta charset="utf-8"/>
-<title>Operador | CRM Admisi&oacute;n</title>
+<title>AdminSede | CRM Admisi&oacute;n</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <meta content="" name="description"/>
@@ -256,7 +245,7 @@ License: You must have a valid license purchased only from themeforest(the above
 				<!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
 				<ul class="page-sidebar-menu page-sidebar-menu-hover-submenu " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
 					<li class="start active ">
-						<a href="<?php echo $this->basePath()?>/operador">
+						<a href="<?php echo $this->basePath()?>/adminsede">
 						<i class="icon-home"></i>
 						<span class="title">Inicio</span>
 						<span class="selected"></span>
@@ -265,22 +254,14 @@ License: You must have a valid license purchased only from themeforest(the above
 					<li>
 						<a href="javascript:;">
 						<i class="icon-star"></i>
-						<span class="title">Oportunidades</span>
+						<span class="title">Administrar</span>
 						<span class="arrow "></span>
 						</a>
 						<ul class="sub-menu">
 							<li>
 								<a href="<?php echo $this->basePath()?>/operador/oportunidad/nueva">								
-								Ingresar Oportunidad</a>
-							</li>
-							<li>
-								<a href="<?php echo $this->basePath()?>/operador/oportunidad/rut">								
-								Seguimiento Oportunidad por RUT</a>
-							</li>
-							<li>
-								<a href="<?php echo $this->basePath()?>/operador/oportunidad/campana">								
-								Seguimiento Oportunidad por Campa&ntilde;a</a>
-							</li>
+								Operadores de mi Sede</a>
+							</li>							
 						</ul>
 					</li>					
 				</ul>
@@ -303,7 +284,7 @@ License: You must have a valid license purchased only from themeforest(the above
 	<!-- BEGIN FOOTER -->
 	<div class="page-footer">
 		<div class="page-footer-inner">
-			 2014 &copy; Metronic by keenthemes. <a href="http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes" title="Purchase Metronic just for 27$ and get lifetime updates for free" target="_blank">Purchase Metronic!</a>
+			 <?php echo date('Y')?> &copy; CRM Admisi&oacute;n. 
 		</div>
 		<div class="scroll-to-top">
 			<i class="icon-arrow-up"></i>

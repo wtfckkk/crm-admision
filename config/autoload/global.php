@@ -14,11 +14,12 @@
 return array(
      'db' => array(
                                             // 'platform' => 'SqlServer',
-                                        'driver'   => 'Pdo_odbc',
-                                        'dsn'      => 'odbc:driver=nativesql;Server=crmserver',
-                                        'database' => 'crm',
+                                        'platform' => 'SqlServer',
+                                        'driver'   => 'Pdo',
+                                        'dsn'      => 'dblib:host=CRMSQL:1433;dbname=crm;',
                                         'username' => 'crm',
                                         'password' => 'crm',
+                                        'pdotype'  => 'dblib',
                                        // 'pdotype'  => 'dblib',  
       /*  'adapters' => array (
         'crm' => array(                       

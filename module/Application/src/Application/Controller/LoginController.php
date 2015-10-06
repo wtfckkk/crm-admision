@@ -154,9 +154,9 @@ class LoginController extends AbstractActionController
     public function sendAction()
     {                
                         $sid = new Container('base');
-                        $sid->offsetSet('usuario','operadorA');
-                        $sid->offsetSet('perfil', "operador");
-                        $sid->offsetSet('desc_perfil', 'Operador de sistema'); 
+                        $sid->offsetSet('usuario','adminsedeA');
+                        $sid->offsetSet('perfil', "adminsede");
+                        $sid->offsetSet('desc_perfil', 'Administrado de sede'); 
                         $sid->offsetSet('logueado', 'si'); 
       /*  $data = $this->getRequest()->getPost();
         
