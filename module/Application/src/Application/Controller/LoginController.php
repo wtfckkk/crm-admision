@@ -37,9 +37,9 @@ class LoginController extends AbstractActionController
         
         $sid = new Container('base');
         //$session->getManager()->getStorage()->clear();
-        if ($sid->offsetExists('usuario')){
+       /* if ($sid->offsetExists('usuario')){
             return $this->redirect()->toUrl($this->getRequest()->getBaseUrl().'/application');
-        }
+        }*/
         
 
         
@@ -153,7 +153,12 @@ class LoginController extends AbstractActionController
     
     public function sendAction()
     {                
-        $data = $this->getRequest()->getPost();
+                        $sid = new Container('base');
+                        $sid->offsetSet('usuario','operadorA');
+                        $sid->offsetSet('perfil', "operador");
+                        $sid->offsetSet('desc_perfil', 'Operador de sistema'); 
+                        $sid->offsetSet('logueado', 'si'); 
+      /*  $data = $this->getRequest()->getPost();
         
         if($data['usuario']!=null && $data['password2']!=null){
             //Conectamos a BBDD
@@ -207,7 +212,7 @@ class LoginController extends AbstractActionController
        }else{
             return $this->forward()->dispatch('Application\Controller\Login',array('action'=>'index','id'=>1));
         }
-         //array('data'=>$idSession)                               
+         //array('data'=>$idSession)    */                           
         return new ViewModel();
     }    
     /*

@@ -5,7 +5,7 @@ $sid = new Container('base');
 $url = $this->basePath();
 $urlHome = $sid->offsetGet('perfil');
 if ($sid->offsetGet('logueado')!="si"){     
-     header ("Location: $url/application/login/7");
+     header ("Location: $url/application/login");
     exit;
 };
 if (isset($urlHome)){     

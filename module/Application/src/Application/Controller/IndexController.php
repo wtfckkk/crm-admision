@@ -22,7 +22,7 @@ class IndexController extends AbstractActionController
                              
        // $valores =  $test->fetchAll();                
         
-                                
+         $this->layout('layout/layout');                       
         return new ViewModel(array('valores'=>$valores));
         $result->setTerminal(true); 
         return $result; 
