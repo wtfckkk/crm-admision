@@ -40,7 +40,7 @@ class ProsCabeceraDetalleTable extends TableGateway
         $datos = $this->select(array('rut'=>$rut));
         $recorre = $datos->toArray();
                       
-        return $recorre[0]['ID'];
+        return $recorre;
     }
     
     public function fetchAll()

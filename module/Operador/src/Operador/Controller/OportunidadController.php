@@ -11,10 +11,11 @@ namespace Operador\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Zend\View\Model\JsonModel;
 
-use Sistema\Model\Crm\ProspectoCabeceraTable;
-use Sistema\Model\Crm\ProspectoDetalleTable;
-use Sistema\Model\Crm\ProsCabeceraDetalleTable;
+use Sistema\Model\Entity\Crm\ProspectoCabeceraTable;
+use Sistema\Model\Entity\Crm\ProspectoDetalleTable;
+use Sistema\Model\Entity\Crm\ProsCabeceraDetalleTable;
 
 
 class OportunidadController extends AbstractActionController
@@ -54,14 +55,14 @@ class OportunidadController extends AbstractActionController
         //Instancia de Tablas
         $pcabecera = new ProspectoCabeceraTable($this->dbAdapter);        
         //Buscamos prospecto       
-        $prospecto = $pcabecera->getDatoxRut($lista['rut']);                       
+        $prospecto = $pcabecera->getDatoxRut($lista['rut']);                             
          //Validamos si prospecto existe
-         if(isset($prospecto)){
+         if(count($prospecto)>0){
             //Buscamos detalle de Prospecto
             $pcabedetalle = new ProsCabeceraDetalleTable($this->dbAdapter);
-            $id_detalle   = $pcabedetalle->getIdDetalle($prospecto[0]['RUT']);
+            $cab_detalle   = $pcabedetalle->getIdDetalle($prospecto[0]['RUT']);
             $pdetalle     = new ProspectoDetalleTable($this->dbAdapter);
-            $detalle      = $pdetalle->getDetalle($id_detalle);
+            $detalle      = $pdetalle->getDetalle($cab_detalle[0]['ID_DETALLE']);
             
             //Retornamos valores del prospecto            
             $result = new JsonModel(array('existe'=>'si','prospecto'=>$prospecto,'detalle'=>$detalle));
@@ -74,7 +75,7 @@ class OportunidadController extends AbstractActionController
             $result = new JsonModel(array('desc'=>$descripcion));
             $result->setTerminal(true);
             return $result;             
-         }               
+         }                          
     }
     
          public function actualizardatosAction()

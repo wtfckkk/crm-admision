@@ -240,8 +240,8 @@ $usuario = $sid->offsetGet('usuario');
        	</div>                     
 <script type="text/javascript" src="<?php echo $this->basePath()?>/metronic/theme/assets/global/plugins/jquery.min.js" ></script>                                                                                            
 <script>
-$("#busca_rut").click(function(){
-postData = {'rut' : $('#rut').val()}
+$("#busca_rut").click(function(){    
+postData = {'rut' : $('#nueva_rut').val()}
     $.ajax(
     {
         url : '<?php echo $this->basePath()."/operador/oportunidad/buscarut"?>',
@@ -249,7 +249,7 @@ postData = {'rut' : $('#rut').val()}
         data : postData,
         dataType : 'json',
         success : function(response) {
-            if(response.existe=="true"){
+            if(response.existe=="si"){
                 $("#nueva_nombre").val(response.prospecto[0]['NOMBRES']);
                 $("#nueva_apellidop").val(response.prospecto[0]['AP_PATERNO']);
                 $("#nueva_apellidom").val(response.prospecto[0]['AP_MATERNO']);
@@ -261,7 +261,7 @@ postData = {'rut' : $('#rut').val()}
                 $("#nueva_establec").val(response.detalle[0]['EMPRESA_ESTABLEC']);
             }
             else{
-             $("#alertok").htm('<span class="alert alert-success"> '+response.desc+'</span>');                   
+             $("#alertok").html('<span class="alert alert-success"> '+response.desc+'</span>');                   
             }                                  
         },
         error: function(jqXHR, textStatus, errorThrown) 
@@ -282,14 +282,14 @@ $("#form_prospecto").submit(function(e)
         dataType : 'json',
         success : function(response) {
                     if(response.status!="ok"){
-                        $("#alertnok").htm('<span class="alert alert-danger">'+response.descripcion+'</span>'); 
+                        $("#alertnok").html('<span class="alert alert-danger">'+response.descripcion+'</span>'); 
                     }else{
-                        $("#alertok").htm('<span class="alert alert-success">'+response.descripcion+'</span>');    
+                        $("#alertok").html('<span class="alert alert-success">'+response.descripcion+'</span>');    
                     }
         },
         error: function(jqXHR, textStatus, errorThrown) 
         {
-            $("#alertnok").htm('<span class="alert alert-success">Error en el env&iacute;o de datos al servidor</span>');      
+            $("#alertnok").html('<span class="alert alert-success">Error en el env&iacute;o de datos al servidor</span>');      
         }
     });
     e.preventDefault(); //STOP default action    

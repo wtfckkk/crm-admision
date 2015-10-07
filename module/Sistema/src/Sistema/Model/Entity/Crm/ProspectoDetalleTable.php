@@ -9,7 +9,7 @@ use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Where;
 use Zend\Db\ResultSet\ResultSet;
 
-class ProspectoCabeceraTable extends TableGateway
+class ProspectoDetalleTable extends TableGateway
 {
     private $CORREO;
     private $TELEFONO;
