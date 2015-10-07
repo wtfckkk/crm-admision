@@ -153,19 +153,14 @@ class LoginController extends AbstractActionController
     
     public function sendAction()
     {                
-                        $sid = new Container('base');
-                        $sid->offsetSet('usuario','adminsedeA');
-                        $sid->offsetSet('perfil', "adminsede");
-                        $sid->offsetSet('desc_perfil', 'Administrado de sede'); 
-                        $sid->offsetSet('logueado', 'si'); 
-      /*  $data = $this->getRequest()->getPost();
+        $data = $this->getRequest()->getPost();
         
         if($data['usuario']!=null && $data['password2']!=null){
             //Conectamos a BBDD
             $this->dbAdapter=$this->getServiceLocator()->get('Zend\Db\Adapter');
             //Consultamos Usuario y Password en tabla USUARIOS
             $usuario = new UsuarioTable($this->dbAdapter);
-            $listaUsuario = $usuario->getUsuario($data['usuario'],strrev($data['password2']));
+            $listaUsuario = $usuario->getUsuario($this->dbAdapter,$data['usuario'],strrev($data['password2']));
             //Validamos existencia
             if(!empty($listaUsuario)){     
                     //Consultamos perfil segun usuario
@@ -195,8 +190,7 @@ class LoginController extends AbstractActionController
                              }
                              if($listaperfil[0]['ID_PERFIL'] == "admcentral"){
                                 $urlHome = "admcentral";
-                             }                             
-                             $urlHome = 'operador';
+                             }                                                     
                              $sid->offsetSet('urlHome',$urlHome);
                              
                              return $this->redirect()->toUrl($this->getRequest()->getBaseUrl().'/'.$urlHome); 
@@ -212,7 +206,7 @@ class LoginController extends AbstractActionController
        }else{
             return $this->forward()->dispatch('Application\Controller\Login',array('action'=>'index','id'=>1));
         }
-         //array('data'=>$idSession)    */                           
+         //array('data'=>$idSession)                              
         return new ViewModel();
     }    
     /*

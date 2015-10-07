@@ -20,11 +20,10 @@ class PerfilTable extends TableGateway
     }
 
     
-    public function getDatos2()
+    public function getPerfil($perfil)
     {
-        
-        $datos = $this->select();
-        $recorre = $datos->toArray();
+       $datos = $this->select(array('ID_PERFIL'=>$perfil));
+       $recorre = $datos->toArray();
                       
         return $recorre;
     }

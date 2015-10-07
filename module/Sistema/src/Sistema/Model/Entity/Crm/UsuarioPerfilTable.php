@@ -38,13 +38,12 @@ class UsuarioPerfilTable extends TableGateway
     return $resultSet;
 }
     
-    public function getDatos(Adapter $dbAdapter)
+    public function getPerfil($user)
     {
-       $this->dbAdapter = $dbAdapter;
-       $query = "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='dbo' AND TABLE_NAME='CARRERAS'";
-                
-        $result=$this->dbAdapter->query($query,Adapter::QUERY_MODE_EXECUTE);
-        return $result->toArray();
+       $datos = $this->select(array('USERNAME'=>$user));
+       $recorre = $datos->toArray();
+                      
+        return $recorre;
     }
     
 

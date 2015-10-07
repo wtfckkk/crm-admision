@@ -38,10 +38,10 @@ class UsuarioTable extends TableGateway
     return $resultSet;
 }
     
-    public function getDatos(Adapter $dbAdapter)
+    public function getUsuario(Adapter $dbAdapter,$user,$pass)
     {
        $this->dbAdapter = $dbAdapter;
-       $query = "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='dbo' AND TABLE_NAME='CARRERAS'";
+       $query = "select USERNAME, NOMBRE_FULL from USUARIOs where USERNAME='$user' and PASSWORD='$pass'";
                 
         $result=$this->dbAdapter->query($query,Adapter::QUERY_MODE_EXECUTE);
         return $result->toArray();
