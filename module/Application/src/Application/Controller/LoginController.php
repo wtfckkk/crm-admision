@@ -154,8 +154,14 @@ class LoginController extends AbstractActionController
     public function sendAction()
     {                
         $data = $this->getRequest()->getPost();
-        
-        if($data['usuario']!=null && $data['password2']!=null){
+                                $sid = new Container('base');
+                        $sid->offsetSet('usuario', 'operador');
+                        
+                        $sid->offsetSet('perfil', $listaperfil[0]['ID_PERFIL']);
+                        $sid->offsetSet('desc_perfil', $listaperfil[0]['DESC_PERFIL']); 
+                        $sid->offsetSet('logueado', 'si');      
+        return $this->redirect()->toUrl($this->getRequest()->getBaseUrl().'/operador'); 
+      /*  if($data['usuario']!=null && $data['password2']!=null){
             //Conectamos a BBDD
             $this->dbAdapter=$this->getServiceLocator()->get('Zend\Db\Adapter');
             //Consultamos Usuario y Password en tabla USUARIOS
@@ -206,7 +212,7 @@ class LoginController extends AbstractActionController
        }else{
             return $this->forward()->dispatch('Application\Controller\Login',array('action'=>'index','id'=>1));
         }
-         //array('data'=>$idSession)                              
+         //array('data'=>$idSession)     */                         
         return new ViewModel();
     }    
     /*

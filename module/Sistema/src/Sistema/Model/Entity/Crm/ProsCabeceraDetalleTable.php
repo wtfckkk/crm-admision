@@ -34,13 +34,13 @@ class ProsCabeceraDetalleTable extends TableGateway
                $id = $this->lastInsertValue;
                return $id;
     } 
-    public function getDatos2()
+    public function getIdDetalle($rut)
     {
         
-        $datos = $this->select();
+        $datos = $this->select(array('rut'=>$rut));
         $recorre = $datos->toArray();
                       
-        return $recorre;
+        return $recorre[0]['ID'];
     }
     
     public function fetchAll()

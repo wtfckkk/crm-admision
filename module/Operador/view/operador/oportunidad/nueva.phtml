@@ -29,47 +29,47 @@ $usuario = $sid->offsetGet('usuario');
                                     <div id="alertnok"></div>
                                                                         
 										<div class="form-group form-md-line-input">
-											<label class="col-md-2 control-label" for="form_control_1">Rut</label>
+											<label class="col-md-2 control-label" for="nueva_rut">Rut</label>
 											<div class="col-md-2">
-												<input type="text" class="form-control" id="form_control_1" name="rut">
+												<input type="text" class="form-control" id="nueva_rut" name="rut">
 												<div class="form-control-focus">
 												</div>
                                                 <span class="help-block">Sin puntos ni DV</span>
 											</div>
                                             <span class="input-group-btn btn-right">
-												            <button class="btn green-haze" type="button"><i class="fa fa-search"></i></button>
+												            <a id="busca_rut" class="btn green-haze" ><i class="fa fa-search"></i></a>
 			                                </span> 
 										</div>
                                         
 										<div class="form-group form-md-line-input">
-											<label class="col-md-2 control-label" for="form_control_2">Nombre</label>
+											<label class="col-md-2 control-label" for="nueva_nombre">Nombre</label>
 											<div class="col-md-5">
-												<input type="text" class="form-control" id="form_control_2" name="NOMBRES">
+												<input type="text" class="form-control" id="nueva_nombre" name="NOMBRES">
 												<div class="form-control-focus">
 												</div>												
 											</div>
 										</div>
 										<div class="form-group form-md-line-input has-success">
-											<label class="col-md-2 control-label" for="form_control_3">Apellido Paterno</label>
+											<label class="col-md-2 control-label" for="nueva_apellidop">Apellido Paterno</label>
 											<div class="col-md-5">
-												<input type="text" class="form-control" id="form_control_3" name="AP_PATERNO">
+												<input type="text" class="form-control" id="nueva_apellidop" name="AP_PATERNO">
 												<div class="form-control-focus">
 												</div>
 											</div>
 										</div>
 										<div class="form-group form-md-line-input has-warning">
-											<label class="col-md-2 control-label" for="form_control_4">Apellido Materno</label>
+											<label class="col-md-2 control-label" for="nueva_apellidom">Apellido Materno</label>
 											<div class="col-md-5">
-												<input type="text" class="form-control" id="form_control_4" name="AP_MATERNO">
+												<input type="text" class="form-control" id="nueva_apellidom" name="AP_MATERNO">
 												<div class="form-control-focus">
 												</div>
                                                 
 											</div>
 										</div>
 										<div class="form-group form-md-line-input has-error">
-											<label class="col-md-2 control-label" for="form_control_5">Estado</label>
+											<label class="col-md-2 control-label" for="nueva_estado">Estado</label>
 											<div class="col-md-2">
-												<input type="text" class="form-control" id="form_control_5" name="ESTADO" disabled>
+												<input type="text" class="form-control" id="nueva_estado" name="ESTADO" disabled>
 												<div class="form-control-focus">
 												</div>
 											</div>
@@ -97,42 +97,42 @@ $usuario = $sid->offsetGet('usuario');
 											</div>
 										</div-->
                                         <div class="form-group form-md-line-input has-error">
-											<label class="col-md-2 control-label" for="form_control_6">Correo</label>
+											<label class="col-md-2 control-label" for="nueva_correo">Correo</label>
 											<div class="col-md-5">                                            
-												<input type="text" class="form-control" id="form_control_6" name="CORREO" >
+												<input type="text" class="form-control" id="nueva_correo" name="CORREO" >
 												<div class="form-control-focus">
 												</div>
 											</div>
 										</div>
                                         <div class="form-group form-md-line-input has-error">
-											<label class="col-md-2 control-label" for="form_control_7">Tel&eacute;fono</label>
+											<label class="col-md-2 control-label" for="nueva_tel">Tel&eacute;fono</label>
 											<div class="col-md-5">
-												<input type="text" class="form-control" id="form_control_7" name="TELEFONO">
+												<input type="text" class="form-control" id="nueva_tel" name="TELEFONO">
 												<div class="form-control-focus">
 												</div>
 											</div>
 										</div>
                                         <div class="form-group form-md-line-input has-error">
-											<label class="col-md-2 control-label" for="form_control_8">Celular</label>
+											<label class="col-md-2 control-label" for="nueva_celu">Celular</label>
 											<div class="col-md-5">
-												<input type="text" class="form-control" id="form_control_8" name="CELULAR">
+												<input type="text" class="form-control" id="nueva_celu" name="CELULAR">
 												<div class="form-control-focus">
 												</div>
 											</div>
 										</div>
                                         <div class="form-group form-md-line-input has-error">
-											<label class="col-md-2 control-label" for="form_control_9">Direcci&oacute;n</label>
+											<label class="col-md-2 control-label" for="nueva_direc">Direcci&oacute;n</label>
 											<div class="col-md-5">
-												<input type="text" class="form-control" id="form_control_9" name="DIRECCION" >
+												<input type="text" class="form-control" id="nueva_direc" name="DIRECCION" >
 												<div class="form-control-focus">
 												</div>
 											</div>
 										</div>
                                         <div class="form-group form-md-line-input has-error">
-											<label class="col-md-2 control-label" for="form_control_10">Emp./Establecimiento</label>
+											<label class="col-md-2 control-label" for="nueva_establec">Emp./Establecimiento</label>
 											<div class="col-md-5">
-												<input type="text" class="form-control" id="form_control_10" name="EMPRESA_ESTABLEC" >
-                                                <input type="hidden" name="USERNAME_ACTUALIZACION" value="<?php echo $usuario?>" >
+												<input type="text" class="form-control" id="nueva_establec" name="EMPRESA_ESTABLEC" >
+                                                <input type="hidden" name="USERNAME_ACTUALIZACION" value="<?php echo $usuario;?>" >
 												<div class="form-control-focus">
 												</div>
 											</div>
@@ -238,8 +238,38 @@ $usuario = $sid->offsetGet('usuario');
                                       
 
        	</div>                     
-                                                                                                      
+<script type="text/javascript" src="<?php echo $this->basePath()?>/metronic/theme/assets/global/plugins/jquery.min.js" ></script>                                                                                            
 <script>
+$("#busca_rut").click(function(){
+postData = {'rut' : $('#rut').val()}
+    $.ajax(
+    {
+        url : '<?php echo $this->basePath()."/operador/oportunidad/buscarut"?>',
+        type: "POST",
+        data : postData,
+        dataType : 'json',
+        success : function(response) {
+            if(response.existe=="true"){
+                $("#nueva_nombre").val(response.prospecto[0]['NOMBRES']);
+                $("#nueva_apellidop").val(response.prospecto[0]['AP_PATERNO']);
+                $("#nueva_apellidom").val(response.prospecto[0]['AP_MATERNO']);
+                $("#nueva_estado").val(response.prospecto[0]['ESTADO']);
+                $("#nueva_correo").val(response.detalle[0]['CORREO']);
+                $("#nueva_tel").val(response.detalle[0]['TELEFONO']);
+                $("#nueva_celu").val(response.detalle[0]['CELULAR']);
+                $("#nueva_direc").val(response.detalle[0]['DIRECCION']);
+                $("#nueva_establec").val(response.detalle[0]['EMPRESA_ESTABLEC']);
+            }
+            else{
+             $("#alertok").htm('<span class="alert alert-success"> '+response.desc+'</span>');                   
+            }                                  
+        },
+        error: function(jqXHR, textStatus, errorThrown) 
+        {            
+            alert("error"); 
+        }
+    });
+});
 $("#form_prospecto").submit(function(e)
 {
     var postData = $(this).serializeArray();
@@ -264,4 +294,5 @@ $("#form_prospecto").submit(function(e)
     });
     e.preventDefault(); //STOP default action    
 });
+
 </script>                            

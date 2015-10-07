@@ -36,6 +36,46 @@ class OportunidadController extends AbstractActionController
         
         
     }
+        public function rutAction()
+    {
+        
+         $this->layout('layout/operador');    
+        return new ViewModel();
+        
+        
+    }
+    
+    public function buscarutAction()
+    {                                             
+        //Obtenemos datos POST
+        $lista = $this->request->getPost();
+        //Conectamos con BBDD
+        $this->dbAdapter=$this->getServiceLocator()->get('Zend/Db/Adapter');        
+        //Instancia de Tablas
+        $pcabecera = new ProspectoCabeceraTable($this->dbAdapter);        
+        //Buscamos prospecto       
+        $prospecto = $pcabecera->getDatoxRut($lista['rut']);                       
+         //Validamos si prospecto existe
+         if(isset($prospecto)){
+            //Buscamos detalle de Prospecto
+            $pcabedetalle = new ProsCabeceraDetalleTable($this->dbAdapter);
+            $id_detalle   = $pcabedetalle->getIdDetalle($prospecto[0]['RUT']);
+            $pdetalle     = new ProspectoDetalleTable($this->dbAdapter);
+            $detalle      = $pdetalle->getDetalle($id_detalle);
+            
+            //Retornamos valores del prospecto            
+            $result = new JsonModel(array('existe'=>'si','prospecto'=>$prospecto,'detalle'=>$detalle));
+            $result->setTerminal(true);
+            return $result;             
+         }
+         else{
+            //Retornamos mensaje de no existencia a la vista
+            $descripcion = "Prospecto no registrado en el sistema";                         
+            $result = new JsonModel(array('desc'=>$descripcion));
+            $result->setTerminal(true);
+            return $result;             
+         }               
+    }
     
          public function actualizardatosAction()
     {
@@ -88,21 +128,7 @@ class OportunidadController extends AbstractActionController
         
     }
     
-        public function buscarutAction()
-    {                                     
-        $result =  new ViewModel();
-        $result->setTerminal(true);
-        return $result;                
-    }
     
-        public function rutAction()
-    {
-        
-         $this->layout('layout/operador');    
-        return new ViewModel();
-        
-        
-    }
         public function rut2Action()
     {
         

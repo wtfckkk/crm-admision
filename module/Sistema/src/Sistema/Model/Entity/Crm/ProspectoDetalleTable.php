@@ -70,10 +70,10 @@ class ProspectoCabeceraTable extends TableGateway
              );
                $this->update($array,array('id'=>$id));
     } 
-    public function getDatos2()
+    public function getDetalle($id_detalle)
     {
         
-        $datos = $this->select();
+        $datos = $this->select(array('ID_DETALLE'=>$id_detalle));
         $recorre = $datos->toArray();
                       
         return $recorre;
