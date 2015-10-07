@@ -53,7 +53,8 @@ class OportunidadController extends AbstractActionController
         //Conectamos con BBDD
         $this->dbAdapter=$this->getServiceLocator()->get('Zend/Db/Adapter');        
         //Instancia de Tablas
-        $pcabecera = new ProspectoCabeceraTable($this->dbAdapter);        
+        $pcabecera = new ProspectoCabeceraTable($this->dbAdapter); 
+        $pdetalle     = new ProspectoDetalleTable($this->dbAdapter);       
         //Buscamos prospecto       
         $prospecto = $pcabecera->getDatoxRut($lista['rut']);                             
          //Validamos si prospecto existe
@@ -61,11 +62,28 @@ class OportunidadController extends AbstractActionController
             //Buscamos detalle de Prospecto
             $pcabedetalle = new ProsCabeceraDetalleTable($this->dbAdapter);
             $cab_detalle   = $pcabedetalle->getIdDetalle($prospecto[0]['RUT']);
-            $pdetalle     = new ProspectoDetalleTable($this->dbAdapter);
-            $detalle      = $pdetalle->getDetalle($cab_detalle[0]['ID_DETALLE']);
+                //Cargamos data para grilla
+                $html = "";
+                for ($i=0;$i<count($cab_detalle);$i++){
+	               $detalletable =  $pdetalle->getDetalle($cab_detalle[$i]['ID_DETALLE']);  
+                        for ($j=0;$j<count($detalletable);$j++){
+                            $html .= '<tr>';
+                            foreach ($detalletable[$j] as $key => $valor) {
+                                $html = $html.'<td>'.$valor.'</td>';                                   
+                                } 
+                            $html .= '</tr>';       
+                        }
+                }
+                $html .= "</tr>";
+            //Validamos historico de detalles
+                if(count($cab_detalle)>1){
+                    $cab_detalle[0] = max($cab_detalle);
+                }
+                        
+            $detalle = $pdetalle->getDetalle($cab_detalle[0]['ID_DETALLE']);
             
             //Retornamos valores del prospecto            
-            $result = new JsonModel(array('existe'=>'si','prospecto'=>$prospecto,'detalle'=>$detalle));
+            $result = new JsonModel(array('existe'=>'si','prospecto'=>$prospecto,'detalle'=>$detalle,'tabla'=>$html));
             $result->setTerminal(true);
             return $result;             
          }
@@ -78,7 +96,7 @@ class OportunidadController extends AbstractActionController
          }                          
     }
     
-         public function actualizardatosAction()
+    public function actualizardatosAction()
     {
         //Obtenemos datos POST
         $lista = $this->request->getPost();
@@ -93,39 +111,31 @@ class OportunidadController extends AbstractActionController
             //Validamos si existe prospecto       
             $existe = $pcabecera->getDatoxRut($lista['RUT']);            
             if(isset($existe))
-               {                           
-                //Update en tabla ProspectoCabecera            
-                $pcabecera->editarProsCabecera($lista,$lista['RUT']);
-            
-                //Update en tabla ProspectoDetalle            
-                $id_detalle = $pdetalle->nuevoProsDetalle($lista);
-                
-                //Update en tabla ProspectoDetalle            
-                $id_detalle = $pcabedetalle->nuevoProsCabeceraDet($lista['RUT'],$id_detalle);
-            
-                //Retornamos a la Vista
-                $desc = "Se ha ingresado <strong>nuevo prospecto</strong> exitosa";
-                $result = new JsonModel(array('status'=>'ok','descripcion'=>$desc));
-                $result->setTerminal(true);  
-                }else
-                {
-                    
-                //Insertamos en tabla ProspectoCabecera            
-                $pcabecera->nuevoProsCabecera($lista);
-            
+               {  
                 //Insertamos en tabla ProspectoDetalle            
                 $id_detalle = $pdetalle->nuevoProsDetalle($lista);
                 
                 //Insertamos en tabla ProspectoDetalle            
-                $id_detalle = $pcabedetalle->nuevoProsCabeceraDet($lista['RUT'],$id_detalle);
+                $pcabedetalle->nuevoProsCabeceraDet($lista['RUT'],$id_detalle);                                
             
                 //Retornamos a la Vista
-                $desc = "Se ha ingresado <strong>nuevo prospecto</strong> exitosa";
-                $result = new JsonModel(array('status'=>'ok','descripcion'=>$desc));
-                $result->setTerminal(true);                
-                    
+                $desc = "Se <strong>actualizaron datos de prospecto</strong> correctamente";
                 }
-
+            else
+                {                    
+                //Insertamos nuevo prospecto en tabla ProspectoCabecera            
+                $id = $pcabecera->nuevoProsCabecera($lista);
+                //Insertamos detalle de prospecto en tabla ProspectoDetalle            
+                $id_detalle = $pdetalle->nuevoProsDetalle($lista);
+                //Insertamos en tabla ProspectoDetalle            
+                $pcabedetalle->nuevoProsCabeceraDet($lista['RUT'],$id_detalle);                                       
+                 
+                $desc = "Se ha ingresado <strong>nuevo prospecto</strong> correctamente";    
+                }
+                        
+            //Retornamos a la Vista            
+            $result = new JsonModel(array('status'=>'ok','descripcion'=>$desc));
+            $result->setTerminal(true); 
         
     }
     

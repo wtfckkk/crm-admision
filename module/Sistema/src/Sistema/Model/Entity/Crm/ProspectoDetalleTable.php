@@ -43,13 +43,14 @@ class ProspectoDetalleTable extends TableGateway
     {
              self::cargarCampos($data);
              $array=array
-             (
+             ( 
                 'CORREO'=>$this->CORREO,
                 'TELEFONO'=>$this->TELEFONO,
                 'CELULAR'=>$this->CELULAR,
-                'EMPRESA_ESTABLEC'=>$this->EMPRESA_ESTABLEC,
+                'EMPRESA_EST    ABLEC'=>$this->EMPRESA_ESTABLEC,
                 'DIRECCION'=>$this->DIRECCION,
                 'USERNAME_ACTUALIZACION'=>$this->USERNAME_ACTUALIZACION,
+                'FECHA'=>$this->FECHA,
              );
                $this->insert($array);
                $id = $this->lastInsertValue;
@@ -60,7 +61,7 @@ class ProspectoDetalleTable extends TableGateway
     {
              self::cargarCampos($data);
              $array=array
-             (
+             (  'ID_DETALLE'=>$id_detalle,
                 'CORREO'=>$this->CORREO,
                 'TELEFONO'=>$this->TELEFONO,
                 'CELULAR'=>$this->CELULAR,
@@ -72,7 +73,6 @@ class ProspectoDetalleTable extends TableGateway
     } 
     public function getDetalle($id_detalle)
     {
-        
         $datos = $this->select(array('ID_DETALLE'=>$id_detalle));
         $recorre = $datos->toArray();
                       
