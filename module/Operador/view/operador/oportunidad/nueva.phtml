@@ -42,7 +42,7 @@ $usuario = $sid->offsetGet('usuario');
 												            <a id="busca_rut" class="btn green-haze" ><i class="fa fa-search"></i></a>
 			                                </span> 
 										</div>
-            <div id="div_form" class="hide">
+            <div id="div_form" class="hidez">
 										<div class="form-group form-md-line-input">
 											<label class="col-md-2 control-label" for="nueva_nombre">Nombre</label>
 											<div class="col-md-5">
@@ -176,9 +176,9 @@ $usuario = $sid->offsetGet('usuario');
 									<div class="form-actions">
 										<div class="row">
 											<div class="col-md-offset-2 col-md-10">
-												<button type="button" class="btn default"><i class="fa fa-thumbs-down"></i> &nbsp; No le interesa</button>
+												<a id="noleinteresa" class="btn default"><i class="fa fa-thumbs-down"></i> &nbsp; No le interesa</a>
 												<button type="submit" class="btn blue"><i class="fa fa-save"></i> &nbsp; Actualizar Datos</button>
-                                                <a onclick="mostrarpaso2()" class="btn green">Paso 2 - Asignar Campa&ntilde;a/Sede/Carrera</a>                                                
+                                                <a onclick="mostrarpaso2(<?php echo $usuario;?>)" class="btn green">Paso 2 - Asignar Campa&ntilde;a/Sede/Carrera</a>                                                
 											</div>
 										</div>
 									</div>
@@ -193,38 +193,25 @@ $usuario = $sid->offsetGet('usuario');
 									<div class="form-body">
                                     <div class="row text-center">
 										<div class="col-md-4 col-md-push-4 form-group form-md-line-input has-info ">
-											<select class="form-control" id="form_control_1">
-												<option value=""></option>
-												<option value="">Option 1</option>
-												<option value="">Option 2</option>
-												<option value="">Option 3</option>
-												<option value="">Option 4</option>
+											<select class="form-control" id="combo_campana">
 											</select>
-											<label for="form_control_1"><strong>Campa&ntilde;a</strong></label>
+											<label for="combo_campana"><strong>Campa&ntilde;a</strong></label>
 										</div>
 						             </div>
                                      <div class="row text-center">
 										<div class="col-md-4 col-md-push-4 form-group form-md-line-input has-info ">
-											<select class="form-control" id="form_control_1">
-												<option value=""></option>
-												<option value="">Option 1</option>
-												<option value="">Option 2</option>
-												<option value="">Option 3</option>
-												<option value="">Option 4</option>
+											<select class="form-control" id="combo_carrera">
+
 											</select>
-											<label for="form_control_1"><strong>Carrera</strong></label>
+											<label for="combo_carrera"><strong>Carrera</strong></label>
 										</div>
 						             </div>
                                      <div class="row text-center">
 										<div class="col-md-4 col-md-push-4 form-group form-md-line-input has-info ">
-											<select class="form-control" id="form_control_1">
-												<option value=""></option>
-												<option value="">Option 1</option>
-												<option value="">Option 2</option>
-												<option value="">Option 3</option>
-												<option value="">Option 4</option>
+											<select class="form-control" id="combo_jornada">
+
 											</select>
-											<label for="form_control_1"><strong>Jornada</strong></label>
+											<label for="combo_jornada"><strong>Jornada</strong></label>
 										</div>
 						             </div>                                                                          
 									<div class="form-actions noborder text-center">
@@ -244,34 +231,55 @@ $usuario = $sid->offsetGet('usuario');
 						</div>
                                       
 
-       	</div>                     
-<script type="text/javascript" src="<?php echo $this->basePath()?>/metronic/theme/assets/global/plugins/jquery.min.js" ></script>                                                                                            
+       	</div> 
+<div id="modal_confirm" class="modal fade" tabindex="-1" role="dialog"  data-keyboard="false">
+									<div class="modal-dialog modal-lg">
+										<div class="modal-content">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+												<h4 class="modal-title"><i class="icon-user"></i> &nbsp;Gesti&oacute;n de feedback de Oportunidad</h4>
+											</div>
+			<div id="bodymodal_detalle" class="modal-body">
+											                 
+                                                           
+			 </div>
+		</div>
+    </div>
+</div>                                
+                                                                              
 <script>
-$(document).ready(function() {       
-   UIToastr.init();
+toastr.options = {
+  "positionClass": "toast-top-center",
+}
+bootbox.setDefaults({
+  locale: "es"
 });
+$('#noleinteresa').click(function(){
+                bootbox.confirm("<strong>Estas Seguro ?</strong>", function(result) {
+                    if (result){
+                    toastr.success('Estado de prospecto cambio a <strong>Desinteresado</strong>');
+                    }else{
+                    toastr.info('Estado de prospecto sin cambios'); 
+                    } 
+                }); 
+            });
 function reset()
 {
    $('#div_form').addClass('hide'); 
    $('#div_campana').addClass('hide'); 
    $('#form_prospecto').trigger("reset");
 }
-function mostrarpaso2()
-{
-    $('#div_campana').removeClass('hide');
-}
-
-$("#busca_rut").click(function(){    
-postData = {'rut' : $('#nueva_rut').val()}
-    $.ajax(
+function mostrarpaso2(user){
+$('#div_campana').removeClass('hide');    
+postData = {'user' : user}
+$.ajax(
     {
-        url : '<?php echo $this->basePath()."/operador/oportunidad/buscarut"?>',
+        url : '<?php echo $this->basePath()."/operador/oportunidad/combospaso2"?>',
         type: "POST",
         data : postData,
         dataType : 'json',
-        success : function(response) {
-            $('#div_form').removeClass('hide');
-            if(response.existe=="si"){
+        success : function(response) {            
+            if(response.existe=="si"){            
                 $("#nueva_nombre").val(response.prospecto[0]['NOMBRES']);
                 $("#nueva_apellidop").val(response.prospecto[0]['AP_PATERNO']);
                 $("#nueva_apellidom").val(response.prospecto[0]['AP_MATERNO']);
@@ -285,13 +293,48 @@ postData = {'rut' : $('#nueva_rut').val()}
             }
             else{
              //   Command: toastr[success]("No existe prospecto");
-                
-             $("#alertok").html('<span class="alert alert-success"> '+response.desc+'</span>');                   
+                toastr.warning('No existe prospecto, ingresar datos'); 
+            // $("#alertok").html('<span class="alert alert-success"> '+response.desc+'</span>');                   
             }                                  
         },
         error: function(jqXHR, textStatus, errorThrown) 
         {            
-            alert("error"); 
+            alert("Error ! Favor contactar con administrador del sistema"); 
+        }
+    });
+}
+
+$("#busca_rut").click(function(){  
+postData = {'rut' : $('#nueva_rut').val()}
+    $.ajax(
+    {
+        url : '<?php echo $this->basePath()."/operador/oportunidad/buscarut"?>',
+        type: "POST",
+        data : postData,
+        dataType : 'json',
+        success : function(response) {
+            $('#div_form').removeClass('hide');
+            if(response.existe=="si"){            
+                $("#nueva_nombre").val(response.prospecto[0]['NOMBRES']);
+                $("#nueva_apellidop").val(response.prospecto[0]['AP_PATERNO']);
+                $("#nueva_apellidom").val(response.prospecto[0]['AP_MATERNO']);
+                $("#nueva_estado").val(response.prospecto[0]['ESTADO']);
+                $("#nueva_correo").val(response.detalle[0]['CORREO']);
+                $("#nueva_tel").val(response.detalle[0]['TELEFONO']);
+                $("#nueva_celu").val(response.detalle[0]['CELULAR']);
+                $("#nueva_direc").val(response.detalle[0]['DIRECCION']);
+                $("#nueva_establec").val(response.detalle[0]['EMPRESA_ESTABLEC']);
+                $("#nueva_bodytable").html(response.tabla);
+            }
+            else{
+             //   Command: toastr[success]("No existe prospecto");
+                toastr.warning('No existe prospecto, ingresar datos'); 
+            // $("#alertok").html('<span class="alert alert-success"> '+response.desc+'</span>');                   
+            }                                  
+        },
+        error: function(jqXHR, textStatus, errorThrown) 
+        {            
+            alert("Error ! Favor contactar con administrador del sistema"); 
         }
     });
 });

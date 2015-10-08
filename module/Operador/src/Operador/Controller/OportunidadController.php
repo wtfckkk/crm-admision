@@ -16,6 +16,8 @@ use Zend\View\Model\JsonModel;
 use Sistema\Model\Entity\Crm\ProspectoCabeceraTable;
 use Sistema\Model\Entity\Crm\ProspectoDetalleTable;
 use Sistema\Model\Entity\Crm\ProsCabeceraDetalleTable;
+use Sistema\Model\Entity\Crm\UsuarioSedeTable;
+use Sistema\Model\Entity\Crm\SedeCampanaTable;
 
 
 class OportunidadController extends AbstractActionController
@@ -139,6 +141,29 @@ class OportunidadController extends AbstractActionController
         
     }
     
+    public function combospaso2Action()
+    {
+        //Obtenemos datos POST
+        $lista = $this->request->getPost();
+        //Conectamos con BBDD
+        $this->dbAdapter=$this->getServiceLocator()->get('Zend/Db/Adapter');
+            
+           //Tablas
+           $usersede  = new UsuarioSedeTable($this->dbAdapter);
+           $sedecamp  = new SedeCampanaTable($this->dbAdapter);
+           
+           //Consultamos codigo de sedes por usuario       
+           $codesede = $usersede->getSede($lista['USERNAME']);
+           //Consultamos sede por usuario       
+           $codesede = $usersede->getSede($codesede);
+           
+           
+        
+            
+        return new ViewModel();
+        
+        
+    }
     
         public function rut2Action()
     {
