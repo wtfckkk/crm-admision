@@ -21,12 +21,12 @@ class ProsCabeceraDetalleTable extends TableGateway
         return parent::__construct('PROSP_CABECERA_DETALLE', $adapter, $databaseSchema,$selectResultPrototype);
     }
 
-    public function nuevoProsCabeceraDet($RUT,$ID_DETALLE)
+    public function nuevoProsCabeceraDet($rut,$id_detalle)
     {             
              $array=array
              (
-                'RUT'=>$this->RUT,
-                'ID_DETALLE'=>$this->ID_DETALLE,
+                'RUT'=>$rut,
+                'ID_DETALLE'=>$id_detalle,
 
              );
                $this->insert($array);
@@ -36,7 +36,7 @@ class ProsCabeceraDetalleTable extends TableGateway
     public function getIdDetalle($rut)
     {
         
-        $datos = $this->select(array('rut'=>$rut));
+        $datos = $this->select(array('RUT'=>$rut));
         $recorre = $datos->toArray();
                       
         return $recorre;

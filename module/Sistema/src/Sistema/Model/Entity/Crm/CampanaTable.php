@@ -68,6 +68,32 @@ class CampanaTable extends TableGateway
              );
                $this->update($array,array('id'=>$id));
     } 
+    
+        public function getCombo2($data=array())
+    {   
+        /*foreach ($data as $valor) {
+                                $html = $this->select($valor);                                   
+        } 
+        $datos = $this->select(array(''));
+        $recorre = $datos->toArray();
+        $resultado["0"]="Seleccione una Campaña";
+        for($i=0;$i<count($recorre);$i++)
+        {
+          $resultado[$recorre[$i]['id']] = $recorre[$i]['NOMBRE']; 
+        }*/
+        return $data;
+    }
+    
+    public function getCombo(Adapter $dbAdapter,$data)
+    {
+       $this->dbAdapter = $dbAdapter;
+       $query = "select ID_CAMPANA, NOMBRE_CAMPANA from CAMPANAS WHERE ID_CAMPANA IN($data)";
+                
+        $result=$this->dbAdapter->query($query,Adapter::QUERY_MODE_EXECUTE);
+        
+        return $result->toArray();
+    }
+    
     public function getDetalle($id_detalle)
     {
         $datos = $this->select(array('ID_DETALLE'=>$id_detalle));

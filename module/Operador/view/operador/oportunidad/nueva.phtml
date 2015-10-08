@@ -33,7 +33,7 @@ $usuario = $sid->offsetGet('usuario');
 										<div class="form-group form-md-line-input">
 											<label class="col-md-2 control-label" for="nueva_rut">Rut</label>
 											<div class="col-md-2">
-												<input type="text" class="form-control" id="nueva_rut" name="rut">
+												<input type="text" class="form-control" id="nueva_rut" name="RUT">
 												<div class="form-control-focus">
 												</div>
                                                 <span class="help-block">Sin puntos ni DV</span>
@@ -42,11 +42,11 @@ $usuario = $sid->offsetGet('usuario');
 												            <a id="busca_rut" class="btn green-haze" ><i class="fa fa-search"></i></a>
 			                                </span> 
 										</div>
-            <div id="div_form" class="hidez">
+            <div id="div_form" class="hide">
 										<div class="form-group form-md-line-input">
 											<label class="col-md-2 control-label" for="nueva_nombre">Nombre</label>
 											<div class="col-md-5">
-												<input type="text" class="form-control" id="nueva_nombre" name="NOMBRES">
+												<input type="text" class="form-control" id="nueva_nombre" name="NOMBRE">
 												<div class="form-control-focus">
 												</div>												
 											</div>
@@ -177,8 +177,8 @@ $usuario = $sid->offsetGet('usuario');
 										<div class="row">
 											<div class="col-md-offset-2 col-md-10">
 												<a id="noleinteresa" class="btn default"><i class="fa fa-thumbs-down"></i> &nbsp; No le interesa</a>
-												<button type="submit" class="btn blue"><i class="fa fa-save"></i> &nbsp; Actualizar Datos</button>
-                                                <a onclick="mostrarpaso2(<?php echo $usuario;?>)" class="btn green">Paso 2 - Asignar Campa&ntilde;a/Sede/Carrera</a>                                                
+												<a id="actualizarDatos" class="btn blue"><i class="fa fa-save"></i> &nbsp; Actualizar Datos</a>
+                                                <a onclick="mostrarpaso2('<?php echo $usuario;?>')" class="btn green">Paso 2 - Asignar Campa&ntilde;a/Sede/Carrera</a>                                                
 											</div>
 										</div>
 									</div>
@@ -265,6 +265,7 @@ $('#noleinteresa').click(function(){
             });
 function reset()
 {
+   $("#nueva_rut").attr('disabled',false);
    $('#div_form').addClass('hide'); 
    $('#div_campana').addClass('hide'); 
    $('#form_prospecto').trigger("reset");
@@ -278,24 +279,31 @@ $.ajax(
         type: "POST",
         data : postData,
         dataType : 'json',
-        success : function(response) {            
-            if(response.existe=="si"){            
-                $("#nueva_nombre").val(response.prospecto[0]['NOMBRES']);
-                $("#nueva_apellidop").val(response.prospecto[0]['AP_PATERNO']);
-                $("#nueva_apellidom").val(response.prospecto[0]['AP_MATERNO']);
-                $("#nueva_estado").val(response.prospecto[0]['ESTADO']);
-                $("#nueva_correo").val(response.detalle[0]['CORREO']);
-                $("#nueva_tel").val(response.detalle[0]['TELEFONO']);
-                $("#nueva_celu").val(response.detalle[0]['CELULAR']);
-                $("#nueva_direc").val(response.detalle[0]['DIRECCION']);
-                $("#nueva_establec").val(response.detalle[0]['EMPRESA_ESTABLEC']);
-                $("#nueva_bodytable").html(response.tabla);
-            }
-            else{
-             //   Command: toastr[success]("No existe prospecto");
-                toastr.warning('No existe prospecto, ingresar datos'); 
-            // $("#alertok").html('<span class="alert alert-success"> '+response.desc+'</span>');                   
-            }                                  
+        success : function(response) {         
+        var combo1 = $("#combo_campana");
+        var combo2 = $("#combo_carrera"); 
+        var combo3 = $("#combo_jornada");         
+         // Limpiamos combos
+         combo1.find('option').remove();
+         combo2.find('option').remove();
+         combo3.find('option').remove();
+         //Cagamos combo1
+         $(response.campanas).each(function(i, v){ // indice, valor                    
+         combo1.append('<option value="' + response.campanas[i]['ID_CAMPANA'] + '">' + response.campanas[i]['NOMBRE_CAMPANA'] + '</option>');
+         })
+         combo1.prop('disabled', false);
+        
+         //Cagamos combo2
+         $(response.carreras).each(function(i, v){ // indice, valor                    
+         combo1.append('<option value="' + response.carreras[i]['ID_CAMPANA'] + '">' + response.campanas[i]['NOMBRE_CAMPANA'] + '</option>');
+         })
+         combo1.prop('disabled', false);
+    
+         //Cagamos combo3
+         $(response.jornadas).each(function(i, v){ // indice, valor                    
+         combo1.append('<option value="' + response.jornadas[i]['ID_CAMPANA'] + '">' + response.campanas[i]['NOMBRE_CAMPANA'] + '</option>');
+         })
+         combo1.prop('disabled', false);
         },
         error: function(jqXHR, textStatus, errorThrown) 
         {            
@@ -304,8 +312,8 @@ $.ajax(
     });
 }
 
-$("#busca_rut").click(function(){  
-postData = {'rut' : $('#nueva_rut').val()}
+$("#busca_rut").click(function(){      
+postData = {'RUT' : $('#nueva_rut').val()}
     $.ajax(
     {
         url : '<?php echo $this->basePath()."/operador/oportunidad/buscarut"?>',
@@ -314,7 +322,8 @@ postData = {'rut' : $('#nueva_rut').val()}
         dataType : 'json',
         success : function(response) {
             $('#div_form').removeClass('hide');
-            if(response.existe=="si"){            
+            if(response.existe=="si"){  
+                toastr.success('Prospecto encontrado');
                 $("#nueva_nombre").val(response.prospecto[0]['NOMBRES']);
                 $("#nueva_apellidop").val(response.prospecto[0]['AP_PATERNO']);
                 $("#nueva_apellidom").val(response.prospecto[0]['AP_MATERNO']);
@@ -325,6 +334,7 @@ postData = {'rut' : $('#nueva_rut').val()}
                 $("#nueva_direc").val(response.detalle[0]['DIRECCION']);
                 $("#nueva_establec").val(response.detalle[0]['EMPRESA_ESTABLEC']);
                 $("#nueva_bodytable").html(response.tabla);
+                $("#nueva_rut").attr('disabled',true);
             }
             else{
              //   Command: toastr[success]("No existe prospecto");
@@ -338,29 +348,34 @@ postData = {'rut' : $('#nueva_rut').val()}
         }
     });
 });
-$("#form_prospecto").submit(function(e)
-{
-    var postData = $(this).serializeArray();
-    var formURL = $(this).attr("action");
+$('#actualizarDatos').click(function(){
+bootbox.confirm("<strong>Esta seguro ?", function(result) {
+if (result){
+    var postData = $("#form_prospecto").serializeArray();    
     $.ajax(
     {
-        url : formURL,
+        url : '<?php echo $this->basePath()."/operador/oportunidad/actualizardatos"?>',
         type: "POST",
         data : postData,
         dataType : 'json',
         success : function(response) {
                     if(response.status!="ok"){
-                        $("#alertnok").html('<span class="alert alert-danger">'+response.descripcion+'</span>'); 
+                        toastr.warning(response.descripcion);
+                      //  $("#alertnok").html('<span class="alert alert-danger">'+response.descripcion+'</span>'); 
                     }else{
-                        $("#alertok").html('<span class="alert alert-success">'+response.descripcion+'</span>');    
+                        toastr.success(response.descripcion);
+                        //$("#alertok").html('<span class="alert alert-success">'+response.descripcion+'</span>');    
                     }
         },
         error: function(jqXHR, textStatus, errorThrown) 
         {
-            $("#alertnok").html('<span class="alert alert-success">Error en el env&iacute;o de datos al servidor</span>');      
+            toastr.error('Error ! Favor contactar con administrador del sistema');            
+           // $("#alertnok").html('<span class="alert alert-success">Error en el env&iacute;o de datos al servidor</span>');      
         }
-    });
-    e.preventDefault(); //STOP default action    
+    });        
+}else{
+    toastr.info('Sin cambios'); 
+} 
+}); 
 });
-
 </script>                            

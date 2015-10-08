@@ -47,7 +47,7 @@ class ProspectoDetalleTable extends TableGateway
                 'CORREO'=>$this->CORREO,
                 'TELEFONO'=>$this->TELEFONO,
                 'CELULAR'=>$this->CELULAR,
-                'EMPRESA_EST    ABLEC'=>$this->EMPRESA_ESTABLEC,
+                'EMPRESA_ESTABLEC'=>$this->EMPRESA_ESTABLEC,
                 'DIRECCION'=>$this->DIRECCION,
                 'USERNAME_ACTUALIZACION'=>$this->USERNAME_ACTUALIZACION,
                 'FECHA'=>$this->FECHA,

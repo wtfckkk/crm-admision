@@ -18,6 +18,7 @@ use Sistema\Model\Entity\Crm\ProspectoDetalleTable;
 use Sistema\Model\Entity\Crm\ProsCabeceraDetalleTable;
 use Sistema\Model\Entity\Crm\UsuarioSedeTable;
 use Sistema\Model\Entity\Crm\SedeCampanaTable;
+use Sistema\Model\Entity\Crm\CampanaTable;
 
 
 class OportunidadController extends AbstractActionController
@@ -58,7 +59,7 @@ class OportunidadController extends AbstractActionController
         $pcabecera = new ProspectoCabeceraTable($this->dbAdapter); 
         $pdetalle     = new ProspectoDetalleTable($this->dbAdapter);       
         //Buscamos prospecto       
-        $prospecto = $pcabecera->getDatoxRut($lista['rut']);                             
+        $prospecto = $pcabecera->getDatoxRut($lista['RUT']);                             
          //Validamos si prospecto existe
          if(count($prospecto)>0){
             //Buscamos detalle de Prospecto
@@ -112,7 +113,7 @@ class OportunidadController extends AbstractActionController
             
             //Validamos si existe prospecto       
             $existe = $pcabecera->getDatoxRut($lista['RUT']);            
-            if(isset($existe))
+            if(count($existe)>0)
                {  
                 //Insertamos en tabla ProspectoDetalle            
                 $id_detalle = $pdetalle->nuevoProsDetalle($lista);
@@ -138,7 +139,7 @@ class OportunidadController extends AbstractActionController
             //Retornamos a la Vista            
             $result = new JsonModel(array('status'=>'ok','descripcion'=>$desc));
             $result->setTerminal(true); 
-        
+            return $result; 
     }
     
     public function combospaso2Action()
@@ -151,17 +152,24 @@ class OportunidadController extends AbstractActionController
            //Tablas
            $usersede  = new UsuarioSedeTable($this->dbAdapter);
            $sedecamp  = new SedeCampanaTable($this->dbAdapter);
+           $campana  = new CampanaTable($this->dbAdapter);
            
            //Consultamos codigo de sedes por usuario       
-           $codesede = $usersede->getSede($lista['USERNAME']);
+           $codesede = $usersede->getSede($lista['user']);
            //Consultamos sede por usuario       
-           $codesede = $usersede->getSede($codesede);
+           $idcampanas = $sedecamp->getIDCampana($codesede[0]['COD_SEDE']);
+           //Consultamos sedes para combo       
+           $combocamp = $campana->getCombo($this->dbAdapter,implode(',',$idcampanas));
+           
+          // $test= implode(',',$idcampanas);
            
            
         
             
-        return new ViewModel();
-        
+            //Retornamos a la Vista            
+            $result = new JsonModel(array('status'=>'ok','campanas'=>$combocamp));
+            $result->setTerminal(true); 
+            return $result; 
         
     }
     

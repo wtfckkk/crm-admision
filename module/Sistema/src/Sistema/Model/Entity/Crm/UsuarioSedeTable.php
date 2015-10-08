@@ -21,7 +21,7 @@ class UsuarioSedeTable extends TableGateway
         return parent::__construct('USUARIO_SEDE', $adapter, $databaseSchema,$selectResultPrototype);
     }
 
-    public function nuevoUsuSede($USERNAME,$COD_SEDE)
+    public function nuevoUsuSede($user,$cod_sede)
     {             
              $array=array
              (
@@ -34,8 +34,7 @@ class UsuarioSedeTable extends TableGateway
                return $id;
     } 
     public function getSede($user)
-    {
-        
+    {        
         $datos = $this->select(array('USERNAME'=>$user));
         $recorre = $datos->toArray();
                       

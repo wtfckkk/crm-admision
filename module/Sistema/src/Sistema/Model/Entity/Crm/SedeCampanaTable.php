@@ -38,8 +38,11 @@ class SedeCampanaTable extends TableGateway
         
         $datos = $this->select(array('COD_SEDE'=>$codesede));
         $recorre = $datos->toArray();
-                      
-        return $recorre;
+         for($i=0;$i<count($recorre);$i++)
+        {
+          $result[$i] = $recorre[$i]['ID_CAMPANA']; 
+        }             
+        return $result;
     }
     
     public function fetchAll()

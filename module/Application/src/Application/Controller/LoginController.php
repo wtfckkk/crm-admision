@@ -72,90 +72,12 @@ class LoginController extends AbstractActionController
         
         
     }
-    
-   /* public function sendAction()
-    {
-        $data = $this->getRequest()->getPost();
-        
-       
-        
-        if($data['usuario']!=null && $data['password']!=null){
-            
-            $this->dbAdapter=$this->getServiceLocator()->get('Zend\Db\Adapter');
-            $usuario = new UsuarioTable($this->dbAdapter);
-            $listaUsuario = $usuario->getUsuario($data['usuario'],strrev($data['password']));
-            if(!empty($listaUsuario)){
-                
-                
-                
-                if($listaUsuario[0]['activo']=='1'){
-                    
-                    $nroSession =(int)$listaUsuario[0]['nro_session'];
-                    $tsession = new SessionTable($this->dbAdapter);
-                    $nroSessionDB = count($tsession->obtenetSesion($listaUsuario[0]['id']));
-                    
-                    //logica de numero de session
-                    if ($nroSession>0 && $nroSessionDB >= $nroSession){
 
-                       return $this->forward()->dispatch('Application\Controller\Login',array('action'=>'index','id'=>4));
-                       //return $this->redirect()->toUrl($this->getRequest()->getBaseUrl().'/application/login/index/4');
-                        
-                    } else {
-                        //cantidad de modulos que posee el usuario                    
-                        $modulo = $usuario->getModulo($this->dbAdapter,$listaUsuario[0]['id_perfil']);
-                        
-                        //iniciar session, creamos el contenedor de session de nombre base
-                            $sid = new Container('base');
-                            //con el offsetSet almacenamos la variable session
-                            $sid->offsetSet('modulo', $modulo);
-                            $sid->offsetSet('usuario', $listaUsuario[0]['usuario']);
-                            $sid->offsetSet('id_usuario', $listaUsuario[0]['id']);
-                            $valores = array('id_usuario'=>$listaUsuario[0]['id'],'ip_cliente'=>$_SERVER['REMOTE_ADDR']);
-                            $sid->offsetSet('idSession',$tsession->crearSesion($valores));
-                            
-                            
-                             if(count($modulo) > 1){
-                                $urlHome = 'application';
-                             }else{
-                                $urlHome = $modulo[0]['url'];
-                             } 
-                             $sid->offsetSet('urlHome',$urlHome);
-                             return $this->redirect()->toUrl($this->getRequest()->getBaseUrl().'/'.$urlHome); 
-                    }
-                     
-                    
-                    
-                    
-                    
-                                        
-                }else{
-                    return $this->forward()->dispatch('Application\Controller\Login',array('action'=>'index','id'=>2));
-                    //return $this->redirect()->toUrl($this->getRequest()->getBaseUrl().'/application/login/index/2');
-                }
-                
-            }else{
-                return $this->forward()->dispatch('Application\Controller\Login',array('action'=>'index','id'=>1));
-               //return $this->redirect()->toUrl($this->getRequest()->getBaseUrl().'/application/login/index/1'); 
-            }
-            
-            
-        }else{
-            return $this->forward()->dispatch('Application\Controller\Login',array('action'=>'index','id'=>1));
-            //return $this->redirect()->toUrl($this->getRequest()->getBaseUrl().'/application/login/index/1');
-        }
-        
-        
-        
-        
-        
-        //return new ViewModel(array('data'=>$idSession));
-    }*/
-    
     public function sendAction()
     {                
         $data = $this->getRequest()->getPost();
                                 $sid = new Container('base');
-                        $sid->offsetSet('usuario', 'operador');
+                        $sid->offsetSet('usuario', 'operadorA');
                         
                         $sid->offsetSet('perfil', $listaperfil[0]['ID_PERFIL']);
                         $sid->offsetSet('desc_perfil', $listaperfil[0]['DESC_PERFIL']); 
