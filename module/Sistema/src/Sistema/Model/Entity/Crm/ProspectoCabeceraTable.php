@@ -11,7 +11,7 @@ class ProspectoCabeceraTable extends TableGateway
 {
     private $RUT;
     private $DV;
-    private $NOMBRES;
+    private $NOMBRE;
     private $AP_PATERNO;
     private $AP_MATERNO;
     private $ESTADO;
@@ -26,12 +26,11 @@ class ProspectoCabeceraTable extends TableGateway
 
     private function cargarCampos($datos=array())
     {    
-        $this->RUT=$datos["RUT"];
-        $this->DV=$datos["DV"];   
-        $this->NOMBRES=$datos["NOMBRES"];
-        $this->AP_PATERNO=$datos["AP_PATERNO"];
-        $this->AP_MATERNO=$datos["AP_MATERNO"];
-        $this->ESTADO=$datos["ESTADO"];
+        $this->RUT=$datos['RUT'];
+        $this->DV=$datos['DV'];   
+        $this->NOMBRE=$datos['NOMBRE'];
+        $this->AP_PATERNO=$datos['AP_PATERNO'];
+        $this->AP_MATERNO=$datos['AP_MATERNO'];        
         
     }
     
@@ -42,7 +41,7 @@ class ProspectoCabeceraTable extends TableGateway
              (
                 'RUT'=>$this->RUT,
                 'DV'=>$this->DV,
-                'NOMBRES'=>$this->NOMBRES,
+                'NOMBRES'=>$this->NOMBRE,
                 'AP_PATERNO'=>$this->AP_PATERNO,
                 'AP_MATERNO'=>$this->AP_MATERNO,
                 'ESTADO'=>'nuevo',
@@ -62,8 +61,7 @@ class ProspectoCabeceraTable extends TableGateway
                 'DV'=>$this->DV,*/
                 'NOMBRES'=>$this->NOMBRES,
                 'AP_PATERNO'=>$this->AP_PATERNO,
-                'AP_MATERNO'=>$this->AP_MATERNO,
-                'ESTADO'=>$this->ESTADO,
+                'AP_MATERNO'=>$this->AP_MATERNO,                
              );               
                $this->update($array,array('RUT'=>$RUT));
     } 

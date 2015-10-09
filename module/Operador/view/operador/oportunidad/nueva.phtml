@@ -38,7 +38,7 @@ $usuario = $sid->offsetGet('usuario');
 												</div>
                                                 <span class="help-block">Sin puntos ni DV</span>
 											</div>
-                                            <span class="input-group-btn btn-right">
+                                            <span id="boton_buscar" class="input-group-btn btn-right ">
 												            <a id="busca_rut" class="btn green-haze" ><i class="fa fa-search"></i></a>
 			                                </span> 
 										</div>
@@ -264,11 +264,13 @@ $('#noleinteresa').click(function(){
                 }); 
             });
 function reset()
-{
+{  
+    toastr.success('Gestione otro rut');  
    $("#nueva_rut").attr('disabled',false);
    $('#div_form').addClass('hide'); 
    $('#div_campana').addClass('hide'); 
    $('#form_prospecto').trigger("reset");
+   
 }
 function mostrarpaso2(user){
 $('#div_campana').removeClass('hide');    
@@ -350,7 +352,8 @@ postData = {'RUT' : $('#nueva_rut').val()}
 });
 $('#actualizarDatos').click(function(){
 bootbox.confirm("<strong>Esta seguro ?", function(result) {
-if (result){
+if (result)
+{   $("#nueva_rut").attr('disabled',false);
     var postData = $("#form_prospecto").serializeArray();    
     $.ajax(
     {
@@ -364,6 +367,7 @@ if (result){
                       //  $("#alertnok").html('<span class="alert alert-danger">'+response.descripcion+'</span>'); 
                     }else{
                         toastr.success(response.descripcion);
+                        $("#nueva_rut").attr('disabled',true);
                         //$("#alertok").html('<span class="alert alert-success">'+response.descripcion+'</span>');    
                     }
         },

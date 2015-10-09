@@ -110,9 +110,10 @@ class OportunidadController extends AbstractActionController
            $pcabecera    = new ProspectoCabeceraTable($this->dbAdapter);
            $pdetalle     = new ProspectoDetalleTable($this->dbAdapter);
            $pcabedetalle = new ProsCabeceraDetalleTable($this->dbAdapter);
-            
+           //Calculamos DV
+           $lista['DV'] =  \Utils::calculaDV($lista['RUT']); 
             //Validamos si existe prospecto       
-            $existe = $pcabecera->getDatoxRut($lista['RUT']);            
+           /* $existe = $pcabecera->getDatoxRut($lista['RUT']);            
             if(count($existe)>0)
                {  
                 //Insertamos en tabla ProspectoDetalle            
@@ -134,10 +135,10 @@ class OportunidadController extends AbstractActionController
                 $pcabedetalle->nuevoProsCabeceraDet($lista['RUT'],$id_detalle);                                       
                  
                 $desc = "Se ha ingresado <strong>nuevo prospecto</strong> correctamente";    
-                }
+                }*/
                         
             //Retornamos a la Vista            
-            $result = new JsonModel(array('status'=>'ok','descripcion'=>$desc));
+            $result = new JsonModel(array('status'=>'ok','descripcion'=>$lista['DV']));
             $result->setTerminal(true); 
             return $result; 
     }

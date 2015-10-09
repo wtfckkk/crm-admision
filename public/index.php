@@ -15,7 +15,9 @@ if (php_sapi_name() === 'cli-server') {
 }
 
 // Setup autoloading
+$root = realpath($_SERVER["DOCUMENT_ROOT"]);
 require 'init_autoloader.php';
+require_once $root.'/crm/module/Sistema/src/MyClasses/Utils.php';
 
 // Run the application!
 Zend\Mvc\Application::init(require 'config/application.config.php')->run();
