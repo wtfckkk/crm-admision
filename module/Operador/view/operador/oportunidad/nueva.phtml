@@ -3,6 +3,7 @@
 use Zend\Session\Container;
 $sid = new Container('base');
 $usuario = $sid->offsetGet('usuario');
+$sede = $sid->offsetGet('sede');
 ?>
 <div class="row">
 					<div class="col-md-12">
@@ -46,7 +47,7 @@ $usuario = $sid->offsetGet('usuario');
 										<div class="form-group form-md-line-input">
 											<label class="col-md-2 control-label" for="nueva_nombre">Nombre</label>
 											<div class="col-md-5">
-												<input type="text" class="form-control" id="nueva_nombre" name="NOMBRE">
+												<input type="text" class="form-control" id="nueva_nombre" name="NOMBRE" required>
 												<div class="form-control-focus">
 												</div>												
 											</div>
@@ -54,7 +55,7 @@ $usuario = $sid->offsetGet('usuario');
 										<div class="form-group form-md-line-input has-success">
 											<label class="col-md-2 control-label" for="nueva_apellidop">Apellido Paterno</label>
 											<div class="col-md-5">
-												<input type="text" class="form-control" id="nueva_apellidop" name="AP_PATERNO">
+												<input type="text" class="form-control" id="nueva_apellidop" name="AP_PATERNO" required>
 												<div class="form-control-focus">
 												</div>
 											</div>
@@ -62,7 +63,7 @@ $usuario = $sid->offsetGet('usuario');
 										<div class="form-group form-md-line-input has-warning">
 											<label class="col-md-2 control-label" for="nueva_apellidom">Apellido Materno</label>
 											<div class="col-md-5">
-												<input type="text" class="form-control" id="nueva_apellidom" name="AP_MATERNO">
+												<input type="text" class="form-control" id="nueva_apellidom" name="AP_MATERNO" required>
 												<div class="form-control-focus">
 												</div>
                                                 
@@ -140,7 +141,7 @@ $usuario = $sid->offsetGet('usuario');
 											</div>
 										</div>									
 									
-                                    <table class="table table-hover">
+                                    <table id="tablaprospecto" class="table table-hover">
 									<thead>
 									<tr>
 										<th>
@@ -176,31 +177,29 @@ $usuario = $sid->offsetGet('usuario');
 									<div class="form-actions">
 										<div class="row">
 											<div class="col-md-offset-2 col-md-10">
-												<a id="noleinteresa" class="btn default"><i class="fa fa-thumbs-down"></i> &nbsp; No le interesa</a>
+												<a id="noleinteresa" onclick="nointeresa()" class="btn default hide"><i class="fa fa-thumbs-down"></i> &nbsp; No le interesa</a>
 												<a id="actualizarDatos" class="btn blue"><i class="fa fa-save"></i> &nbsp; Actualizar Datos</a>
-                                                <a onclick="mostrarpaso2('<?php echo $usuario;?>')" class="btn green">Paso 2 - Asignar Campa&ntilde;a/Sede/Carrera</a>                                                
+                                                <a id="mostrarpaso2" onclick="mostrarpaso2('<?php echo $usuario;?>')" class="btn green hide">Paso 2 - Asignar Campa&ntilde;a/Sede/Carrera</a>                                                
 											</div>
 										</div>
-									</div>
-								</form>
+									</div>								
 						<br />
                         <br />                        
                             </div>
         </div>                            
       <div id="div_campana" class="hide">                            
-              <div class="portlet-body form">
-								<form role="form">
+              <div class="portlet-body form">								
 									<div class="form-body">
                                     <div class="row text-center">
 										<div class="col-md-4 col-md-push-4 form-group form-md-line-input has-info ">
-											<select class="form-control" id="combo_campana">
+											<select class="form-control" id="combo_campana" name="ID_CAMPANA">
 											</select>
 											<label for="combo_campana"><strong>Campa&ntilde;a</strong></label>
 										</div>
 						             </div>
                                      <div class="row text-center">
 										<div class="col-md-4 col-md-push-4 form-group form-md-line-input has-info ">
-											<select class="form-control" id="combo_carrera">
+											<select onchange="buscaJornada()" class="form-control" id="combo_carrera" name="COD_CARRERA">
 
 											</select>
 											<label for="combo_carrera"><strong>Carrera</strong></label>
@@ -208,7 +207,7 @@ $usuario = $sid->offsetGet('usuario');
 						             </div>
                                      <div class="row text-center">
 										<div class="col-md-4 col-md-push-4 form-group form-md-line-input has-info ">
-											<select class="form-control" id="combo_jornada">
+											<select class="form-control" id="combo_jornada" name="JORNADA">
 
 											</select>
 											<label for="combo_jornada"><strong>Jornada</strong></label>
@@ -216,7 +215,7 @@ $usuario = $sid->offsetGet('usuario');
 						             </div>                                                                          
 									<div class="form-actions noborder text-center">
 										<a onclick="reset()" class="btn default">Gestionar Otro RUT</a>
-                                        <button type="button" class="btn blue">Ingresar Oportunidad</button>										
+                                        <a onclick="nuevaoportunidad()" class="btn blue">Ingresar Oportunidad</a>										
 									</div>
 								</form>
 							</div>
@@ -254,66 +253,18 @@ toastr.options = {
 bootbox.setDefaults({
   locale: "es"
 });
-$('#noleinteresa').click(function(){
-                bootbox.confirm("<strong>Estas Seguro ?</strong>", function(result) {
-                    if (result){
-                    toastr.success('Estado de prospecto cambio a <strong>Desinteresado</strong>');
-                    }else{
-                    toastr.info('Estado de prospecto sin cambios'); 
-                    } 
-                }); 
-            });
 function reset()
 {  
     toastr.success('Gestione otro rut');  
+   $("#nueva_bodytable tr").remove();
+   $('#noleinteresa').addClass('hide');
    $("#nueva_rut").attr('disabled',false);
+   $('#mostrarpaso2').addClass('hide');
    $('#div_form').addClass('hide'); 
    $('#div_campana').addClass('hide'); 
    $('#form_prospecto').trigger("reset");
    
 }
-function mostrarpaso2(user){
-$('#div_campana').removeClass('hide');    
-postData = {'user' : user}
-$.ajax(
-    {
-        url : '<?php echo $this->basePath()."/operador/oportunidad/combospaso2"?>',
-        type: "POST",
-        data : postData,
-        dataType : 'json',
-        success : function(response) {         
-        var combo1 = $("#combo_campana");
-        var combo2 = $("#combo_carrera"); 
-        var combo3 = $("#combo_jornada");         
-         // Limpiamos combos
-         combo1.find('option').remove();
-         combo2.find('option').remove();
-         combo3.find('option').remove();
-         //Cagamos combo1
-         $(response.campanas).each(function(i, v){ // indice, valor                    
-         combo1.append('<option value="' + response.campanas[i]['ID_CAMPANA'] + '">' + response.campanas[i]['NOMBRE_CAMPANA'] + '</option>');
-         })
-         combo1.prop('disabled', false);
-        
-         //Cagamos combo2
-         $(response.carreras).each(function(i, v){ // indice, valor                    
-         combo1.append('<option value="' + response.carreras[i]['ID_CAMPANA'] + '">' + response.campanas[i]['NOMBRE_CAMPANA'] + '</option>');
-         })
-         combo1.prop('disabled', false);
-    
-         //Cagamos combo3
-         $(response.jornadas).each(function(i, v){ // indice, valor                    
-         combo1.append('<option value="' + response.jornadas[i]['ID_CAMPANA'] + '">' + response.campanas[i]['NOMBRE_CAMPANA'] + '</option>');
-         })
-         combo1.prop('disabled', false);
-        },
-        error: function(jqXHR, textStatus, errorThrown) 
-        {            
-            alert("Error ! Favor contactar con administrador del sistema"); 
-        }
-    });
-}
-
 $("#busca_rut").click(function(){      
 postData = {'RUT' : $('#nueva_rut').val()}
     $.ajax(
@@ -325,11 +276,12 @@ postData = {'RUT' : $('#nueva_rut').val()}
         success : function(response) {
             $('#div_form').removeClass('hide');
             if(response.existe=="si"){  
+                if(response.prospecto[0]['ESTADO']=="n"){var estado="NO MOLESTAR";}else{var estado="Interesado";}
                 toastr.success('Prospecto encontrado');
                 $("#nueva_nombre").val(response.prospecto[0]['NOMBRES']);
                 $("#nueva_apellidop").val(response.prospecto[0]['AP_PATERNO']);
                 $("#nueva_apellidom").val(response.prospecto[0]['AP_MATERNO']);
-                $("#nueva_estado").val(response.prospecto[0]['ESTADO']);
+                $("#nueva_estado").val(estado);
                 $("#nueva_correo").val(response.detalle[0]['CORREO']);
                 $("#nueva_tel").val(response.detalle[0]['TELEFONO']);
                 $("#nueva_celu").val(response.detalle[0]['CELULAR']);
@@ -337,10 +289,13 @@ postData = {'RUT' : $('#nueva_rut').val()}
                 $("#nueva_establec").val(response.detalle[0]['EMPRESA_ESTABLEC']);
                 $("#nueva_bodytable").html(response.tabla);
                 $("#nueva_rut").attr('disabled',true);
+                $("#mostrarpaso2").removeClass("hide");
+                $("#noleinteresa").removeClass("hide");
             }
             else{
              //   Command: toastr[success]("No existe prospecto");
                 toastr.warning('No existe prospecto, ingresar datos'); 
+                $("#actualizarDatos").html("<i class='fa fa-save'></i> &nbsp; Ingresar nuevo prospecto");
             // $("#alertok").html('<span class="alert alert-success"> '+response.desc+'</span>');                   
             }                                  
         },
@@ -350,6 +305,64 @@ postData = {'RUT' : $('#nueva_rut').val()}
         }
     });
 });
+function mostrarpaso2(user){
+$('#div_campana').removeClass('hide');    
+postData = {'user' : user}
+$.ajax(
+    {
+        url : '<?php echo $this->basePath()."/operador/oportunidad/combospaso2"?>',
+        type: "POST",
+        data : postData,
+        dataType : 'json',
+        success : function(response) {         
+        var combo1 = $("#combo_campana");
+        var combo2 = $("#combo_carrera");                  
+         // Limpiamos combos
+         combo1.find('option').remove();
+         combo2.find('option').remove();         
+         //Cagamos combo1
+         $(response.campanas).each(function(i, v){ // indice, valor                    
+         combo1.append('<option value="' + response.campanas[i]['ID_CAMPANA'] + '">' + response.campanas[i]['NOMBRE_CAMPANA'] + '</option>');
+         })
+         combo1.prop('disabled', false);
+        
+         //Cagamos combo2
+         $(response.carreras).each(function(i, v){ // indice, valor                    
+         combo2.append('<option value="' + response.carreras[i]['COD_CARRERA'] + '">' + response.carreras[i]['NOMBRE_CARRERA'] + '</option>');
+         })
+         combo2.prop('disabled', false);
+        },
+        error: function(jqXHR, textStatus, errorThrown) 
+        {            
+            alert("Error ! Favor contactar con administrador del sistema"); 
+        }
+    });
+}
+function buscaJornada(){    
+    var combo = $("#combo_carrera");
+    postData = {'cod_carrera' : combo.find('option:selected').val(),
+                'sede': '<?php echo $sede;?>'    }    
+    $.ajax(
+    {
+        url : '<?php echo $this->basePath()."/operador/oportunidad/buscajornada"?>',
+        type: "POST",
+        data : postData,
+        dataType : 'json',
+        success : function(response) {              
+        var sel = $("#combo_jornada");
+        sel.empty();
+          $(response.jornada).each(function(i, v){ // indice, valor 
+          if(response.jornada[i]=="V"){var text="Vespertina"}else{var text="Diurna"}                
+         sel.append('<option value="' + response.jornada[i] + '">' + text + '</option>');
+         })
+         sel.prop('disabled', false);                      
+        },
+        error: function(jqXHR, textStatus, errorThrown) 
+        {            
+            alert("error"); 
+        }
+    });
+}
 $('#actualizarDatos').click(function(){
 bootbox.confirm("<strong>Esta seguro ?", function(result) {
 if (result)
@@ -365,9 +378,14 @@ if (result)
                     if(response.status!="ok"){
                         toastr.warning(response.descripcion);
                       //  $("#alertnok").html('<span class="alert alert-danger">'+response.descripcion+'</span>'); 
+                      
                     }else{
                         toastr.success(response.descripcion);
                         $("#nueva_rut").attr('disabled',true);
+                        $("#mostrarpaso2").removeClass("hide");
+                        $("#actualizarDatos").html("<i class='fa fa-save'></i> &nbsp; Actualizar datos");
+                        $("#nueva_bodytable").html(response.tabla);   
+                        $("#noleinteresa").removeClass("hide");                                                                                             
                         //$("#alertok").html('<span class="alert alert-success">'+response.descripcion+'</span>');    
                     }
         },
@@ -382,4 +400,54 @@ if (result)
 } 
 }); 
 });
+function nointeresa(){
+    bootbox.confirm("<strong>Estas Seguro ?</strong>", function(result) {
+        if (result){
+            postData = {'estado' : 'n',
+                        'rut': $("#nueva_rut").val()   } 
+     $.ajax(
+        {
+          url : '<?php echo $this->basePath()."/operador/oportunidad/actualizarestado"?>',
+            type: "POST",
+            data : postData,
+            dataType : 'json',
+            success : function(response) {
+                        $("#nueva_estado").val("NO MOLESTAR")
+                        toastr.success(response.descr);
+        },
+        error: function(jqXHR, textStatus, errorThrown) 
+        {
+            toastr.error('Error ! Favor contactar con administrador del sistema');            
+           // $("#alertnok").html('<span class="alert alert-success">Error en el env&iacute;o de datos al servidor</span>');      
+        }
+    }); 
+           toastr.success('Estado de prospecto cambio a <strong>NO MOLESTAR</strong>');
+        }else{
+           toastr.info('Estado de prospecto sin cambios'); 
+        } 
+});     
+}
+function nuevaoportunidad(){
+    $("#nueva_rut").attr('disabled',false);
+    $("#nueva_estado").attr('disabled',false);
+    var postData = $("#form_prospecto").serializeArray();    
+       $.ajax(
+        {
+          url : '<?php echo $this->basePath()."/operador/oportunidad/nuevaoportunidad"?>',
+            type: "POST",
+            data : postData,
+            dataType : 'json',
+            success : function(response) {                        
+                         $("#nueva_rut").attr('disabled',true);
+                         $("#nueva_estado").attr('disabled',true);
+                        toastr.success(response.descr);
+        },
+        error: function(jqXHR, textStatus, errorThrown) 
+        {
+            toastr.error('Error ! Favor contactar con administrador del sistema');            
+           // $("#alertnok").html('<span class="alert alert-success">Error en el env&iacute;o de datos al servidor</span>');      
+        }
+    });   
+    
+}
 </script>                            

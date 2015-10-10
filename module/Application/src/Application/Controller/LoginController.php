@@ -78,6 +78,7 @@ class LoginController extends AbstractActionController
         $data = $this->getRequest()->getPost();
                                 $sid = new Container('base');
                         $sid->offsetSet('usuario', 'operadorA');
+                        $sid->offsetSet('sede', 'sede1');
                         
                         $sid->offsetSet('perfil', $listaperfil[0]['ID_PERFIL']);
                         $sid->offsetSet('desc_perfil', $listaperfil[0]['DESC_PERFIL']); 

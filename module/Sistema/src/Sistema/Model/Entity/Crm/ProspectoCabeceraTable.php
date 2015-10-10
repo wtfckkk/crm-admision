@@ -65,6 +65,12 @@ class ProspectoCabeceraTable extends TableGateway
              );               
                $this->update($array,array('RUT'=>$RUT));
     } 
+    
+    public function editarEstado($estado,$rut)
+    {                            
+               $this->update(array('ESTADO'=>$estado),array('RUT'=>$rut));
+    } 
+    
     public function getDatoxRut($rut)
     {
         

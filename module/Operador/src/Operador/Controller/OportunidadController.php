@@ -13,12 +13,18 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\View\Model\JsonModel;
 
+use Zend\Session\Container;
+
 use Sistema\Model\Entity\Crm\ProspectoCabeceraTable;
 use Sistema\Model\Entity\Crm\ProspectoDetalleTable;
 use Sistema\Model\Entity\Crm\ProsCabeceraDetalleTable;
 use Sistema\Model\Entity\Crm\UsuarioSedeTable;
 use Sistema\Model\Entity\Crm\SedeCampanaTable;
 use Sistema\Model\Entity\Crm\CampanaTable;
+use Sistema\Model\Entity\Crm\CarrerasTable;
+use Sistema\Model\Entity\Crm\SedeCarreraTable;
+use Sistema\Model\Entity\Crm\OportunidadTable;
+
 
 
 class OportunidadController extends AbstractActionController
@@ -32,7 +38,7 @@ class OportunidadController extends AbstractActionController
         
     }
     
-        public function nuevaAction()
+    public function nuevaAction()
     {
         
          $this->layout('layout/operador');    
@@ -109,11 +115,11 @@ class OportunidadController extends AbstractActionController
            //Tablas
            $pcabecera    = new ProspectoCabeceraTable($this->dbAdapter);
            $pdetalle     = new ProspectoDetalleTable($this->dbAdapter);
-           $pcabedetalle = new ProsCabeceraDetalleTable($this->dbAdapter);
+           $pcabedetalle = new ProsCabeceraDetalleTable($this->dbAdapter);           
            //Calculamos DV
            $lista['DV'] =  \Utils::calculaDV($lista['RUT']); 
             //Validamos si existe prospecto       
-           /* $existe = $pcabecera->getDatoxRut($lista['RUT']);            
+            $existe = $pcabecera->getDatoxRut($lista['RUT']);            
             if(count($existe)>0)
                {  
                 //Insertamos en tabla ProspectoDetalle            
@@ -121,7 +127,8 @@ class OportunidadController extends AbstractActionController
                 
                 //Insertamos en tabla ProspectoDetalle            
                 $pcabedetalle->nuevoProsCabeceraDet($lista['RUT'],$id_detalle);                                
-            
+                
+                
                 //Retornamos a la Vista
                 $desc = "Se <strong>actualizaron datos de prospecto</strong> correctamente";
                 }
@@ -135,10 +142,26 @@ class OportunidadController extends AbstractActionController
                 $pcabedetalle->nuevoProsCabeceraDet($lista['RUT'],$id_detalle);                                       
                  
                 $desc = "Se ha ingresado <strong>nuevo prospecto</strong> correctamente";    
-                }*/
+                }
+            //Buscamos detalle de Prospecto            
+            $cab_detalle   = $pcabedetalle->getIdDetalle($lista['RUT']);
+            //Cargamos data para grilla
+            $html = "";
+                for ($i=0;$i<count($cab_detalle);$i++){
+	               $detalletable =  $pdetalle->getDetalle($cab_detalle[$i]['ID_DETALLE']);  
+                        for ($j=0;$j<count($detalletable);$j++){
+                            $html .= '<tr>';
+                            foreach ($detalletable[$j] as $key => $valor) {
+                                $html = $html.'<td>'.$valor.'</td>';                                   
+                                } 
+                            $html .= '</tr>';       
+                        }
+                }
+                $html .= "</tr>";
+                                
                         
             //Retornamos a la Vista            
-            $result = new JsonModel(array('status'=>'ok','descripcion'=>$lista['DV']));
+            $result = new JsonModel(array('status'=>'ok','descripcion'=>$desc,'tabla'=>$html));
             $result->setTerminal(true); 
             return $result; 
     }
@@ -153,14 +176,20 @@ class OportunidadController extends AbstractActionController
            //Tablas
            $usersede  = new UsuarioSedeTable($this->dbAdapter);
            $sedecamp  = new SedeCampanaTable($this->dbAdapter);
-           $campana  = new CampanaTable($this->dbAdapter);
+           $campana   = new CampanaTable($this->dbAdapter);
+           $sedecarr  = new SedeCarreraTable($this->dbAdapter);
+           $carrera   = new CarrerasTable($this->dbAdapter);
            
            //Consultamos codigo de sedes por usuario       
            $codesede = $usersede->getSede($lista['user']);
-           //Consultamos sede por usuario       
-           $idcampanas = $sedecamp->getIDCampana($codesede[0]['COD_SEDE']);
-           //Consultamos sedes para combo       
+           //Consultamos Campañas por usuario para combo
+           $idcampanas = $sedecamp->getIDCampana($codesede[0]['COD_SEDE']);           
            $combocamp = $campana->getCombo($this->dbAdapter,implode(',',$idcampanas));
+           //Consultamos Carreras por sede para combo
+           $idcarreras = $sedecarr->getIDCarrera($codesede[0]['COD_SEDE']);            
+           $in ="'".implode("','", $idcarreras)."'";
+           $combocarr = $carrera->getCombo($this->dbAdapter,$in);
+           
            
           // $test= implode(',',$idcampanas);
            
@@ -168,13 +197,75 @@ class OportunidadController extends AbstractActionController
         
             
             //Retornamos a la Vista            
-            $result = new JsonModel(array('status'=>'ok','campanas'=>$combocamp));
+            $result = new JsonModel(array('status'=>'ok','campanas'=>$combocamp,'carreras'=>$combocarr));
             $result->setTerminal(true); 
             return $result; 
         
     }
     
-        public function rut2Action()
+    public function buscajornadaAction()
+    {
+        //Obtenemos datos POST
+        $lista = $this->request->getPost();
+        //Conectamos con BBDD
+        $this->dbAdapter=$this->getServiceLocator()->get('Zend/Db/Adapter');            
+        //Tabla
+        $sedecarr  = new SedeCarreraTable($this->dbAdapter);
+        //Consultamos jornadas por Carrera
+        $jornada = $sedecarr->getJornada($lista['cod_carrera'],$lista['sede']);
+                                    
+        //Retornamos a la Vista            
+            $result = new JsonModel(array('status'=>'ok','jornada'=>$jornada));
+            $result->setTerminal(true); 
+            return $result;
+        
+        
+    }
+    public function actualizarestadoAction()
+    {
+        //Obtenemos datos POST
+        $lista = $this->request->getPost();
+        //Conectamos con BBDD
+        $this->dbAdapter=$this->getServiceLocator()->get('Zend/Db/Adapter');            
+        //Tablas
+        $pcabecera = new ProspectoCabeceraTable($this->dbAdapter);
+        //Consultamos jornadas por Carrera
+        $pcabecera->editarEstado($lista['estado'],$lista['rut']);
+                                    
+        //Retornamos a la Vista            
+            $result = new JsonModel(array('descr'=>'Cambio de estado correcto','estado'=>$lista['estado']));
+            $result->setTerminal(true); 
+            return $result;
+        
+        
+    }
+    
+    public function nuevaoportunidadAction()
+    {
+        //Obtenemos datos POST
+        $lista = $this->request->getPost();
+        //Conectamos con BBDD
+        $this->dbAdapter=$this->getServiceLocator()->get('Zend/Db/Adapter');            
+        //Tablas        
+        $sid = new Container('base');
+        $lista['COD_SEDE'] = $sid->offsetGet('sede');
+        $lista['USERNAME'] = $sid->offsetGet('usuario');
+        $oportunidad = new OportunidadTable($this->dbAdapter);  
+        $id_oportunidad = $oportunidad->nuevaOportunidad($lista);
+        $nueva_oportunidad = $oportunidad->getOportunidad($id_oportunidad);             
+                                        
+        //Retornamos a la Vista            
+        $result = new JsonModel(array('descr'=>'ok','nueva'=>$nueva_oportunidad));
+        $result->setTerminal(true); 
+        return $result;
+        
+        
+    }
+    
+    
+    
+    
+    public function rut2Action()
     {
         
          $this->layout('layout/operador');    

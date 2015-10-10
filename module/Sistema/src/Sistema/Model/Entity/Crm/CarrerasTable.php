@@ -20,24 +20,24 @@ class CarrerasTable extends TableGateway
     }
 
     
-    public function getDatos2()
+    public function getCarrerasID($id)
     {
         
-        $datos = $this->select();
+        $datos = $this->select(array('ID'=>$id));
         $recorre = $datos->toArray();
                       
         return $recorre;
     }
     
-    public function fetchAll()
-{
-    $resultSet = $this->select(function(Select $select){
-        $select->quantifier('TOP 15 ')
-            ->order('id ASC');
-    });
-    return $resultSet;
-}
-    
+    public function getCombo(Adapter $dbAdapter,$data)
+    {
+       $this->dbAdapter = $dbAdapter;
+       $query = "select COD_CARRERA, NOMBRE_CARRERA from CARRERAS WHERE COD_CARRERA IN($data)";
+                
+        $result=$this->dbAdapter->query($query,Adapter::QUERY_MODE_EXECUTE);
+        
+        return $result->toArray();
+    }
     public function getDatos(Adapter $dbAdapter)
     {
        $this->dbAdapter = $dbAdapter;
