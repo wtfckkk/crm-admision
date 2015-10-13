@@ -71,7 +71,7 @@ class ProspectoDetalleTable extends TableGateway
              );
                $this->update($array,array('id'=>$id));
     } 
-    public function getDetalle($id_detalle)
+    public function getDetallexID($id_detalle)
     {
         $datos = $this->select(array('ID_DETALLE'=>$id_detalle));
         $recorre = $datos->toArray();
@@ -88,10 +88,11 @@ class ProspectoDetalleTable extends TableGateway
     return $resultSet;
 }
     
-    public function getDatos(Adapter $dbAdapter)
+    public function getDetallexRUT(Adapter $dbAdapter,$rut)
     {
-       $this->dbAdapter = $dbAdapter;
-       $query = "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='dbo' AND TABLE_NAME='CARRERAS'";
+        $this->dbAdapter = $dbAdapter;
+        $query = "select * from PROSPECTO_DETALLE where ID_DETALLE = (select max(ID_DETALLE) from PROSP_CABECERA_DETALLE 
+                 where rut = '$rut')";
                 
         $result=$this->dbAdapter->query($query,Adapter::QUERY_MODE_EXECUTE);
         return $result->toArray();

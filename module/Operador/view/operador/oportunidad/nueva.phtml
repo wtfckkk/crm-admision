@@ -200,6 +200,7 @@ $sede = $sid->offsetGet('sede');
                                      <div class="row text-center">
 										<div class="col-md-4 col-md-push-4 form-group form-md-line-input has-info ">
 											<select onchange="buscaJornada()" class="form-control" id="combo_carrera" name="COD_CARRERA">
+                                            
 
 											</select>
 											<label for="combo_carrera"><strong>Carrera</strong></label>
@@ -276,12 +277,12 @@ postData = {'RUT' : $('#nueva_rut').val()}
         success : function(response) {
             $('#div_form').removeClass('hide');
             if(response.existe=="si"){  
-                if(response.prospecto[0]['ESTADO']=="n"){var estado="NO MOLESTAR";}else{var estado="Interesado";}
+              //  if(response.prospecto[0]['ESTADO']=="n"){var estado="NO MOLESTAR";}else{var estado="Interesado";}
                 toastr.success('Prospecto encontrado');
                 $("#nueva_nombre").val(response.prospecto[0]['NOMBRES']);
                 $("#nueva_apellidop").val(response.prospecto[0]['AP_PATERNO']);
                 $("#nueva_apellidom").val(response.prospecto[0]['AP_MATERNO']);
-                $("#nueva_estado").val(estado);
+                $("#nueva_estado").val(response.prospecto[0]['ESTADO']);
                 $("#nueva_correo").val(response.detalle[0]['CORREO']);
                 $("#nueva_tel").val(response.detalle[0]['TELEFONO']);
                 $("#nueva_celu").val(response.detalle[0]['CELULAR']);
@@ -295,6 +296,7 @@ postData = {'RUT' : $('#nueva_rut').val()}
             else{
              //   Command: toastr[success]("No existe prospecto");
                 toastr.warning('No existe prospecto, ingresar datos'); 
+                $("#nueva_estado").val("Nuevo")
                 $("#actualizarDatos").html("<i class='fa fa-save'></i> &nbsp; Ingresar nuevo prospecto");
             // $("#alertok").html('<span class="alert alert-success"> '+response.desc+'</span>');                   
             }                                  
@@ -331,6 +333,7 @@ $.ajax(
          combo2.append('<option value="' + response.carreras[i]['COD_CARRERA'] + '">' + response.carreras[i]['NOMBRE_CARRERA'] + '</option>');
          })
          combo2.prop('disabled', false);
+         buscaJornada()
         },
         error: function(jqXHR, textStatus, errorThrown) 
         {            
@@ -381,6 +384,7 @@ if (result)
                       
                     }else{
                         toastr.success(response.descripcion);
+                        if($("#nueva_estado").val()=="Nuevo"){$("#nueva_estado").val("Cargado")}
                         $("#nueva_rut").attr('disabled',true);
                         $("#mostrarpaso2").removeClass("hide");
                         $("#actualizarDatos").html("<i class='fa fa-save'></i> &nbsp; Actualizar datos");
@@ -403,7 +407,7 @@ if (result)
 function nointeresa(){
     bootbox.confirm("<strong>Estas Seguro ?</strong>", function(result) {
         if (result){
-            postData = {'estado' : 'n',
+            postData = {'estado' : 'No le interesa',
                         'rut': $("#nueva_rut").val()   } 
      $.ajax(
         {
@@ -412,8 +416,8 @@ function nointeresa(){
             data : postData,
             dataType : 'json',
             success : function(response) {
-                        $("#nueva_estado").val("NO MOLESTAR")
-                        toastr.success(response.descr);
+                        $("#nueva_estado").val("No le interesa")
+                        toastr.success('Estado de prospecto cambio a <strong>No le interesa</strong>');
         },
         error: function(jqXHR, textStatus, errorThrown) 
         {
@@ -421,7 +425,7 @@ function nointeresa(){
            // $("#alertnok").html('<span class="alert alert-success">Error en el env&iacute;o de datos al servidor</span>');      
         }
     }); 
-           toastr.success('Estado de prospecto cambio a <strong>NO MOLESTAR</strong>');
+           
         }else{
            toastr.info('Estado de prospecto sin cambios'); 
         } 

@@ -1,9 +1,9 @@
-<div class="row static-info">
+<div class="row static-info"> 
 																<div class="col-md-5 name">
 																	 RUT:
 																</div>
 																<div class="col-md-7 value">
-																	 16.532.556-7
+																	 <?php echo $prospecto[0]['RUT']?>
 																</div>
 															</div>
 															<div class="row static-info">
@@ -11,7 +11,7 @@
 																	 Nombre:
 																</div>
 																<div class="col-md-7 value">
-																	 Tom&aacute;s Cornejo C.
+																	 <?php echo $prospecto[0]['NOMBRES']?>
 																</div>
 															</div>
 															<div class="row static-info">
@@ -19,7 +19,7 @@
 																	 Correo:
 																</div>
 																<div class="col-md-7 value">
-														             tcornejo01@gmail.com 
+														             <?php echo $prdetalle[0]['CORREO']?>
 																</div>
 															</div>
 															<div class="row static-info">
@@ -27,7 +27,7 @@
 																	 Tel&eacute;fono:
 																</div>
 																<div class="col-md-7 value">
-																	 26889544 
+																	 <?php echo $prdetalle[0]['TELEFONO']?> 
 																</div>
 															</div>
                                                             <div class="row static-info">
@@ -35,7 +35,7 @@
 																	 Celular:
 																</div>
 																<div class="col-md-7 value">
-																	 54103054 
+																	 <?php echo $prdetalle[0]['CELULAR']?> 
 																</div>
 															</div>
                                                             <div class="row static-info">
@@ -43,7 +43,7 @@
 																	 Emp/Establecimiento:
 																</div>
 																<div class="col-md-7 value">
-																	 Particular 
+																	 <?php echo $prdetalle[0]['EMPRESA_ESTABLEC']?> 
 																</div>
 															</div>	
                                                             <br />
@@ -52,6 +52,9 @@
                 <table class="table table-hover">
 				    	<thead>
 									<tr>
+                                        <th>
+											 #
+										</th>
 										<th>
 											 Correo
 										</th>
@@ -68,37 +71,15 @@
 										     Direcci&oacute;n 
 										</th>
                                         <th>
-										     Fecha 
+										      Usuario
 										</th>
                                         <th>
-										     Usuario 
+										     Fecha 
 										</th>
 									</tr>
 							</thead>
 							<tbody>
-                                       <tr>
-										<td>
-											 tcornejo01@gmail.com
-										</td>
-										<td>
-											54111322
-										</td>
-										<td>
-											 99332112
-										</td>
-                                        <td>
-											 Tarapaca 876
-										</td>
-										<td>
-											 Particular
-										</td>
-                                        <td>
-					                        27-09-2015
-										</td>
-                                        <td>
-										    operadorA
-										</td>
-									</tr>        <!-- INFO TABLA AQUI !!-->
+                                <?php echo $html?>    
 					    	</tbody>
 				</table>                                
                                                     <div class="row static-info">
@@ -106,7 +87,7 @@
 																	 Campa&ntilde;a:
 																</div>
 																<div class="col-md-7 value">
-																	 Campa&ntilde;a Liceo XY
+																	 <?php echo $opor_detalle[0]['NOMBRE_CAMPANA'];?> 
 																</div>
 															</div>
 															<div class="row static-info">
@@ -114,7 +95,7 @@
 																	 Sede:
 																</div>
 																<div class="col-md-7 value">
-																	 Santiago
+																	 <?php echo $opor_detalle[0]['NOMBRE_SEDE']?>
 																</div>
 															</div>
 															<div class="row static-info">
@@ -122,7 +103,7 @@
 																	 Carrera:
 																</div>
 																<div class="col-md-7 value">
-														             Administraci&oacute;n Industrial 
+														             <?php echo $opor_detalle[0]['NOMBRE_CARRERA']?>
 																</div>
 															</div>
 															<div class="row static-info">
@@ -130,64 +111,101 @@
 																	 Jornada:
 																</div>
 																<div class="col-md-7 value">
-																	 Diurna 
+																	 <?php if($this->$opor_detalle[0]['JORNADA']=="V"){echo "Vespertina";}else{echo "Diurna";}?> 
 																</div>
 															</div>
                                                             <div class="row static-info">
 																<div class="col-md-5 name">
-																	 &uacute;ltimo Estado:
+																	 &Uacute;ltimo Estado:
 																</div>
 																<div class="col-md-7 value">
-																	 Abierta 
+																	  <?php echo $opor_detalle[0]['ESTADO']?>
 																</div>
 															</div>
                                                             <div class="row static-info">
 																<div class="col-md-5 name">
-																	 &uacute;ltima Observaci&oacute;n:
+																	 &Uacute;ltima Observaci&oacute;n:
 																</div>
 																<div class="col-md-7 value">
-																	 Particular 
+																	 <?php echo $opor_detalle[0]['FEEDBACK']?> 
 																</div>
 															</div>
                 
                                              <br />
-                                                  
+                <form id="form_feedback" role="form">          
                                         <div class="form-group form-md-line-input form-md-floating-label">
-											<textarea  class="form-control" rows="3" autofocus></textarea>
+											<input type="hidden" name="ID_OPORTUNIDAD" value="<?php echo $opor_detalle[0]['ID_OPORTUNIDAD']?>"/>
+                                            <textarea name="OBSERVACION" class="form-control" rows="3" autofocus></textarea>
 											<label for="form_control_1">Nueva Observaci&oacute;n</label>
 										</div>
                                         
-          <div class="portlet-body form">
-								<form role="form">
+          <div class="portlet-body form">								
 									<div class="form-body">
                                     <div class="row text-center">
 										<div class="col-md-4 col-md-push-4 form-group form-md-line-input has-info ">
-											<select class="form-control" id="form_control_1">
-												<option value=""></option>
-												<option value="">Option 1</option>
-												<option value="">Option 2</option>
-												<option value="">Option 3</option>
-												<option value="">Option 4</option>
+											<select class="form-control" id="combo_estado" name="ESTADO_GRABADO">
+												<option value="0">Seleecione un estado</option>
+												<option value="Nueva">Nueva</option>
+												<option value="Gestionar">Gestionar</option>
+												<option value="Gestionada">Gestionada</option>
+												<option value="Cerrada">Cerrada</option>
 											</select>
-											<label for="form_control_1"><strong>Cambiar estado a:</strong></label>
+											<label for="combo_estado"><strong>Cambiar estado a:</strong></label>
 										</div>
-						             </div>
-                                     <div class="row text-center">
+						             </div>                                    
+                                    <div class="row text-center">
 										<div class="col-md-4 col-md-push-4 form-group form-md-line-input has-info ">
-											<select class="form-control" id="form_control_1">
-												<option value=""></option>
-												<option value="">Option 1</option>
-												<option value="">Option 2</option>
-												<option value="">Option 3</option>
-												<option value="">Option 4</option>
+											<select class="form-control" id="combo_feedback" name="ID_TIPO">
+                                            <option value="0">Seleccione un tipo de feedback</option>
+                                            <?php for ($i=0;$i<count($combofeedback);$i++){                                                      
+                                                      echo "<option value=".$combofeedback[$i]['ID_TIPO'].">".$combofeedback[$i]['DESC_TIPO']."</option>\n";
+                                               }        
+                                                ?>
+	
+ 
 											</select>
-											<label for="form_control_1"><strong>Feedback</strong></label>
+											<label for="combo_feedback"><strong>Feedback</strong></label>
 										</div>
-						             </div>                                                                                                              
+						             </div>                                                                                                                                                   
 								</form>
 							</div>
                 </div>
                 <div class="portlet-body form text-right">
                   <button type="button" data-dismiss="modal" class="btn">Close</button>
-               <button type="button" class="btn blue">Guardar Feedback</button>        
-               </div>        
+               <a onclick="guardafeedback()"  class="btn blue">Guardar Feedback</a>        
+               </div>   
+
+<script>
+toastr.options = {
+  "positionClass": "toast-top-center",
+}
+function guardafeedback(){
+    var combo1 = $("#combo_estado").val();
+    var combo2 = $("#combo_feedback").val();
+if(combo1<1 || combo2<1){
+    toastr.warning("Debe seleccionar un estado y tipo de feedback"); 
+}else{ 
+    var postData = $("#form_feedback").serializeArray();
+    $.ajax(
+        {
+            url : '<?php echo $this->basePath()."/operador/oportunidad/nuevofeedback"?>',
+            type: "POST",
+            data : postData,        
+		  success : function(response) {
+		      if(response.status =="ok"){
+                $('#modal_detalle').modal('hide');   
+                toastr.success('Feedback guardado exitosamente');
+                window.setTimeout(function() {
+                window.location.reload(true);
+                }, 1000)
+                                
+                }     
+	   	},
+         error: function(jqXHR, textStatus, errorThrown) 
+            {            
+                toastr.error('Error! Favor contactar con administrador del sistema'); 
+            }
+        });
+}    
+}
+</script>            

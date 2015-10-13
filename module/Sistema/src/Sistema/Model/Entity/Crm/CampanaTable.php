@@ -93,6 +93,18 @@ class CampanaTable extends TableGateway
         
         return $result->toArray();
     }
+    public function getComboSede(Adapter $dbAdapter,$sede)
+    {
+       $this->dbAdapter = $dbAdapter;
+       $query = "select CA.ID_CAMPANA, CA.NOMBRE_CAMPANA from SEDE_CAMPANA SC, CAMPANAS CA
+                WHERE CA.ID_CAMPANA = SC.ID_CAMPANA
+                AND   CA.ACTIVO = 's'
+                and SC.COD_SEDE = '$sede'";
+                
+        $result=$this->dbAdapter->query($query,Adapter::QUERY_MODE_EXECUTE);
+        
+        return $result->toArray();
+    }
     
     public function getDetalle($id_detalle)
     {

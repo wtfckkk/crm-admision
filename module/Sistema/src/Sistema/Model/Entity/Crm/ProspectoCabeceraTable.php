@@ -44,7 +44,7 @@ class ProspectoCabeceraTable extends TableGateway
                 'NOMBRES'=>$this->NOMBRE,
                 'AP_PATERNO'=>$this->AP_PATERNO,
                 'AP_MATERNO'=>$this->AP_MATERNO,
-                'ESTADO'=>'nuevo',
+                'ESTADO'=>'Cargado',
              );
                $this->insert($array);
                $id = $this->lastInsertValue;

@@ -13,7 +13,7 @@
 								</div>
 							</div>
 							<div class="portlet-body form">                            
-								<form id="form_prospecto" action="<?php echo $this->basePath()?>/oportunidad/actualizardatos" role="form" class="form-horizontal">
+								<form id="form_campana" method="post" action="<?php echo $this->basePath()?>/operador/oportunidad/campana2" role="form" class="form-horizontal">
 									<div class="form-body">
                                                                         
                                     <div id="alertok"></div>
@@ -22,27 +22,56 @@
 										<div class="form-group form-md-line-input">
 											<div class="row text-center">
 										<div class="col-md-4 col-md-push-4 form-group form-md-line-input has-info ">
-											<select class="form-control" id="form_control_1" style="margin-top: 20px;">
-												<option value=""></option>
-												<option value="">Campaña liceo industrial XY</option>
-												<option value="">Option 2</option>
-												<option value="">Option 3</option>
-												<option value="">Option 4</option>
+											<select class="form-control" id="combo_campana" name="ID_CAMPANA" style="margin-top: 20px;">
+												 <option value="0">Seleccione una Campa&ntilde;a</option>
+                                            <?php for ($i=0;$i<count($combo_campana);$i++){                                                      
+                                                      echo "<option value=".$combo_campana[$i]['ID_CAMPANA'].">".$combo_campana[$i]['NOMBRE_CAMPANA']."</option>\n";
+                                               }        
+                                                ?>
 											</select>
 											<label for="form_control_1" >Seleccione Campa&ntilde;a</label>
 										</div>
                                         
                                         </div>
                                         <span class="input-group-btn btn-right text-center">
-                                            <a href="<?php echo $this->basePath()?>/operador/oportunidad/campana2" class="btn green-haze" type="button">
+                                            <a id="busca_campana" class="btn green-haze">
                                                     <i class="fa fa-search"></i> &nbsp; Buscar oportunidades abiertas
                                             </a>
 			                                </span> 
 										</div>
                                     </div>
+                                  </form>  
                                 </div>
                             </div>
                         </div>
                    </div>
 
-                            
+<script>
+$("#busca_campana").click(function(){
+    if($("#combo_campana").val()<1) {
+        toastr.warning('Debe seleccionar una campaña');    
+    }else{   
+        $.ajax(
+            {
+            url : '<?php echo $this->basePath()."/operador/oportunidad/buscaopcampana"?>',
+            type: "POST",
+            data : {'ID_CAMPANA' : $("#combo_campana").val()},
+            dataType : 'json',
+            success : function(response) {                 
+              if(response.flag!="true")
+              {
+                toastr.warning(response.descr);  
+              }else{
+                $("#form_campana").submit(); 
+                toastr.success(response.descr); 
+              }
+            },
+            error: function(jqXHR, textStatus, errorThrown) 
+            {   
+                toastr.error('Error! Favor contactar con administrador del sistema');                            
+            }
+        }); 
+    }  
+});
+
+</script>                            

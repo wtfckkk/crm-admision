@@ -24,7 +24,8 @@ use Sistema\Model\Entity\Crm\CampanaTable;
 use Sistema\Model\Entity\Crm\CarrerasTable;
 use Sistema\Model\Entity\Crm\SedeCarreraTable;
 use Sistema\Model\Entity\Crm\OportunidadTable;
-
+use Sistema\Model\Entity\Crm\TipoFeedbackTable;
+use Sistema\Model\Entity\Crm\FeedbackTable;
 
 
 class OportunidadController extends AbstractActionController
@@ -67,7 +68,7 @@ class OportunidadController extends AbstractActionController
                 //Cargamos data para grilla
                 $html = "";
                 for ($i=0;$i<count($cab_detalle);$i++){
-	               $detalletable =  $pdetalle->getDetalle($cab_detalle[$i]['ID_DETALLE']);  
+	               $detalletable =  $pdetalle->getDetallexID($cab_detalle[$i]['ID_DETALLE']);  
                         for ($j=0;$j<count($detalletable);$j++){
                             $html .= '<tr>';
                             foreach ($detalletable[$j] as $key => $valor) {
@@ -82,7 +83,7 @@ class OportunidadController extends AbstractActionController
                     $cab_detalle[0] = max($cab_detalle);
                 }
                         
-            $detalle = $pdetalle->getDetalle($cab_detalle[0]['ID_DETALLE']);
+            $detalle = $pdetalle->getDetallexID($cab_detalle[0]['ID_DETALLE']);
             
             //Retornamos valores del prospecto            
             $result = new JsonModel(array('existe'=>'si','prospecto'=>$prospecto,'detalle'=>$detalle,'tabla'=>$html));
@@ -141,7 +142,7 @@ class OportunidadController extends AbstractActionController
             //Cargamos data para grilla
             $html = "";
                 for ($i=0;$i<count($cab_detalle);$i++){
-	               $detalletable =  $pdetalle->getDetalle($cab_detalle[$i]['ID_DETALLE']);  
+	               $detalletable =  $pdetalle->getDetallexID($cab_detalle[$i]['ID_DETALLE']);  
                         for ($j=0;$j<count($detalletable);$j++){
                             $html .= '<tr>';
                             foreach ($detalletable[$j] as $key => $valor) {
@@ -226,7 +227,7 @@ class OportunidadController extends AbstractActionController
         $pcabecera->editarEstado($lista['estado'],$lista['rut']);
                                     
         //Retornamos a la Vista            
-            $result = new JsonModel(array('descr'=>'Cambio de estado correcto','estado'=>$lista['estado']));
+            $result = new JsonModel(array('estado'=>$lista['estado']));
             $result->setTerminal(true); 
             return $result;
         
@@ -248,8 +249,9 @@ class OportunidadController extends AbstractActionController
         $id_oportunidad = $oportunidad->nuevaOportunidad($lista);
         $nueva_oportunidad = $oportunidad->getOportunidad($id_oportunidad);             
                                         
-        //Retornamos a la Vista            
-        $result = new JsonModel(array('descr'=>'ok','nueva'=>$nueva_oportunidad));
+        //Retornamos a la Vista
+        $descr = "Se ha ingresado nueva oportunidad para rut ".$lista['RUT'];            
+        $result = new JsonModel(array('status'=>'ok','descr'=>$descr));
         $result->setTerminal(true); 
         return $result;
         
@@ -309,42 +311,194 @@ class OportunidadController extends AbstractActionController
         //Conectamos con BBDD
         $this->dbAdapter=$this->getServiceLocator()->get('Zend/Db/Adapter');
         //Tablas
-        $pcabecera  = new ProspectoCabeceraTable($this->dbAdapter);    
+        $pcabecera  = new ProspectoCabeceraTable($this->dbAdapter);
+        $oportunid  = new OportunidadTable($this->dbAdapter);
+        //Obtenemos datos de sesion        
+        $sid = new Container('base');
+        $lista['COD_SEDE'] = $sid->offsetGet('sede');    
+        //Consultamos datos de Prospecto         
         $prospecto = $pcabecera->getDatoxRut($lista['RUT']); 
+        //OBtenemos oportunidades para prospecto
+        $oportunidad = $oportunid->getOporRutSede($this->dbAdapter,$lista['RUT'],$lista['COD_SEDE']);
+        //Retornamos a la vista
+        $this->layout('layout/operador');  
+        $result =  new ViewModel(array('prospecto'=>$prospecto,'oportunidad'=>$oportunidad));        
+        return $result;
         
-        $result =  new ViewModel();
+        
+    }
+    
+    
+    public function rut3Action()
+    {
+        //Obtenemos datos POST
+        $lista = $this->request->getPost();
+        //Conectamos con BBDD
+        $this->dbAdapter=$this->getServiceLocator()->get('Zend/Db/Adapter');
+        //Tablas
+        $pcabecera    = new ProspectoCabeceraTable($this->dbAdapter);
+        $pdetalle     = new ProspectoDetalleTable($this->dbAdapter);
+        $oportunid    = new OportunidadTable($this->dbAdapter);
+        $pcabedetalle = new ProsCabeceraDetalleTable($this->dbAdapter);
+        $tipofeed     = new TipoFeedbackTable($this->dbAdapter);
+        //Obtenemos datos de sesion        
+        $sid = new Container('base');
+        $lista['COD_SEDE'] = $sid->offsetGet('sede');  
+        //Consultamos datos de Prospecto         
+        $prospecto = $pcabecera->getDatoxRut($lista['rut']); 
+        //Consultamos detalle de Prospecto         
+        $prdetalle   = $pdetalle->getDetallexRUT($this->dbAdapter,$lista['rut']);
+        $cab_detalle = $pcabedetalle->getIdDetalle($lista['rut']);
+                //Cargamos data para grilla
+                $html = "";
+                for ($i=0;$i<count($cab_detalle);$i++){
+	               $detalletable =  $pdetalle->getDetallexID($cab_detalle[$i]['ID_DETALLE']);  
+                        for ($j=0;$j<count($detalletable);$j++){
+                            $html .= '<tr>';
+                            foreach ($detalletable[$j] as $key => $valor) {
+                                $html = $html.'<td>'.$valor.'</td>';                                   
+                                } 
+                            $html .= '</tr>';       
+                        }
+                }
+                $html .= "</tr>";
+        //Consultamos detalle de Oportunidad         
+        $opor_detalle = $oportunid->getdetOportunidad($this->dbAdapter,$lista['id_opor']);
+        //Consultamos tipoFeedback para combo
+        $combofeedback = $tipofeed->getCombo();   
+        $this->layout('layout/operador');    
+        $result =  new ViewModel(array('prospecto'=>$prospecto,
+                                       'prdetalle'=>$prdetalle,
+                                       'opor_detalle'=>$opor_detalle,
+                                       'html'=>$html,
+                                       'combofeedback'=>$combofeedback));
         $result->setTerminal(true);
         return $result; ;
         
         
     }
     
-    
-        public function rut3Action()
+    public function nuevofeedbackAction()
     {
+        //Obtenemos datos POST
+        $lista = $this->request->getPost();
+        //Conectamos con BBDD
+        $this->dbAdapter=$this->getServiceLocator()->get('Zend/Db/Adapter');
+        //Tablas
+        $feedback    = new FeedbackTable($this->dbAdapter);
+        $oportunidad = new OportunidadTable($this->dbAdapter);
+        //Obtenemos datos de sesion        
+        $sid = new Container('base');
+        $lista['USERNAME'] = $sid->offsetGet('usuario'); 
+        //Actualizamos estado de oportunidad        
+        $oportunidad->editarEstado($lista['ID_OPORTUNIDAD'],$lista['ESTADO_GRABADO']);
+        //Ingresamos nuevo feedback       
+        $feedback->nuevoFeedback($lista);
         
-         $this->layout('layout/operador');    
-        $result =  new ViewModel();
-        $result->setTerminal(true);
-        return $result; ;
+        
+        //Retornamos a la vista
+        $this->layout('layout/operador');  
+        $result =  new JsonModel(array('status'=>'ok'));        
+        return $result;
         
         
     }
-    
-        public function campanaAction()
+    // ----------------------------------------SEGUIMIENTO POR CAMPÀÑA
+    public function campanaAction()
     {
+        //Conectamos con BBDD
+        $this->dbAdapter=$this->getServiceLocator()->get('Zend/Db/Adapter');
+        //Tablas
+        $campana = new CampanaTable($this->dbAdapter);
+        //Obtenemos datos de sesion        
+        $sid = new Container('base');        
+        //Consultamos campanas para sede 
+        $combo_campana = $campana->getComboSede($this->dbAdapter,$sid->offsetGet('sede'));
         
-         $this->layout('layout/operador');    
-        return new ViewModel();
+        //Consultamos tipoFeedback para combo   
+        $this->layout('layout/operador');    
+        $result =  new ViewModel(array('combo_campana'=>$combo_campana));        
+        return $result; ;                
+    }
+    
+     public function buscaopcampanaAction()
+    {
+        //Obtenemos datos POST
+        $lista = $this->request->getPost();
+        //Conectamos con BBDD
+        $this->dbAdapter=$this->getServiceLocator()->get('Zend/Db/Adapter');
+        //Tablas        
+        $oportunidad = new OportunidadTable($this->dbAdapter);
+        //Obtenemos datos de sesion        
+        $sid = new Container('base'); 
+        $campanas = $oportunidad->getOporCampana($this->dbAdapter,$sid->offsetGet('sede'),$lista['ID_CAMPANA']);
+          if(count($campanas)>0){          
+            $descr = "Busqueda Exitosa!";
+            $flag = "true";
+          }
+          else{
+            $descr = "No existen campa&ntilde;as a gestionar en la sede";
+            $flag = "false";
+          }         
+        //Retornamos a la Vista            
+        $result =  new JsonModel(array('flag'=>$flag,'descr'=>$descr));        
+        return $result;
         
         
     }
-    
-        public function campana2Action()
+    public function campana2Action()
     {
+        //Obtenemos datos POST
+        $lista = $this->request->getPost();
+        //Conectamos con BBDD
+        $this->dbAdapter=$this->getServiceLocator()->get('Zend/Db/Adapter');
+        //Tablas        
+        $oportunid    = new OportunidadTable($this->dbAdapter);
+        $pcabecera    = new ProspectoCabeceraTable($this->dbAdapter);
+        $pdetalle     = new ProspectoDetalleTable($this->dbAdapter);
+        $oportunidad  = new OportunidadTable($this->dbAdapter);
+        $pcabedetalle = new ProsCabeceraDetalleTable($this->dbAdapter);
+        $tipofeed     = new TipoFeedbackTable($this->dbAdapter);
+        //Obtenemos datos de sesion        
+        $sid = new Container('base'); 
+        //Buscamos oportunidad
+        $campanas = $oportunidad->getOporCampana($this->dbAdapter,$sid->offsetGet('sede'),$lista['ID_CAMPANA']);  
+        $i = array_rand($campanas);
+        //Consultamos datos de Prospecto         
+        $prospecto = $pcabecera->getDatoxRut($campanas[$i]['RUT']);
+        //Consultamos detalle de Prospecto         
+        $prdetalle   = $pdetalle->getDetallexRUT($this->dbAdapter,$campanas[$i]['RUT']);
+        //Consultamos detalle de Oportunidad         
+        $opor_detalle = $oportunid->getdetOportunidad($this->dbAdapter,$campanas[$i]['ID_OPORTUNIDAD']);
         
-         $this->layout('layout/operador');    
-        return new ViewModel();
+        //Consultamos detalle de Prospecto                 
+        $cab_detalle = $pcabedetalle->getIdDetalle($campanas[$i]['RUT']);
+                //Cargamos data para grilla
+                $html = "";
+                for ($i=0;$i<count($cab_detalle);$i++){
+	               $detalletable =  $pdetalle->getDetallexID($cab_detalle[$i]['ID_DETALLE']);  
+                        for ($j=0;$j<count($detalletable);$j++){
+                            $html .= '<tr>';
+                            foreach ($detalletable[$j] as $key => $valor) {
+                                $html = $html.'<td>'.$valor.'</td>';                                   
+                                } 
+                            $html .= '</tr>';       
+                        }
+                }
+                $html .= "</tr>";
+        
+        
+         //Consultamos tipo feedback
+         $combofeedback = $tipofeed->getCombo();    
+                
+        //Retornamos a la vista
+        $this->layout('layout/operador');               
+        $result =  new ViewModel(array('prospecto'=>$prospecto,
+                                        'prdetalle'=>$prdetalle,
+                                        'opor_detalle'=>$opor_detalle,
+                                        'html'=>$html,
+                                        'combofeedback'=>$combofeedback));        
+        return $result; ; 
         
         
     }

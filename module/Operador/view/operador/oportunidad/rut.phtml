@@ -48,27 +48,30 @@
                                         
 <script>
 $("#existe_rut").click(function(){
-    $.ajax(
-        {
-          url : '<?php echo $this->basePath()."/operador/oportunidad/existerut"?>',
+    if($("#seg_rut").val()<1) {
+        toastr.warning('Debe ingresar un valor');    
+    }else{   
+        $.ajax(
+            {
+            url : '<?php echo $this->basePath()."/operador/oportunidad/existerut"?>',
             type: "POST",
-            data : {'rut' : $("#seg_rut").val()},
+            data : {'RUT' : $("#seg_rut").val()},
             dataType : 'json',
             success : function(response) {                        
-                        if(response.flag!="true")
+              if(response.flag!="true")
                         {
                          toastr.warning(response.descr);  
-                        }else{
-                         $("#form_seguimiento").submit(); 
-                         toastr.success(response.descr); 
-                        }                       
-        },
-        error: function(jqXHR, textStatus, errorThrown) 
-        {
-            toastr.error('Error ! Favor contactar con administrador del sistema');            
-           // $("#alertnok").html('<span class="alert alert-success">Error en el env&iacute;o de datos al servidor</span>');      
-        }
-    }); 
-    
+              }else{
+                $("#form_seguimiento").submit(); 
+                toastr.success(response.descr); 
+              }
+            },
+            error: function(jqXHR, textStatus, errorThrown) 
+            {   
+                toastr.error('Error! Favor contactar con administrador del sistema');                            
+            }
+        }); 
+    }  
 });
+
 </script>

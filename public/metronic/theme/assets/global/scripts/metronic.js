@@ -11,7 +11,7 @@ var Metronic = function() {
 
     var resizeHandlers = [];
 
-    var assetsPath = '../../assets/';
+    var assetsPath = 'http://172.25.6.65/crm/public/metronic/theme/assets/';
 
     var globalImgPath = 'global/img/';
 

@@ -13,84 +13,182 @@
 								</div>
 							</div>
 							<div class="portlet-body form">                            								
-									<div class="form-body ">
-                                                                        
-                                    <div id="alertok"></div>
-                                    <div id="alertnok"></div>                                                                        																										
+							<div class="row static-info"> 
+																<div class="col-md-5 name">
+																	 RUT:
+																</div>
+																<div class="col-md-7 value">
+																	 <?php echo $prospecto[0]['RUT']?>
+																</div>
+															</div>
 															<div class="row static-info">
 																<div class="col-md-5 name">
+																	 Nombre:
+																</div>
+																<div class="col-md-7 value">
+																	 <?php echo $prospecto[0]['NOMBRES']." ".$prospecto[0]['AP_PATERNO']." ".$prospecto[0]['AP_MATERNO'];?>
+																</div>
+															</div>
+															<div class="row static-info">
+																<div class="col-md-5 name">
+																	 Correo:
+																</div>
+																<div class="col-md-7 value">
+														             <?php echo $prdetalle[0]['CORREO']?>
+																</div>
+															</div>
+															<div class="row static-info">
+																<div class="col-md-5 name">
+																	 Tel&eacute;fono:
+																</div>
+																<div class="col-md-7 value">
+																	 <?php echo $prdetalle[0]['TELEFONO']?> 
+																</div>
+															</div>
+                                                            <div class="row static-info">
+																<div class="col-md-5 name">
+																	 Celular:
+																</div>
+																<div class="col-md-7 value">
+																	 <?php echo $prdetalle[0]['CELULAR']?> 
+																</div>
+															</div>
+                                                            <div class="row static-info">
+																<div class="col-md-5 name">
+																	 Emp/Establecimiento:
+																</div>
+																<div class="col-md-7 value">
+																	 <?php echo $prdetalle[0]['EMPRESA_ESTABLEC']?> 
+																</div>
+															</div>	
+                                                            <br />
+                                                            <br />
+                                                            
+                <table class="table table-hover">
+				    	<thead>
+									<tr>
+                                        <th>
+											 #
+										</th>
+										<th>
+											 Correo
+										</th>
+										<th>
+											 Tel&eacute;fono
+										</th>
+										<th>
+											 Celular
+										</th>
+										<th>
+											 Empresa/Establec.
+										</th>
+                                        <th>
+										     Direcci&oacute;n 
+										</th>
+                                        <th>
+										      Usuario
+										</th>
+                                        <th>
+										     Fecha 
+										</th>
+									</tr>
+							</thead>
+							<tbody>
+                                <?php echo $html?>    
+					    	</tbody>
+				</table>                                
+                                                    <div class="row static-info">
+                	                                       <div class="col-md-5 name">
 																	 Campa&ntilde;a:
 																</div>
 																<div class="col-md-7 value">
-																	 Campa&ntilde;a Liceo Industrial XY
+																	 <?php echo $opor_detalle[0]['NOMBRE_CAMPANA'];?> 
 																</div>
 															</div>
 															<div class="row static-info">
 																<div class="col-md-5 name">
-																	 Tipo:
+																	 Sede:
 																</div>
 																<div class="col-md-7 value">
-																	 Campa&ntilde;a WEB
+																	 <?php echo $opor_detalle[0]['NOMBRE_SEDE']?>
 																</div>
 															</div>
 															<div class="row static-info">
 																<div class="col-md-5 name">
-																	 Estado:
+																	 Carrera:
 																</div>
 																<div class="col-md-7 value">
-														             Activa 
+														             <?php echo $opor_detalle[0]['NOMBRE_CARRERA']?>
 																</div>
 															</div>
-                                                            <br />
-                                                            <br />					
-               
-               <table class="table table-hover">
-							<thead>
-									<tr>
-										<th>
-											 Sede
-										</th>
-										<th>
-											 Carrera
-										</th>
-										<th>
-											 Jornada
-										</th>
-										<th>
-											 Estado
-										</th>
-                                        <th>
-					                         &Uacute;ltima Observaci&oacute;n
-										</th>
-                                        <th>
-										     Acci&oacute;n 
-										</th>
-									</tr>
-				            </thead>
-							<tbody>
-                                <tr>
-										<td>
-											 Santiago
-										</td>
-										<td>
-											 Admin. Industrial
-										</td>
-										<td>
-											 Diurna
-										</td>
-										<td>
-											 Abierta
-										</td>
-                                        <td>
-					                         Se debe llamar, muy interesado
-										</td>
-                                        <td>
-										    <a onclick="detalle_oportunidad('<?php echo $this->prospecto[0]['RUT'];?>');" data-target="#modal_detalle" data-toggle="modal" class="btn green-haze" ><i class="fa fa-plus"></i></a>
-										</td>
-									</tr>        <!-- INFO TABLA AQUI !!-->
-							</tbody>
-				</table>                                                                                                            
-                                    </div>                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+															<div class="row static-info">
+																<div class="col-md-5 name">
+																	 Jornada:
+																</div>
+																<div class="col-md-7 value">
+																	 <?php if($this->$opor_detalle[0]['JORNADA']=="V"){echo "Vespertina";}else{echo "Diurna";}?> 
+																</div>
+															</div>
+                                                            <div class="row static-info">
+																<div class="col-md-5 name">
+																	 &Uacute;ltimo Estado:
+																</div>
+																<div class="col-md-7 value">
+																	  <?php echo $opor_detalle[0]['ESTADO']?>
+																</div>
+															</div>
+                                                            <div class="row static-info">
+																<div class="col-md-5 name">
+																	 &Uacute;ltima Observaci&oacute;n:
+																</div>
+																<div class="col-md-7 value">
+																	 <?php echo $opor_detalle[0]['FEEDBACK']?> 
+																</div>
+															</div>
+                
+                                             <br />
+                <form id="form_feedback2" role="form" >          
+                                        <div class="form-group form-md-line-input form-md-floating-label">
+											<input type="hidden" name="ID_OPORTUNIDAD" value="<?php echo $opor_detalle[0]['ID_OPORTUNIDAD']?>"/>
+                                            <textarea name="OBSERVACION" class="form-control" rows="3" ></textarea>
+											<label for="form_control_1">Nueva Observaci&oacute;n</label>
+										</div>
+                                        
+          <div class="portlet-body form">								
+									<div class="form-body">
+                                    <div class="row text-center">
+										<div class="col-md-4 col-md-push-4 form-group form-md-line-input has-info ">
+											<select class="form-control" id="combo_estado" name="ESTADO_GRABADO">
+												<option value="0">Seleecione un estado</option>
+												<option value="Nueva">Nueva</option>
+												<option value="Gestionar">Gestionar</option>
+												<option value="Gestionada">Gestionada</option>
+												<option value="Cerrada">Cerrada</option>
+											</select>
+											<label for="combo_estado"><strong>Cambiar estado a:</strong></label>
+										</div>
+						             </div>                                    
+                                    <div class="row text-center">
+										<div class="col-md-4 col-md-push-4 form-group form-md-line-input has-info ">
+											<select class="form-control" id="combo_feedback" name="ID_TIPO">
+                                            <option value="0">Seleccione un tipo de feedback</option>
+                                            <?php for ($i=0;$i<count($combofeedback);$i++){                                                      
+                                                      echo "<option value=".$combofeedback[$i]['ID_TIPO'].">".$combofeedback[$i]['DESC_TIPO']."</option>\n";
+                                               }        
+                                                ?>
+	
+ 
+											</select>
+											<label for="combo_feedback"><strong>Feedback</strong></label>
+										</div>
+						             </div>                                                                                                                                                   
+								</form>
+							</div>
+                </div>
+                <div class="portlet-body form text-right">
+                  <button type="button" data-dismiss="modal" class="btn">Close</button>
+               <a onclick="guardafeedback()" class="btn blue">Guardar Feedback</a>        
+               </div> 	                                                                                                                                                                                                                                                                                                                                                                                                                                                               
                                 
                                 </div>
                                 
@@ -114,21 +212,37 @@
     </div>
 </div>    
 <script>
-function detalle_oportunidad(rut){     
-postData = {'rut' : rut}      
-$.ajax(
-    {
-        url : '<?php echo $this->basePath()."/operador/oportunidad/rut3"?>',
-        type: "POST",
-        data : postData,        
-		success : function(response) {
-		  $('#modal_detalle').modal('show');
-		  $("#bodymodal_detalle").html(response);
-		},
-        error: function(jqXHR, textStatus, errorThrown) 
-        {            
-            alert("error"); 
-        }
-    });
+toastr.options = {
+  "positionClass": "toast-top-center",
+}
+function guardafeedback(){
+    var combo1 = $("#combo_estado").val();
+    var combo2 = $("#combo_feedback").val();
+if(combo1<1 || combo2<1){
+    toastr.warning("Debe seleccionar un estado y tipo de feedback"); 
+}else{ 
+    var postData = $("#form_feedback2").serializeArray();
+    $.ajax(
+        {
+            url : '<?php echo $this->basePath()."/operador/oportunidad/nuevofeedback"?>',
+            type: "POST",
+            data : postData,        
+		  success : function(response) {
+		      if(response.status =="ok"){
+                $('#modal_detalle').modal('hide');   
+                toastr.success('Feedback guardado exitosamente');
+                window.setTimeout(function() {
+                    var url  = '<?php echo $this->basePath()."/operador/oportunidad/campana"?>';
+                  $(location).attr('href',url);                  
+                }, 1000)
+                                
+                }     
+	   	},
+         error: function(jqXHR, textStatus, errorThrown) 
+            {            
+                toastr.error('Error! Favor contactar con administrador del sistema'); 
+            }
+        });
 }    
-</script>                                                                                
+}
+</script>                                                                                 

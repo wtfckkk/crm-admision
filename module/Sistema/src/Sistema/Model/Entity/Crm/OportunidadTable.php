@@ -34,10 +34,10 @@ class OportunidadTable extends TableGateway
         $this->COD_SEDE=$datos["COD_SEDE"];
         $this->COD_CARRERA=$datos["COD_CARRERA"];
         $this->JORNADA=$datos["JORNADA"];
-        $this->ESTADO=$datos["ESTADO"];   
+      //  $this->ESTADO=$datos["ESTADO"];   
         $this->USERNAME=$datos["USERNAME"];           
         $fecha = time();
-        $this->FECHA=date("H:i:s d-m-Y",$fecha);        
+        $this->FECHA=date("Y-m-d H:i:s ",$fecha);        
         
     }
     
@@ -51,7 +51,7 @@ class OportunidadTable extends TableGateway
                 'COD_SEDE'=>$this->COD_SEDE,
                 'COD_CARRERA'=>$this->COD_CARRERA,
                 'JORNADA'=>$this->JORNADA,                
-                'ESTADO'=>$this->ESTADO,
+                'ESTADO'=>'Abierta',
                 'USERNAME'=>$this->USERNAME,
                 'FECHA'=>$this->FECHA,
              );
@@ -75,24 +75,62 @@ class OportunidadTable extends TableGateway
                 'FECHA'=>$this->FECHA,
              );
                $this->update($array,array('ID_OPORTUNIDAD'=>$id));
-    } 
+    }
+    
+    public function editarEstado($id,$estado)
+    {             
+               $this->update(array('ESTADO'=>$estado),array('ID_OPORTUNIDAD'=>$id));
+    }  
     
     public function getOporRutSede(Adapter $dbAdapter,$rut,$sede)
     {
        $this->dbAdapter = $dbAdapter;
-       $query = "select * from OPORTUNIDADES OP, SEDE_CAMPANA SC, CAMPANA CA WHERE OP.rut ='$rut' and OP.COD_SEDE='$sede' 
-       and OP.ID_CAMPANA = SC.ID_CAMPANA AND OP.COD_SEDE = SC.COD_SEDE";
+       $query = "select OP.ID_OPORTUNIDAD, SE.NOMBRE_SEDE, CAR.NOMBRE_CARRERA, OP.JORNADA, OP.ESTADO, (SELECT FE.OBSERVACION FROM feedbacks fe WHERE FE.ID_FEEDBACK = (select MAX(FE.ID_FEEDBACK) from FEEDBACKS FE where FE.ID_OPORTUNIDAD = OP.ID_OPORTUNIDAD))  AS FEEDBACK 
+                from OPORTUNIDADES OP, CAMPANAS CA, SEDES SE, CARRERAS CAR 
+                WHERE OP.ID_CAMPANA = CA.ID_CAMPANA
+                AND CA.ACTIVO = 's'
+                AND OP.COD_SEDE = SE.COD_SEDE
+                AND OP.COD_CARRERA = CAR.COD_CARRERA
+                AND OP.rut ='$rut' 
+                AND OP.COD_SEDE='$sede' ";
+                
+        $result=$this->dbAdapter->query($query,Adapter::QUERY_MODE_EXECUTE);
+        
+        return $result->toArray();
+    }
+
+    public function getOportunidad($id)
+    {
+        
+        $datos = $this->select(array('ID_OPORTUNIDAD'=>$id));
+        $recorre = $datos->toArray();              
+        return $recorre;
+    }
+    
+    public function getdetOportunidad(Adapter $dbAdapter,$id_oportunidad)
+    {
+       $this->dbAdapter = $dbAdapter;
+       $query="SELECT OP.ID_OPORTUNIDAD, CA.NOMBRE_CAMPANA, SE.NOMBRE_SEDE, CAR.NOMBRE_CARRERA, OP.JORNADA, OP.ESTADO, (SELECT FE.OBSERVACION FROM feedbacks fe WHERE FE.ID_FEEDBACK = (select MAX(FE.ID_FEEDBACK) from FEEDBACKS FE where FE.ID_OPORTUNIDAD = OP.ID_OPORTUNIDAD)) AS FEEDBACK  FROM OPORTUNIDADES OP, CAMPANAS CA, SEDES SE, CARRERAS CAR
+            WHERE OP.ID_CAMPANA = CA.ID_CAMPANA
+            AND OP.COD_SEDE = SE.COD_SEDE
+            AND OP.COD_CARRERA = CAR.COD_CARRERA
+            AND ID_OPORTUNIDAD = '$id_oportunidad'" ;
                 
         $result=$this->dbAdapter->query($query,Adapter::QUERY_MODE_EXECUTE);
         
         return $result->toArray();
     }
     
-        public function getOporRutSede2($id)
+     public function getOporCampana(Adapter $dbAdapter,$cod_sede,$id_campana)
     {
+       $this->dbAdapter = $dbAdapter;
+       $query="SELECT * from OPORTUNIDADES WHERE ESTADO <> 'Cerrada'
+               and COD_SEDE = '$cod_sede'
+               and ID_CAMPANA = '$id_campana'" ;
+                
+        $result=$this->dbAdapter->query($query,Adapter::QUERY_MODE_EXECUTE);
         
-        $datos = $this->select(array('ID_OPORTUNIDAD'=>$id));
-        $recorre = $datos->toArray();              
-        return $recorre;
-    }           
+        return $result->toArray();
+    }
+               
 }

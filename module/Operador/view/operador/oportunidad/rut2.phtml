@@ -13,8 +13,7 @@
 								</div>
 							</div>
 							<div class="portlet-body form">                            								
-									<div class="form-body ">
-                                                                        
+									<div class="form-body ">                        
                                     <div id="alertok"></div>
                                     <div id="alertnok"></div>                                                                        																										
 															<div class="row static-info">
@@ -22,7 +21,7 @@
 																	 RUT:
 																</div>
 																<div class="col-md-7 value">
-																	 16.532.556-7
+															 <?php echo $prospecto[0]['RUT']?>
 																</div>
 															</div>
 															<div class="row static-info">
@@ -30,7 +29,7 @@
 																	 Nombre:
 																</div>
 																<div class="col-md-7 value">
-																	 Tom&aacute;s 
+																	 <?php echo $prospecto[0]['NOMBRES']?>
 																</div>
 															</div>
 															<div class="row static-info">
@@ -38,7 +37,7 @@
 																	 Apellido Paterno:
 																</div>
 																<div class="col-md-7 value">
-														             Cornejo 
+														             <?php echo $prospecto[0]['AP_PATERNO']?>
 																</div>
 															</div>
 															<div class="row static-info">
@@ -46,7 +45,7 @@
 																	 Apellido Materno:
 																</div>
 																<div class="col-md-7 value">
-																	 Corral 
+																	  <?php echo $prospecto[0]['AP_MATERNO']?>
 																</div>
 															</div>	
                                                             <br />
@@ -75,27 +74,29 @@
 										</th>
 									</tr>
 				            </thead>
-							<tbody>
+                            <tbody>
+                            <?php for ($i=0;$i<count($oportunidad);$i++){ ?>							
                                 <tr>
 										<td>
-											 Santiago
+											 <?php echo $this->oportunidad[$i]['NOMBRE_SEDE'];?>
 										</td>
 										<td>
-											 Admin. Industrial
+											 <?php echo $this->oportunidad[$i]['NOMBRE_CARRERA'];?>
 										</td>
 										<td>
-											 Diurna
+											  <?php if($this->oportunidad[$i]['JORNADA']=="V"){echo "Vespertina";}else{echo "Diurna";}?>
 										</td>
 										<td>
-											 Abierta
+											 <?php echo $this->oportunidad[$i]['ESTADO'];?>
 										</td>
                                         <td>
-					                         Se debe llamar, muy interesado
+					                         <?php echo $this->oportunidad[$i]['FEEDBACK'];?>
 										</td>
                                         <td>
-										    <a onclick="detalle_oportunidad('<?php echo $this->prospecto[0]['RUT'];?>');" data-target="#modal_detalle" data-toggle="modal" class="btn green-haze" ><i class="fa fa-plus"></i></a>
+										    <a onclick="detalle_oportunidad('<?php echo $this->prospecto[0]['RUT']."','".$this->oportunidad[$i]['ID_OPORTUNIDAD'];?>');" data-target="#modal_detalle" data-toggle="modal" class="btn green-haze" ><i class="fa fa-plus"></i></a>
 										</td>
-									</tr>        <!-- INFO TABLA AQUI !!-->
+									</tr> 
+                             <?php } ?>                                    
 							</tbody>
 				</table>                                                                                                            
                                     </div>                                                                                                                                                                                                                                                                                                                                                                                                                                                                
@@ -122,8 +123,8 @@
     </div>
 </div>    
 <script>
-function detalle_oportunidad(rut){     
-postData = {'rut' : rut}      
+function detalle_oportunidad(rut,id_opor){     
+postData = {'rut' : rut,'id_opor' : id_opor}      
 $.ajax(
     {
         url : '<?php echo $this->basePath()."/operador/oportunidad/rut3"?>',
@@ -131,11 +132,13 @@ $.ajax(
         data : postData,        
 		success : function(response) {
 		  $('#modal_detalle').modal('show');
+
 		  $("#bodymodal_detalle").html(response);
+;          
 		},
         error: function(jqXHR, textStatus, errorThrown) 
         {            
-            alert("error"); 
+            toastr.error('Error! Favor contactar con administrador del sistema'); 
         }
     });
 }    
