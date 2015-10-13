@@ -301,7 +301,7 @@ postData = {'RUT' : $('#nueva_rut').val()}
         },
         error: function(jqXHR, textStatus, errorThrown) 
         {            
-            alert("Error ! Favor contactar con administrador del sistema"); 
+            toastr.warning("Error! Favor contactar con administrador del sistema"); 
         }
     });
 });
@@ -428,6 +428,8 @@ function nointeresa(){
 });     
 }
 function nuevaoportunidad(){
+bootbox.confirm("<strong>Estas Seguro ?</strong>", function(result) {
+        if (result){
     $("#nueva_rut").attr('disabled',false);
     $("#nueva_estado").attr('disabled',false);
     var postData = $("#form_prospecto").serializeArray();    
@@ -447,7 +449,10 @@ function nuevaoportunidad(){
             toastr.error('Error ! Favor contactar con administrador del sistema');            
            // $("#alertnok").html('<span class="alert alert-success">Error en el env&iacute;o de datos al servidor</span>');      
         }
-    });   
-    
+    }); 
+    }else{
+           toastr.info('Estado de prospecto sin cambios'); 
+}   
+});
 }
 </script>                            

@@ -37,16 +37,9 @@ class OportunidadController extends AbstractActionController
         
         
     }
+    // ----------------------------------------INGRESAR OPORTUNIDAD
     
     public function nuevaAction()
-    {
-        
-         $this->layout('layout/operador');    
-        return new ViewModel();
-        
-        
-    }
-        public function rutAction()
     {
         
          $this->layout('layout/operador');    
@@ -246,10 +239,11 @@ class OportunidadController extends AbstractActionController
         $lista = $this->request->getPost();
         //Conectamos con BBDD
         $this->dbAdapter=$this->getServiceLocator()->get('Zend/Db/Adapter');            
-        //Tablas        
+        //Obtenemos datos de sesion        
         $sid = new Container('base');
         $lista['COD_SEDE'] = $sid->offsetGet('sede');
         $lista['USERNAME'] = $sid->offsetGet('usuario');
+        //Ingresamos nueva oportunidad y la consultamos  
         $oportunidad = new OportunidadTable($this->dbAdapter);  
         $id_oportunidad = $oportunidad->nuevaOportunidad($lista);
         $nueva_oportunidad = $oportunidad->getOportunidad($id_oportunidad);             
@@ -262,17 +256,69 @@ class OportunidadController extends AbstractActionController
         
     }
     
+    // ----------------------------------------SEGUIMIENTO POR RUT
+    
+    public function rutAction()
+    {        
+        $this->layout('layout/operador');    
+        return new ViewModel();                
+    }
     
     
-    
-    public function rut2Action()
+    public function existerutAction()
     {
+        //Obtenemos datos POST
+        $lista = $this->request->getPost();
+        //Conectamos con BBDD
+        $this->dbAdapter=$this->getServiceLocator()->get('Zend/Db/Adapter');
+        //Tablas
+        $pcabecera   = new ProspectoCabeceraTable($this->dbAdapter);       
+        $oportunidad = new OportunidadTable($this->dbAdapter);  
+        //Obtenemos datos de sesion        
+        $sid = new Container('base');
+        $lista['COD_SEDE'] = $sid->offsetGet('sede');  
+        //Validamos si existe prospecto       
+        $existe = $pcabecera->getDatoxRut($lista['RUT']); 
+          if(count($existe)>0){
+            $opor_rut = $oportunidad->getOporRutSede($this->dbAdapter,$lista['RUT'],$lista['COD_SEDE']);
+              if (count($opor_rut)>0){
+                $descr = "Busqueda existosa!";
+                $flag ="true";
+              }else{
+                $descr = "No existen oportunidades creadas para rut ".$lista['RUT']." en su sede. ";
+                $flag ="false";              
+              }    
+          }
+          else{
+            $descr = "Rut ".$lista['RUT']." no existe en el sistema";
+            $flag ="false";
+          }
         
-         $this->layout('layout/operador');    
-        return new ViewModel();
+        //Retornamos a la Vista            
+        $result = new JsonModel(array('flag'=>$flag,'descr'=>$descr));
+        $result->setTerminal(true); 
+        return $result;
         
         
     }
+    
+    public function rut2Action()
+    {
+        //Obtenemos datos POST
+        $lista = $this->request->getPost();
+        //Conectamos con BBDD
+        $this->dbAdapter=$this->getServiceLocator()->get('Zend/Db/Adapter');
+        //Tablas
+        $pcabecera  = new ProspectoCabeceraTable($this->dbAdapter);    
+        $prospecto = $pcabecera->getDatoxRut($lista['RUT']); 
+        
+        $result =  new ViewModel();
+        $result->setTerminal(true);
+        return $result; ;
+        
+        
+    }
+    
     
         public function rut3Action()
     {

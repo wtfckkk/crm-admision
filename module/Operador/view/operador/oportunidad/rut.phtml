@@ -13,28 +13,62 @@
 								</div>
 							</div>
 							<div class="portlet-body form">                            
-								<form id="form_prospecto" action="<?php echo $this->basePath()?>/oportunidad/actualizardatos" role="form" class="form-horizontal">
+								<form id="form_seguimiento" method="post" action="<?php echo $this->basePath()?>/operador/oportunidad/rut2" role="form" class="form-horizontal">
 									<div class="form-body">
                                                                         
                                     <div id="alertok"></div>
                                     <div id="alertnok"></div>
                                                                         
 										<div class="form-group form-md-line-input">
-											<label class="col-md-4 control-label" for="form_control_1">Rut</label>
+											<div class="row text-center" style="margin-bottom: 10px;">
+									  <div class="form-group form-md-line-input">
+											<label class="col-md-4 control-label" for="seg_rut">Rut</label>
 											<div class="col-md-4">
-												<input type="text" class="form-control" id="form_control_1" name="rut">
+												<input type="text" class="form-control" id="seg_rut" name="RUT" required>
 												<div class="form-control-focus">
 												</div>
                                                 <span class="help-block">Sin puntos ni DV</span>
 											</div>
-                                            <span class="input-group-btn btn-right">
-												            <a href="<?php echo $this->basePath()?>/operador/oportunidad/rut2" class="btn green-haze" type="button"><i class="fa fa-search"></i></a>
+										</div>
+                                        
+                                        </div>
+                                        <span class="input-group-btn btn-right text-center">
+                                            <a id="existe_rut" class="btn green-haze">
+                                                    <i class="fa fa-search"></i> &nbsp; Buscar oportunidades creadas
+                                            </a>
 			                                </span> 
 										</div>
                                     </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
                    </div>
 
                                         
+<script>
+$("#existe_rut").click(function(){
+    $.ajax(
+        {
+          url : '<?php echo $this->basePath()."/operador/oportunidad/existerut"?>',
+            type: "POST",
+            data : {'rut' : $("#seg_rut").val()},
+            dataType : 'json',
+            success : function(response) {                        
+                        if(response.flag!="true")
+                        {
+                         toastr.warning(response.descr);  
+                        }else{
+                         $("#form_seguimiento").submit(); 
+                         toastr.success(response.descr); 
+                        }                       
+        },
+        error: function(jqXHR, textStatus, errorThrown) 
+        {
+            toastr.error('Error ! Favor contactar con administrador del sistema');            
+           // $("#alertnok").html('<span class="alert alert-success">Error en el env&iacute;o de datos al servidor</span>');      
+        }
+    }); 
+    
+});
+</script>

@@ -77,7 +77,18 @@ class OportunidadTable extends TableGateway
                $this->update($array,array('ID_OPORTUNIDAD'=>$id));
     } 
     
-        public function getOportunidad($id)
+    public function getOporRutSede(Adapter $dbAdapter,$rut,$sede)
+    {
+       $this->dbAdapter = $dbAdapter;
+       $query = "select * from OPORTUNIDADES OP, SEDE_CAMPANA SC, CAMPANA CA WHERE OP.rut ='$rut' and OP.COD_SEDE='$sede' 
+       and OP.ID_CAMPANA = SC.ID_CAMPANA AND OP.COD_SEDE = SC.COD_SEDE";
+                
+        $result=$this->dbAdapter->query($query,Adapter::QUERY_MODE_EXECUTE);
+        
+        return $result->toArray();
+    }
+    
+        public function getOporRutSede2($id)
     {
         
         $datos = $this->select(array('ID_OPORTUNIDAD'=>$id));
