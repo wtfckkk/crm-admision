@@ -1,0 +1,172 @@
+                <div class="row">
+					<div class="col-md-12">
+						<!-- BEGIN SAMPLE FORM PORTLET-->
+						<div class="portlet light">
+							<div class="portlet-title">
+								<div class="caption font-green-haze">
+									<i class="icon-user font-green-haze"></i>
+									<span class="caption-subject bold uppercase">  Administrar campa&ntilde;as   </span>
+								</div>
+								<div class="actions">									
+									<a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title="">
+									</a>
+								</div>
+							</div>
+							<div class="portlet-body form">                            								
+							                                                                                                                                                                                                                                                                                                                                                                                                                
+                            <a onclick="nuevaCampana()" class="btn blue" ><i class="fa fa-plus"></i> Nueva Campa&ntilde;a</a>
+                            <a onclick="nuevoTipoCampana()" class="btn green" ><i class="fa fa-plus"></i> Nuevo tipo de Campa&ntilde;a</a>
+							
+							<div class="portlet-body">
+								<div class="table-responsive">
+									<table class="table">
+									<thead>
+									<tr>
+										<th>
+											 Nombre Campa&ntilde;a
+										</th>
+										<th>
+											 Tipo Campa&ntilde;a
+										</th>
+                                        <th>
+											 Activa 
+										</th>
+										<th>
+											 Sede
+										</th>
+										<th>
+											 Acci&oacute;n
+										</th>
+									</tr>
+									</thead>
+									<tbody>
+									<?php echo $html?>								
+									</tbody>
+									</table>
+								</div>
+							</div>
+						
+    
+                                
+                                
+                                
+                            </div>
+                                
+                                
+
+                            </div>
+                        </div>
+                   </div>
+<div id="modal_nueva" class="modal fade" tabindex="-1" role="dialog"  data-keyboard="false">
+									<div class="modal-dialog modal-md">
+										<div class="modal-content">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+												<h4 id="title_modal" class="modal-title"><i class="icon-user"></i> &nbsp;Ingresar nueva Campa&ntilde;a al sistema</h4>
+											</div>
+			<div id="bodymodal_nueva" class="modal-body">
+											                 
+                                                           
+			 </div>
+		</div>
+    </div>
+</div>
+
+<div id="modal_detalle" class="modal fade" tabindex="-1" role="dialog"  data-keyboard="false">
+									<div class="modal-dialog modal-md">
+										<div class="modal-content">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+												<h4 class="modal-title"><i class="icon-edit"></i> &nbsp;Modificar usuario</h4>
+											</div>
+			<div id="bodymodal_detalle" class="modal-body">
+											                 
+                                                           
+			 </div>
+		</div>
+    </div>
+</div>      
+<script>
+toastr.options = {
+  "positionClass": "toast-top-center",
+}
+function borraCampana(id,cod_sede){
+bootbox.confirm("<strong>Se eliminar&aacute; la campa&ntilde;a, esta seguro ?", function(result) {    
+     if (result){
+  $.ajax(
+        {
+            url : '<?php echo $this->basePath()."/admincentral/administrar/borracampana"?>',
+            type: "POST",
+            data : {'id_campana':id,'cod_sede':cod_sede},        
+		  success : function(response) {		      
+                toastr.success('Campa&ntilde;a eliminada del sistema correctamente');
+                  window.setTimeout(function() {
+                window.location.reload(true);
+                }, 1000)		      
+	   	},
+         error: function(jqXHR, textStatus, errorThrown) 
+            {            
+                toastr.error('Error! Favor contactar con administrador del sistema'); 
+            }
+        });  
+     }else  
+     {
+        toastr.info('Sin cambios');
+     } 
+        
+});    
+}
+function nuevaCampana(){        
+    $('#title_modal').text("Ingresar nueva campa\u00f1a");
+    var postData = $("#form_feedback2").serializeArray();
+    $.ajax(
+        {
+            url : '<?php echo $this->basePath()."/admincentral/administrar/nuevacampana"?>',
+            type: "POST",
+            data : postData,        
+		  success : function(response) {
+		      $('#modal_nueva').modal('show');               
+              $('#bodymodal_nueva').html(response);              
+	   	},
+         error: function(jqXHR, textStatus, errorThrown) 
+            {            
+                toastr.error('Error! Favor contactar con administrador del sistema'); 
+            }
+        });
+   
+}
+function editUsuario(user){
+  $.ajax(
+        {
+            url : '<?php echo $this->basePath()."/adminsede/administrar/editaroper"?>',
+            type: "POST",
+            data : {'user':user},        
+		  success : function(response) {		      
+                $('#modal_detalle').modal('show');               
+              $('#bodymodal_detalle').html(response);		      
+	   	},
+         error: function(jqXHR, textStatus, errorThrown) 
+            {            
+                toastr.error('Error! Favor contactar con administrador del sistema'); 
+            }
+        });  
+    
+        
+}
+function nuevoTipoCampana(){
+    $('#title_modal').text("Ingresar nuevo tipo de campa\u00f1a");
+    $.ajax(
+        {
+            url : '<?php echo $this->basePath()."/admincentral/administrar/nuevotipo"?>',
+            type: "POST",                   
+		  success : function(response) {		      
+               $('#modal_nueva').modal('show');               
+              $('#bodymodal_nueva').html(response); 		      
+	   	},
+         error: function(jqXHR, textStatus, errorThrown) 
+            {            
+                toastr.error('Error! Favor contactar con administrador del sistema'); 
+            }
+        });  
+}
+</script>                                                                                 

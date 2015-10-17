@@ -21,18 +21,24 @@ class SedeCampanaTable extends TableGateway
         return parent::__construct('SEDE_CAMPANA', $adapter, $databaseSchema,$selectResultPrototype);
     }
 
-    public function nuevaSedeCampana($USERNAME,$COD_SEDE)
+    public function nuevaSedeCampana($id_campana,$cod_sede)
     {             
              $array=array
              (
-                'ID_CAMPANA'=>$ID_CAMPANA,
-                'COD_SEDE'=>$COD_SEDE,
+                'ID_CAMPANA'=>$id_campana,
+                'COD_SEDE'=>$cod_sede,
 
              );
                $this->insert($array);
-               $id = $this->lastInsertValue;
-               return $id;
     } 
+    
+    public function borraCampana($id_campana,$cod_sede)
+    {             
+             $array=array('ID_CAMPANA'=>$id_campana,'COD_SEDE'=>$cod_sede);
+             
+             $this->delete($array);
+    }
+    
     public function getIDCampana($codesede)
     {
         
@@ -44,15 +50,6 @@ class SedeCampanaTable extends TableGateway
         }             
         return $result;
     }
-    
-    public function fetchAll()
-{
-    $resultSet = $this->select(function(Select $select){
-        $select->quantifier('TOP 15 ')
-            ->order('id ASC');
-    });
-    return $resultSet;
-}
     
     public function getDatos(Adapter $dbAdapter)
     {

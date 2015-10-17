@@ -1,0 +1,41 @@
+<form action="" method="post" id="form_campana"> 
+<div class="form-group form-md-line-input">
+											<label class="col-md-4 control-label" for="camp_nombre"><strong>Tipo de Campa&ntilde;a</strong></label>
+											<div class="col-md-6">
+												<input type="text" class="form-control" id="camp_nombre" name="NOMBRE_CAMPANA" required>
+												<div class="form-control-focus">
+												</div>
+                                                <!--span class="help-block">Sin puntos ni DV</span-->
+											</div>
+</div>                                   
+</form>
+<br />
+<div class="row">
+<div class="portlet-body col-md-6 col-md-offset-3">
+								<div class="table-responsive">
+									<table class="table">
+									<thead>
+									<tr>
+										<th>
+											 Tipos de campa&ntilde;as creadas
+										</th>
+									</tr>
+									</thead>
+									<tbody>
+									<?php for ($i=0;$i<count($tipos);$i++){                                                      
+                                                      echo "<tr><td>".$tipos[$i]['DESC_TIPO']."</td></tr>";
+                                               }        
+                                                ?>							
+									</tbody>
+									</table>
+								</div>
+</div>
+
+</div>
+<br />
+<div class="form-group form-md-line-input">										
+											<div class="col-md-offset-6">												
+												<a class="btn red" data-dismiss="modal" aria-hidden="true"><i class="fa fa-close"></i> &nbsp; Cancelar</a>
+                                                <a onclick="validaInput()" class="btn green"><i class="fa fa-check"></i> &nbsp;Ingresar campa&ntilde;a</a>                                                											
+										   </div>
+</div>

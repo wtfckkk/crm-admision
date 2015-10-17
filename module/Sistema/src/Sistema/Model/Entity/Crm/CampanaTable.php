@@ -69,19 +69,11 @@ class CampanaTable extends TableGateway
                $this->update($array,array('id'=>$id));
     } 
     
-        public function getCombo2($data=array())
-    {   
-        /*foreach ($data as $valor) {
-                                $html = $this->select($valor);                                   
-        } 
-        $datos = $this->select(array(''));
-        $recorre = $datos->toArray();
-        $resultado["0"]="Seleccione una Campaña";
-        for($i=0;$i<count($recorre);$i++)
-        {
-          $resultado[$recorre[$i]['id']] = $recorre[$i]['NOMBRE']; 
-        }*/
-        return $data;
+    public function borraCampana($id_campana)
+    {             
+             $array=array('ID_CAMPANA'=>$id_campana);
+             
+             $this->delete($array);
     }
     
     public function getCombo(Adapter $dbAdapter,$data)
@@ -106,34 +98,24 @@ class CampanaTable extends TableGateway
         return $result->toArray();
     }
     
+        public function getCampanas(Adapter $dbAdapter)
+    {
+       $this->dbAdapter = $dbAdapter;
+       $query = "SELECT CA.ID_CAMPANA, CA.NOMBRE_CAMPANA, TC.DESC_TIPO, CA.ACTIVO, (select SEDES.NOMBRE_SEDE FROM SEDES WHERE SEDES.COD_SEDE=SC.COD_SEDE) AS NOMBRE_SEDE, SC.COD_SEDE
+                FROM CAMPANAS CA, TIPO_CAMPANAS TC, SEDE_CAMPANA SC
+                WHERE CA.ID_TIPO = TC.ID_TIPO
+                AND CA.ID_CAMPANA = SC.ID_CAMPANA";
+                
+        $result=$this->dbAdapter->query($query,Adapter::QUERY_MODE_EXECUTE);
+        
+        return $result->toArray();
+    } 
     public function getDetalle($id_detalle)
     {
         $datos = $this->select(array('ID_DETALLE'=>$id_detalle));
         $recorre = $datos->toArray();
                       
         return $recorre;
-    }
-    
-    public function fetchAll()
-{
-    $resultSet = $this->select(function(Select $select){
-        $select->quantifier('TOP 15 ')
-            ->order('id ASC');
-    });
-    return $resultSet;
-}
-    
-    public function getDatos(Adapter $dbAdapter)
-    {
-       $this->dbAdapter = $dbAdapter;
-       $query = "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='dbo' AND TABLE_NAME='CARRERAS'";
-                
-        $result=$this->dbAdapter->query($query,Adapter::QUERY_MODE_EXECUTE);
-        return $result->toArray();
-    }
-    
-
-    
-   
+    }            
     
 }

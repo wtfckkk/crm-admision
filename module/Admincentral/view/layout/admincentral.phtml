@@ -32,8 +32,8 @@ License: You must have a valid license purchased only from themeforest(the above
 <!--<![endif]-->
 <!-- BEGIN HEAD -->
 <head>
-<meta charset="utf-8"/>
-<title>AdminSede | CRM Admisi&oacute;n</title>
+<meta http-equiv="Content-Type" content="text/html" charset="utf-8"/> 
+<title>AdminCentral | CRM Admisi&oacute;n</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <meta content="" name="description"/>
@@ -62,6 +62,8 @@ License: You must have a valid license purchased only from themeforest(the above
 <link href="<?php echo $this->basePath()?>/metronic/theme/assets/admin/layout2/css/layout.css" rel="stylesheet" type="text/css"/>
 <link href="<?php echo $this->basePath()?>/metronic/theme/assets/admin/layout2/css/themes/grey.css" rel="stylesheet" type="text/css" id="style_color"/>
 <link href="<?php echo $this->basePath()?>/metronic/theme/assets/admin/layout2/css/custom.css" rel="stylesheet" type="text/css"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath()?>/metronic/theme/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css"/>
+
 <!-- END THEME STYLES -->
 <link rel="shortcut icon" href="favicon.ico"/>
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
@@ -113,6 +115,8 @@ License: You must have a valid license purchased only from themeforest(the above
 <script src="<?php echo $this->basePath()?>/metronic/theme/assets/global/plugins/bootstrap-toastr/toastr.min.js"></script>
 <script src="<?php echo $this->basePath()?>/metronic/theme/assets/admin/pages/scripts/ui-toastr.js"></script>
 <script src="<?php echo $this->basePath()?>/metronic/theme/assets/admin/pages/scripts/ui-alert-dialog-api.js"></script>
+<script type="text/javascript" src="<?php echo $this->basePath()?>/metronic/theme/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js"></script>
+
 
 <script>
 jQuery(document).ready(function() {    
@@ -342,10 +346,34 @@ jQuery(document).ready(function() {
 						</a>
 						<ul class="sub-menu">
 							<li>
-								<a href="<?php echo $this->basePath()?>/adminsede/administrar/operadores">								
-								Operadores de mi Sede</a>
+								<a href="<?php echo $this->basePath()?>/admincentral/administrar/campanas">								
+								Campa&ntilde;as</a>
 							</li>							
 						</ul>
+					</li>
+                    <li>
+						<a href="javascript:;">
+						<i class="icon-docs"></i>
+						<span class="title">Cargas Masivas</span>
+						<span class="arrow "></span>
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a href="<?php echo $this->basePath()?>/admincentral/cargas/prospectos">								
+								Prospectos</a>
+							</li>
+                            <li>
+								<a href="<?php echo $this->basePath()?>/admincentral/cargas/oportunidades">								
+								Oportunidades</a>
+							</li>							
+						</ul>
+					</li>
+                    <li>
+						<a href="javascript:;">
+						<i class="icon-envelope"></i>
+						<span class="title">Enviar Correos</span>
+						<span class="arrow "></span>
+						</a>
 					</li>					
 				</ul>
 				<!-- END SIDEBAR MENU -->

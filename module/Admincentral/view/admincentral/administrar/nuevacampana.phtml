@@ -1,0 +1,107 @@
+<form action="" method="post" id="form_campana">
+<div class="row">
+										<div class="col-md-8 col-md-push-2 form-group form-md-line-input has-info ">
+											<select class="form-control" id="combo_tipocam" name="ID_TIPO">
+                                            <option value="0">Seleccione un tipo de campa&ntilde;a</option>
+                                            <?php for ($i=0;$i<count($combocampana);$i++){                                                      
+                                                      echo "<option value=".$combocampana[$i]['ID_TIPO'].">".$combocampana  [$i]['DESC_TIPO']."</option>\n";
+                                               }        
+                                                ?>	 
+											</select>											
+										</div>
+ </div> 
+<div class="form-group form-md-line-input">
+											<label class="col-md-4 control-label" for="camp_nombre"><strong>Nombre Campa&ntilde;a</strong></label>
+											<div class="col-md-6">
+												<input type="text" class="form-control" id="camp_nombre" name="NOMBRE_CAMPANA" required>
+												<div class="form-control-focus">
+												</div>
+                                                <!--span class="help-block">Sin puntos ni DV</span-->
+											</div>
+</div>
+<div class="form-group form-md-line-input ">
+<label class="col-md-4 control-label" ><strong>Estado</strong></label>
+										<div class="md-radio-inline">
+											<div class="md-radio">
+												<input type="radio" id="radio6" value="s" name="ACTIVO" class="md-radiobtn" checked>
+												<label for="radio6">
+												<span></span>
+												<span class="check"></span>
+												<span class="box"></span>
+												Activa </label>
+											</div>
+											<div class="md-radio">
+												<input type="radio" id="radio7" value="n" name="ACTIVO" class="md-radiobtn">
+												<label for="radio7">
+												<span></span>
+												<span class="check"></span>
+												<span class="box"></span>
+												No activa </label>
+											</div>
+									</div>
+</div>                                    
+<div class="form-group form-md-checkboxes">
+										<label>Seleccione las sedes que desea asociar</label>
+										<div class="md-checkbox-inline">
+                                        <?php for($i=0;$i<count($sedes);$i++){ 
+                                                                                        echo '
+											<div class="md-checkbox has-success">
+												<input name="COD_SEDE[]" type="checkbox" value="'.$sedes[$i]['COD_SEDE'].'" id="checkbox'.$i.'" class="md-check">
+												<label for="checkbox'.$i.'">
+												<span></span>
+												<span class="check"></span>
+												<span class="box"></span>
+												 '.$sedes[$i]['NOMBRE_SEDE'].'</label>
+											</div>';} ?> 											
+										</div>
+</div>
+<br />
+<div class="form-group form-md-line-input">										
+											<div class="col-md-offset-6">												
+												<a class="btn red" data-dismiss="modal" aria-hidden="true"><i class="fa fa-close"></i> &nbsp; Cancelar</a>
+                                                <a onclick="validaInput()" class="btn green"><i class="fa fa-check"></i> &nbsp;Ingresar campa&ntilde;a</a>                                                											
+										   </div>
+</div>
+</form>
+<script>
+function creaPass(){
+var pass = $("#oper_user").val()+Math.floor((Math.random() * 100) + 1);
+$("#oper_password").val(pass);    
+}
+function validaInput(){
+  if($("#combo_tipocam").val()<1 || $("#camp_nombre").val()<1){
+        toastr.warning('Debes seleccionar un tipo y dar un nombre a la campaña');
+  }else{
+    ingresarCampana()
+  }
+}
+function ingresarCampana(){
+bootbox.confirm("<strong>Se ingresar&aacute; la campa&ntilde;a, esta seguro ?", function(result) {
+    if (result){      
+      var postData = $("#form_campana").serializeArray();
+      $.ajax(
+        {
+          url : '<?php echo $this->basePath()."/admincentral/administrar/nuevacampana"?>',
+            type: "POST",
+            data : postData,
+            dataType : 'json',
+            success : function(response) {
+                $('#modal_nueva').modal('hide');
+                                  window.setTimeout(function() {
+                window.location.reload(true);
+                }, 1000)
+                toastr.success(response.descr);
+        },
+        error: function(jqXHR, textStatus, errorThrown) 
+        {
+            toastr.error('Error ! Favor contactar con administrador del sistema');            
+           // $("#alertnok").html('<span class="alert alert-success">Error en el env&iacute;o de datos al servidor</span>');      
+        }
+    });                  
+    }else{
+    toastr.info('Sin cambios'); 
+} 
+    
+});
+}
+</script>

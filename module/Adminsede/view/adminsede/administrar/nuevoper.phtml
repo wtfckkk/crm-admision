@@ -1,0 +1,95 @@
+<?php
+//LLamaremos a la session
+use Zend\Session\Container;
+$sid = new Container('base');
+$sede = $sid->offsetGet('sede');
+?>
+
+<form action="" method="post" id="form_operador">
+<div class="form-group form-md-line-input">
+											<label class="col-md-4 control-label" for="oper_nombre"><strong>Nombre Completo</strong></label>
+											<div class="col-md-6">
+												<input type="text" class="form-control" id="oper_nombre" name="NOMBRE_FULL" required>
+												<div class="form-control-focus">
+												</div>
+                                                <!--span class="help-block">Sin puntos ni DV</span-->
+											</div>
+</div>
+<div class="form-group form-md-line-input">
+											<label class="col-md-4 control-label" for="oper_user"><strong>Usuario</strong></label>
+											<div class="col-md-6">
+												<input onblur="creaPass()" type="text" class="form-control" id="oper_user" name="USERNAME" required>
+												<div class="form-control-focus">
+												</div>
+                                                <!--span class="help-block">Sin puntos ni DV</span-->
+											</div>
+</div>
+<div class="form-group form-md-line-input">
+											<label class="col-md-4 control-label" for="oper_password"><strong>Contrase&ntilde;a</strong></label>
+											<div class="col-md-6">
+												<input type="text" class="form-control" id="oper_password" name="PASSWORD" disabled>
+												<div class="form-control-focus">
+												</div>
+                                                <!--span class="help-block">Sin puntos ni DV</span-->
+											</div>
+</div>
+<div class="form-group form-md-line-input">
+											<label class="col-md-4 control-label" for="oper_sede"><strong>Sede</strong></label>
+											<div class="col-md-6">
+												<input type="text" class="form-control" value="<?php echo $sede?>" id="oper_sede" name="SEDE" disabled>
+												<div class="form-control-focus">
+												</div>
+                                                <!--span class="help-block">Sin puntos ni DV</span-->
+											</div>
+</div>
+<br />
+<div class="form-group form-md-line-input">										
+											<div class="col-md-offset-6">												
+												<a class="btn red" data-dismiss="modal" aria-hidden="true"><i class="fa fa-close"></i> &nbsp; Cancelar</a>
+                                                <a onclick="validaInput()" class="btn green"><i class="fa fa-check"></i> &nbsp;Ingresar operador</a>                                                											
+										   </div>
+</div>
+</form>
+<script>
+function creaPass(){
+var pass = $("#oper_user").val()+Math.floor((Math.random() * 100) + 1);
+$("#oper_password").val(pass);    
+}
+function validaInput(){
+  if($("#oper_nombre").val()<1 || $("#oper_user").val()<1){
+        toastr.warning('Debes indicar algun nombre y usuario');
+  }else{
+    ingresarOperador()
+  }
+}
+function ingresarOperador(){
+bootbox.confirm("<strong>Esta seguro ?", function(result) {
+    if (result){
+      $("#oper_password").attr('disabled',false);
+      var postData = $("#form_operador").serializeArray();
+      $.ajax(
+        {
+          url : '<?php echo $this->basePath()."/adminsede/administrar/nuevoper"?>',
+            type: "POST",
+            data : postData,
+            dataType : 'json',
+            success : function(response) {
+                $('#modal_detalle').modal('hide');
+                toastr.success('Usuario ingresado al sistema');
+                window.setTimeout(function() {
+                window.location.reload(true);
+                }, 1000)
+        },
+        error: function(jqXHR, textStatus, errorThrown) 
+        {
+            toastr.error('Error ! Favor contactar con administrador del sistema');            
+           // $("#alertnok").html('<span class="alert alert-success">Error en el env&iacute;o de datos al servidor</span>');      
+        }
+    });                  
+    }else{
+    toastr.info('Sin cambios'); 
+} 
+    
+});
+}
+</script>

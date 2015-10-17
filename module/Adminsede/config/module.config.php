@@ -76,6 +76,7 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'Adminsede\Controller\Index' => 'Adminsede\Controller\IndexController',
+            'Adminsede\Controller\Administrar' => 'Adminsede\Controller\AdministrarController',
         ),
     ),
     'view_manager' => array(

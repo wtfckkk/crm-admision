@@ -242,7 +242,7 @@ class OportunidadController extends AbstractActionController
         $this->dbAdapter=$this->getServiceLocator()->get('Zend/Db/Adapter');            
         //Obtenemos datos de sesion        
         $sid = new Container('base');
-        $lista['COD_SEDE'] = $sid->offsetGet('sede');
+        $lista['COD_SEDE'] = $sid->offsetGet('cod_sede');
         $lista['USERNAME'] = $sid->offsetGet('usuario');
         //Ingresamos nueva oportunidad y la consultamos  
         $oportunidad = new OportunidadTable($this->dbAdapter);  
@@ -278,7 +278,7 @@ class OportunidadController extends AbstractActionController
         $oportunidad = new OportunidadTable($this->dbAdapter);  
         //Obtenemos datos de sesion        
         $sid = new Container('base');
-        $lista['COD_SEDE'] = $sid->offsetGet('sede');  
+        $lista['COD_SEDE'] = $sid->offsetGet('cod_sede');  
         //Validamos si existe prospecto       
         $existe = $pcabecera->getDatoxRut($lista['RUT']); 
           if(count($existe)>0){
@@ -315,7 +315,7 @@ class OportunidadController extends AbstractActionController
         $oportunid  = new OportunidadTable($this->dbAdapter);
         //Obtenemos datos de sesion        
         $sid = new Container('base');
-        $lista['COD_SEDE'] = $sid->offsetGet('sede');    
+        $lista['COD_SEDE'] = $sid->offsetGet('cod_sede');    
         //Consultamos datos de Prospecto         
         $prospecto = $pcabecera->getDatoxRut($lista['RUT']); 
         //OBtenemos oportunidades para prospecto
@@ -343,7 +343,7 @@ class OportunidadController extends AbstractActionController
         $tipofeed     = new TipoFeedbackTable($this->dbAdapter);
         //Obtenemos datos de sesion        
         $sid = new Container('base');
-        $lista['COD_SEDE'] = $sid->offsetGet('sede');  
+        $lista['COD_SEDE'] = $sid->offsetGet('cod_sede');  
         //Consultamos datos de Prospecto         
         $prospecto = $pcabecera->getDatoxRut($lista['rut']); 
         //Consultamos detalle de Prospecto         
@@ -413,7 +413,7 @@ class OportunidadController extends AbstractActionController
         //Obtenemos datos de sesion        
         $sid = new Container('base');        
         //Consultamos campanas para sede 
-        $combo_campana = $campana->getComboSede($this->dbAdapter,$sid->offsetGet('sede'));
+        $combo_campana = $campana->getComboSede($this->dbAdapter,$sid->offsetGet('cod_sede'));
         
         //Consultamos tipoFeedback para combo   
         $this->layout('layout/operador');    
@@ -431,13 +431,13 @@ class OportunidadController extends AbstractActionController
         $oportunidad = new OportunidadTable($this->dbAdapter);
         //Obtenemos datos de sesion        
         $sid = new Container('base'); 
-        $campanas = $oportunidad->getOporCampana($this->dbAdapter,$sid->offsetGet('sede'),$lista['ID_CAMPANA']);
+        $campanas = $oportunidad->getOporCampana($this->dbAdapter,$sid->offsetGet('cod_sede'),$lista['ID_CAMPANA']);        
           if(count($campanas)>0){          
             $descr = "Busqueda Exitosa!";
             $flag = "true";
           }
           else{
-            $descr = "No existen campa&ntilde;as a gestionar en la sede";
+            $descr = "No existen oportunidades asociadas a esta campa&ntilde;a";
             $flag = "false";
           }         
         //Retornamos a la Vista            
@@ -462,7 +462,7 @@ class OportunidadController extends AbstractActionController
         //Obtenemos datos de sesion        
         $sid = new Container('base'); 
         //Buscamos oportunidad
-        $campanas = $oportunidad->getOporCampana($this->dbAdapter,$sid->offsetGet('sede'),$lista['ID_CAMPANA']);  
+        $campanas = $oportunidad->getOporCampana($this->dbAdapter,$sid->offsetGet('cod_sede'),$lista['ID_CAMPANA']);  
         $i = array_rand($campanas);
         //Consultamos datos de Prospecto         
         $prospecto = $pcabecera->getDatoxRut($campanas[$i]['RUT']);

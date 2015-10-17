@@ -18,6 +18,8 @@ if (php_sapi_name() === 'cli-server') {
 $root = realpath($_SERVER["DOCUMENT_ROOT"]);
 require 'init_autoloader.php';
 require_once $root.'/crm/module/Sistema/src/MyClasses/Utils.php';
+require_once $root.'/crm/vendor/PHPExcel.php';
+
 
 // Run the application!
 Zend\Mvc\Application::init(require 'config/application.config.php')->run();

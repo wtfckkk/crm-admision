@@ -76,6 +76,8 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'Admincentral\Controller\Index' => 'Admincentral\Controller\IndexController',
+            'Admincentral\Controller\Administrar' => 'Admincentral\Controller\AdministrarController',  
+            'Admincentral\Controller\Cargas' => 'Admincentral\Controller\CargasController',          
         ),
     ),
     'view_manager' => array(

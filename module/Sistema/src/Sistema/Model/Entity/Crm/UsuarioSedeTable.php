@@ -25,13 +25,11 @@ class UsuarioSedeTable extends TableGateway
     {             
              $array=array
              (
-                'USERNAME'=>$USERNAME,
-                'COD_SEDE'=>$COD_SEDE,
+                'USERNAME'=>$user,
+                'COD_SEDE'=>$cod_sede,
 
              );
                $this->insert($array);
-               $id = $this->lastInsertValue;
-               return $id;
     } 
     public function getSede($user)
     {        
@@ -57,6 +55,41 @@ class UsuarioSedeTable extends TableGateway
                 
         $result=$this->dbAdapter->query($query,Adapter::QUERY_MODE_EXECUTE);
         return $result->toArray();
+    }
+    
+    public function getUsuariosxSede(Adapter $dbAdapter,$perfil,$cod_sede)
+    {
+       $this->dbAdapter = $dbAdapter;
+       $query = "select U.NOMBRE_FULL, U.USERNAME, UP.ID_PERFIL, SE.NOMBRE_SEDE FROM USUARIOS U, USUARIO_PERFIL UP, USUARIO_SEDE US, SEDES SE
+                WHERE U.USERNAME = UP.USERNAME
+                AND U.USERNAME = US.USERNAME
+                AND SE.COD_SEDE = US.COD_SEDE
+                AND UP.ID_PERFIL = '$perfil'
+                and US.COD_SEDE = '$cod_sede'";
+                
+        $result=$this->dbAdapter->query($query,Adapter::QUERY_MODE_EXECUTE);
+        return $result->toArray();
+    }
+    public function getUsuarioxSede(Adapter $dbAdapter,$user,$perfil,$cod_sede)
+    {
+       $this->dbAdapter = $dbAdapter;
+       $query = "select U.NOMBRE_FULL, U.USERNAME, UP.ID_PERFIL, SE.NOMBRE_SEDE FROM USUARIOS U, USUARIO_PERFIL UP, USUARIO_SEDE US, SEDES SE
+                WHERE U.USERNAME = UP.USERNAME
+                AND U.USERNAME = US.USERNAME
+                AND SE.COD_SEDE = US.COD_SEDE
+                AND UP.ID_PERFIL = '$perfil'
+                and US.COD_SEDE = '$cod_sede'
+                and U.USERNAME = '$user'";
+                
+        $result=$this->dbAdapter->query($query,Adapter::QUERY_MODE_EXECUTE);
+        return $result->toArray();
+    }
+    
+    public function borraUsuario($user)
+    {             
+             $array=array('USERNAME'=>$user);
+             
+             $this->delete($array);
     }
     
 

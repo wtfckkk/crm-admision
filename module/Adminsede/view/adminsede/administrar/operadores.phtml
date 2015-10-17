@@ -1,0 +1,154 @@
+                <div class="row">
+					<div class="col-md-12">
+						<!-- BEGIN SAMPLE FORM PORTLET-->
+						<div class="portlet light">
+							<div class="portlet-title">
+								<div class="caption font-green-haze">
+									<i class="icon-user font-green-haze"></i>
+									<span class="caption-subject bold uppercase">  Administrar operadores de mi sede:  </span>
+								</div>
+								<div class="actions">									
+									<a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title="">
+									</a>
+								</div>
+							</div>
+							<div class="portlet-body form">                            								
+							                                                                                                                                                                                                                                                                                                                                                                                                                
+                            <a onclick="nuevoOperador()" class="btn blue" ><i class="fa fa-plus"></i> Nuevo operador</a>
+							
+							<div class="portlet-body">
+								<div class="table-responsive">
+									<table class="table">
+									<thead>
+									<tr>
+										<th>
+											 Nombre
+										</th>
+										<th>
+											 Usuario
+										</th>
+                                        <th>
+											 Perfil
+										</th>
+										<th>
+											 Sede
+										</th>
+										<th>
+											 Acci&oacute;n
+										</th>
+									</tr>
+									</thead>
+									<tbody>
+									<?php echo $html?>								
+									</tbody>
+									</table>
+								</div>
+							</div>
+						
+    
+                                
+                                
+                                
+                            </div>
+                                
+                                
+
+                            </div>
+                        </div>
+                   </div>
+<div id="modal_nuevo" class="modal fade" tabindex="-1" role="dialog"  data-keyboard="false">
+									<div class="modal-dialog modal-md">
+										<div class="modal-content">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+												<h4 class="modal-title"><i class="icon-user"></i> &nbsp;Ingresar nuevo operador al sistema</h4>
+											</div>
+			<div id="bodymodal_nuevo" class="modal-body">
+											                 
+                                                           
+			 </div>
+		</div>
+    </div>
+</div>
+
+<div id="modal_detalle" class="modal fade" tabindex="-1" role="dialog"  data-keyboard="false">
+									<div class="modal-dialog modal-md">
+										<div class="modal-content">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+												<h4 class="modal-title"><i class="icon-edit"></i> &nbsp;Modificar usuario</h4>
+											</div>
+			<div id="bodymodal_detalle" class="modal-body">
+											                 
+                                                           
+			 </div>
+		</div>
+    </div>
+</div>      
+<script>
+toastr.options = {
+  "positionClass": "toast-top-center",
+}
+function borraUsuario(user){
+bootbox.confirm("<strong>Se eliminar&aacute; el usuario, esta seguro ?", function(result) {    
+     if (result){
+  $.ajax(
+        {
+            url : '<?php echo $this->basePath()."/adminsede/administrar/borrausuario"?>',
+            type: "POST",
+            data : {'user':user},        
+		  success : function(response) {		      
+                toastr.success('Usuario eliminado del sistema correctamente');
+                  window.setTimeout(function() {
+                window.location.reload(true);
+                }, 1000)		      
+	   	},
+         error: function(jqXHR, textStatus, errorThrown) 
+            {            
+                toastr.error('Error! Favor contactar con administrador del sistema'); 
+            }
+        });  
+     }else  
+     {
+        toastr.info('Sin cambios');
+     } 
+        
+});    
+}
+function nuevoOperador(){     
+    var postData = $("#form_feedback2").serializeArray();
+    $.ajax(
+        {
+            url : '<?php echo $this->basePath()."/adminsede/administrar/nuevoper"?>',
+            type: "POST",
+            data : postData,        
+		  success : function(response) {
+		      $('#modal_nuevo').modal('show');               
+              $('#bodymodal_nuevo').html(response);              
+	   	},
+         error: function(jqXHR, textStatus, errorThrown) 
+            {            
+                toastr.error('Error! Favor contactar con administrador del sistema'); 
+            }
+        });
+   
+}
+function editUsuario(user){
+  $.ajax(
+        {
+            url : '<?php echo $this->basePath()."/adminsede/administrar/editaroper"?>',
+            type: "POST",
+            data : {'user':user},        
+		  success : function(response) {		      
+                $('#modal_detalle').modal('show');               
+              $('#bodymodal_detalle').html(response);		      
+	   	},
+         error: function(jqXHR, textStatus, errorThrown) 
+            {            
+                toastr.error('Error! Favor contactar con administrador del sistema'); 
+            }
+        });  
+    
+        
+}
+</script>                                                                                 

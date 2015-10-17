@@ -1,0 +1,91 @@
+<div class="portlet-body form">
+								<!-- BEGIN FORM-->
+								<form action="#" class="form-horizontal form-bordered">
+									<div class="form-body">
+										<div class="form-group">
+											<label class="control-label col-md-3">Carga maestra de prospectos</label>
+											<div class="col-md-9">
+												<div class="fileinput fileinput-new" data-provides="fileinput">
+													<div class="input-group input-large">
+														<div class="form-control uneditable-input input-fixed input-medium" data-trigger="fileinput">
+															<i class="fa fa-file fileinput-exists"></i>&nbsp; <span class="fileinput-filename">
+															</span>
+														</div>
+														<span class="input-group-addon btn default btn-file">
+														<span class="fileinput-new">
+														Seleccionar archivo </span>
+														<span class="fileinput-exists">
+														Cambiar </span>
+														<input type="file" id="fileprospectos" name="..." onchange="show()">
+														</span>
+														<a href="javascript:;" class="input-group-addon btn red fileinput-exists" data-dismiss="fileinput">
+														Quitar </a>                                                        
+													</div>
+												</div>
+											</div>
+										</div>          
+                                        <div class="form-group form-md-line-input">										
+											<div class="col-md-offset-4">																								
+                                                <a id="btn_carga" onclick="cargaProspectos()" class="btn green hide"><i class="fa fa-spinner"></i> &nbsp;Cargar Prospectos</a>                                                											
+										   </div>
+                                        </div>                              										          
+                                        <br />
+							<div class="portlet-body hide">
+								<div class="table-responsive">
+									<table class="table">
+									<thead>
+									<tr>
+										<th>
+											 Nombre
+										</th>
+										<th>
+											 Apellido 
+										</th>
+                                        <th>
+											 Correo 
+										</th>
+										<th>
+											 Telefono
+										</th>
+										<th>
+											 Empresa/Establec.
+										</th>
+                                        <th>
+											 Estado
+										</th>
+									</tr>
+									</thead>
+									<tbody>
+									<?php //echo $html?>								
+									</tbody>
+									</table>
+								</div>
+							</div>
+<script>
+function show(){
+    $("#btn_carga").removeClass("hide");
+}
+function cargaProspectos(){    
+var data = new FormData();
+    jQuery.each(jQuery('#fileprospectos')[0].files, function(i, file) {
+    data.append('file-'+i, file);
+    });        
+	$.ajax( {
+	    url : '<?php echo $this->basePath()."/admincentral/cargas/cargaprospectos"?>',
+		data : data,
+        cache: false,
+        contentType: false,
+        processData: false,
+        type: 'POST',   
+		success : function(response) {
+		  console.log(response.test);
+          if(response.status = 'ok'){
+                                      
+          }else
+          {
+
+          }
+		}
+	}); 
+}
+</script>						

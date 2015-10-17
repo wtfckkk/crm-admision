@@ -72,19 +72,18 @@ class LoginController extends AbstractActionController
         
         
     }
-
-    public function sendAction()
-    {                
-        $data = $this->getRequest()->getPost();
-                                $sid = new Container('base');
+/*                                $sid = new Container('base');
                         $sid->offsetSet('usuario', 'operadorA');
                         $sid->offsetSet('sede', 'sede1');
                         
                         $sid->offsetSet('perfil', $listaperfil[0]['ID_PERFIL']);
                         $sid->offsetSet('desc_perfil', $listaperfil[0]['DESC_PERFIL']); 
                         $sid->offsetSet('logueado', 'si');      
-        return $this->redirect()->toUrl($this->getRequest()->getBaseUrl().'/operador'); 
-      /*  if($data['usuario']!=null && $data['password2']!=null){
+        return $this->redirect()->toUrl($this->getRequest()->getBaseUrl().'/operador'); */
+    public function sendAction()
+    {                
+        $data = $this->getRequest()->getPost();
+        if($data['usuario']!=null && $data['password2']!=null){
             //Conectamos a BBDD
             $this->dbAdapter=$this->getServiceLocator()->get('Zend\Db\Adapter');
             //Consultamos Usuario y Password en tabla USUARIOS
@@ -108,7 +107,9 @@ class LoginController extends AbstractActionController
                         $sid = new Container('base');
                         $sid->offsetSet('usuario', $listaUsuario[0]['USERNAME']);
                         $sid->offsetSet('perfil', $listaperfil[0]['ID_PERFIL']);
-                        $sid->offsetSet('desc_perfil', $listaperfil[0]['DESC_PERFIL']); 
+                        $sid->offsetSet('desc_perfil', $listaperfil[0]['DESC_PERFIL']);
+                        $sid->offsetSet('cod_sede', $listaUsuario[0]['COD_SEDE']);
+                        $sid->offsetSet('sede', $listaUsuario[0]['NOMBRE_SEDE']); 
                         $sid->offsetSet('logueado', 'si');                                                                                                                       
                                                 
                              if($listaperfil[0]['ID_PERFIL'] == "operador"){
@@ -118,7 +119,7 @@ class LoginController extends AbstractActionController
                                 $urlHome = "adminsede";
                              }
                              if($listaperfil[0]['ID_PERFIL'] == "admcentral"){
-                                $urlHome = "admcentral";
+                                $urlHome = "admincentral";
                              }                                                     
                              $sid->offsetSet('urlHome',$urlHome);
                              
@@ -135,7 +136,7 @@ class LoginController extends AbstractActionController
        }else{
             return $this->forward()->dispatch('Application\Controller\Login',array('action'=>'index','id'=>1));
         }
-         //array('data'=>$idSession)     */                         
+         //array('data'=>$idSession)                             
         return new ViewModel();
     }    
     /*

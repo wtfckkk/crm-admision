@@ -1,0 +1,72 @@
+<div class="row static-info"> 
+																<div class="col-md-5 name">
+																	 Nombre Completo:
+																</div>
+																<div class="col-md-7 value">
+																	 <?php echo $usuarios[0]['NOMBRE_FULL']?>
+																</div>	
+</div>														
+<div class="row static-info">
+																<div class="col-md-5 name">
+																	 Usuario:
+																</div>
+																<div class="col-md-7 value">
+																	 <?php echo $usuarios[0]['USERNAME']?>
+																</div>
+</div>
+<div class="row static-info">
+																<div class="col-md-5 name">
+																	 Perfil:
+																</div>
+																<div class="col-md-7 value">
+																	 <?php echo $usuarios[0]['ID_PERFIL']?>
+																</div>
+</div> 
+<div class="form-group form-md-line-input">
+											<label class="col-md-4 control-label" for="oper_nombre"><strong>Nueva Contrase&ntilde;a</strong></label>
+											<div class="col-md-6">
+												<input type="text" class="form-control" id="edit_password" name="PASSWORD" required>
+												<div class="form-control-focus">
+												</div>
+                                                <!--span class="help-block">Sin puntos ni DV</span-->
+											</div>
+</div>                                                            
+<br />
+<div class="form-group form-md-line-input">										
+											<div class="col-md-offset-5">												
+												<a class="btn red" data-dismiss="modal" aria-hidden="true"><i class="fa fa-close"></i> &nbsp; Cancelar</a>
+                                                <a onclick="validaInput('<?php echo $usuarios[0]['USERNAME']?>')" class="btn green"><i class="fa fa-check"></i> &nbsp;Actualizar Contrase&ntilde;a</a>                                                											
+										   </div>
+</div>
+<script>
+function validaInput(user){
+if($("#edit_password").val()<1){
+   toastr.warning('Debe escribir una contrase&ntilde;a'); 
+}else{    
+bootbox.confirm("<strong>Esta seguro ?", function(result) {
+    if (result){          
+      var postData = {'user':user,'pass':$("#edit_password").val()}
+      $.ajax(
+        {
+          url : '<?php echo $this->basePath()."/adminsede/administrar/editapass"?>',
+            type: "POST",
+            data : postData,
+            dataType : 'json',
+            success : function(response) {
+                $('#modal_detalle').modal('hide');
+                toastr.success('Contrase&ntilde;a cambiada exitosamente');                
+        },
+        error: function(jqXHR, textStatus, errorThrown) 
+        {
+            toastr.error('Error ! Favor contactar con administrador del sistema');            
+           // $("#alertnok").html('<span class="alert alert-success">Error en el env&iacute;o de datos al servidor</span>');      
+        }
+    });                  
+    }else{
+    toastr.info('Sin cambios'); 
+} 
+    
+});
+}    
+}
+</script>

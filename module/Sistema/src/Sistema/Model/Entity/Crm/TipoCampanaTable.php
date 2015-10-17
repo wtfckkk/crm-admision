@@ -9,21 +9,21 @@ use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Where;
 use Zend\Db\ResultSet\ResultSet;
 
-class TipoFeedbackTable extends TableGateway
+class TipoCampanaTable extends TableGateway
 {
    
     public $dbAdapter;
  
     public function __construct(Adapter $adapter = null, $databaseSchema = null, ResultSet $selectResultPrototype = null)
     {
-        return parent::__construct('TIPO_FEEDBACK', $adapter, $databaseSchema,$selectResultPrototype);
+        return parent::__construct('TIPO_CAMPANAS', $adapter, $databaseSchema,$selectResultPrototype);
     }
     
     public function getCombo()
     {   
         $datos = $this->select();
         $recorre = $datos->toArray();
-        $resultado["0"]="Seleccione tipo de feedback";
+        $resultado["0"]="Seleccione tipo de campa&ntilde;a";
         for($i=0;$i<count($recorre);$i++)
         {
           $resultado[$recorre[$i]['ID_TIPO']] = $recorre[$i]['DESC_TIPO']; 
@@ -31,17 +31,12 @@ class TipoFeedbackTable extends TableGateway
         return $recorre;
     }
     
-    public function getDatos(Adapter $dbAdapter)
-    {
-       $this->dbAdapter = $dbAdapter;
-       $query = "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='dbo' AND TABLE_NAME='CARRERAS'";
-                
-        $result=$this->dbAdapter->query($query,Adapter::QUERY_MODE_EXECUTE);
-        return $result->toArray();
+    public function getTipos()
+    {   
+        $datos = $this->select();
+        $recorre = $datos->toArray();
+       
+        return $recorre;
     }
-    
-
-    
-   
     
 }
