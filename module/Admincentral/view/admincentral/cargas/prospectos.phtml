@@ -1,10 +1,11 @@
+
 <div class="portlet-body form">
 								<!-- BEGIN FORM-->
 								<form action="#" class="form-horizontal form-bordered">
 									<div class="form-body">
 										<div class="form-group">
-											<label class="control-label col-md-3">Carga maestra de prospectos</label>
-											<div class="col-md-9">
+											<label class="control-label col-md-4"><strong>Carga maestra de prospectos</strong></label>
+											<div class="col-md-8">
 												<div class="fileinput fileinput-new" data-provides="fileinput">
 													<div class="input-group input-large">
 														<div class="form-control uneditable-input input-fixed input-medium" data-trigger="fileinput">
@@ -16,7 +17,7 @@
 														Seleccionar archivo </span>
 														<span class="fileinput-exists">
 														Cambiar </span>
-														<input type="file" id="fileprospectos" name="..." onchange="show()">
+														<input type="file" id="fileprospectos" name="..." onchange="ValidaRUT()">
 														</span>
 														<a href="javascript:;" class="input-group-addon btn red fileinput-exists" data-dismiss="fileinput">
 														Quitar </a>                                                        
@@ -30,16 +31,19 @@
 										   </div>
                                         </div>                              										          
                                         <br />
-							<div class="portlet-body hide">
+							<div id="tabla_carga" class="portlet-body hide">
 								<div class="table-responsive">
 									<table class="table">
 									<thead>
 									<tr>
-										<th>
-											 Nombre
+                                        <th>
+											 Rut
 										</th>
 										<th>
-											 Apellido 
+											 Nombres
+										</th>
+										<th>
+											 Apellidos
 										</th>
                                         <th>
 											 Correo 
@@ -55,15 +59,45 @@
 										</th>
 									</tr>
 									</thead>
-									<tbody>
-									<?php //echo $html?>								
+									<tbody id="body_tabla_carga">							
 									</tbody>
 									</table>
 								</div>
 							</div>
+                            </div>
+                            </form>
+                            </div>
 <script>
-function show(){
-    $("#btn_carga").removeClass("hide");
+toastr.options = {
+  "positionClass": "toast-top-center",
+}
+function ValidaRUT(){
+var data = new FormData();
+    jQuery.each(jQuery('#fileprospectos')[0].files, function(i, file) {
+    data.append('file-'+i, file);
+    });     
+$.ajax( {
+	    url : '<?php echo $this->basePath()."/admincentral/cargas/checkprospectos"?>',
+		data : data,
+        cache: false,
+        contentType: false,
+        processData: false,
+        type: 'POST',   
+		success : function(response) {		  
+          if(response.status == 'ok'){
+            $("#btn_carga").removeClass("hide");              
+            toastr.success("Todos los rut pueden ser cargados");                                     
+          }else
+          {
+            toastr.warning(response.descr);
+          }
+		},
+        error: function(jqXHR, textStatus, errorThrown) 
+        {
+            toastr.error('Error ! Favor contactar con administrador del sistema');            
+           // $("#alertnok").html('<span class="alert alert-success">Error en el env&iacute;o de datos al servidor</span>');      
+        }
+	});         
 }
 function cargaProspectos(){    
 var data = new FormData();
@@ -77,10 +111,11 @@ var data = new FormData();
         contentType: false,
         processData: false,
         type: 'POST',   
-		success : function(response) {
-		  console.log(response.test);
+		success : function(response) {		  
           if(response.status = 'ok'){
-                                      
+            $("#tabla_carga").removeClass("hide"); 
+            $("#body_tabla_carga").append(response.html); 
+            toastr.success(response.descr)                                     
           }else
           {
 

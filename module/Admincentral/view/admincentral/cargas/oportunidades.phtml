@@ -1,10 +1,11 @@
+
 <div class="portlet-body form">
 								<!-- BEGIN FORM-->
 								<form action="#" class="form-horizontal form-bordered">
 									<div class="form-body">
 										<div class="form-group">
-											<label class="control-label col-md-3">Carga maestra de oportunidades</label>
-											<div class="col-md-9">
+											<label class="control-label col-md-4"><strong>Carga maestra de oportunidades</strong></label>
+											<div class="col-md-8">
 												<div class="fileinput fileinput-new" data-provides="fileinput">
 													<div class="input-group input-large">
 														<div class="form-control uneditable-input input-fixed input-medium" data-trigger="fileinput">
@@ -16,44 +17,110 @@
 														Seleccionar archivo </span>
 														<span class="fileinput-exists">
 														Cambiar </span>
-														<input type="file" name="...">
+														<input type="file" id="fileoportunidades" name="..." onchange="ValidaRUT()">
 														</span>
 														<a href="javascript:;" class="input-group-addon btn red fileinput-exists" data-dismiss="fileinput">
-														Quitar </a>
+														Quitar </a>                                                        
 													</div>
 												</div>
 											</div>
-										</div>
+										</div>          
+                                        <div class="form-group form-md-line-input">										
+											<div class="col-md-offset-4">																								
+                                                <a id="btn_carga" onclick="cargaOportunidades()" class="btn green hide"><i class="fa fa-spinner"></i> &nbsp;Cargar Prospectos</a>                                                											
+										   </div>
+                                        </div>                              										          
                                         <br />
-							<div class="portlet-body">
+							<div id="tabla_carga" class="portlet-body hide">
 								<div class="table-responsive">
 									<table class="table">
 									<thead>
 									<tr>
-										<th>
-											 Nombre
+                                        <th>
+											 ID Campa&ntilde;a
 										</th>
 										<th>
-											 Apellido 
+											 Rut
+										</th>
+										<th>
+											 Codigo Sede
 										</th>
                                         <th>
-											 Correo 
+											 Codigo Carrera 
 										</th>
 										<th>
-											 Telefono
+											 Jornada
 										</th>
 										<th>
-											 Empresa/Establec.
+											 Observaci&oacute;n
 										</th>
                                         <th>
-											 Estado
+											 Tipo de Feedback
 										</th>
 									</tr>
 									</thead>
-									<tbody>
-									<?php //echo $html?>								
+									<tbody id="body_tabla_carga">							
 									</tbody>
 									</table>
 								</div>
 							</div>
-						
+                            </div>
+                            </form>
+                            </div>
+<script>
+toastr.options = {
+  "positionClass": "toast-top-center",
+}
+function ValidaRUT(){
+var data = new FormData();
+    jQuery.each(jQuery('#fileoportunidades')[0].files, function(i, file) {
+    data.append('file-'+i, file);
+    });     
+$.ajax( {
+	    url : '<?php echo $this->basePath()."/admincentral/cargas/checkoportunidades"?>',
+		data : data,
+        cache: false,
+        contentType: false,
+        processData: false,
+        type: 'POST',   
+		success : function(response) {		  
+          if(response.status == 'ok'){
+            $("#btn_carga").removeClass("hide");              
+            toastr.success("Todos los rut pueden ser cargados");                                     
+          }else
+          {
+            toastr.warning(response.descr);
+          }
+		},
+        error: function(jqXHR, textStatus, errorThrown) 
+        {
+            toastr.error('Error ! Favor contactar con administrador del sistema');            
+           // $("#alertnok").html('<span class="alert alert-success">Error en el env&iacute;o de datos al servidor</span>');      
+        }
+	});         
+}
+function cargaProspectos(){    
+var data = new FormData();
+    jQuery.each(jQuery('#fileprospectos')[0].files, function(i, file) {
+    data.append('file-'+i, file);
+    });        
+	$.ajax( {
+	    url : '<?php echo $this->basePath()."/admincentral/cargas/cargaprospectos"?>',
+		data : data,
+        cache: false,
+        contentType: false,
+        processData: false,
+        type: 'POST',   
+		success : function(response) {		  
+          if(response.status = 'ok'){
+            $("#tabla_carga").removeClass("hide"); 
+            $("#body_tabla_carga").append(response.html); 
+            toastr.success(response.descr)                                     
+          }else
+          {
+
+          }
+		}
+	}); 
+}
+</script>						

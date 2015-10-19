@@ -11,7 +11,7 @@ class ProspectoCabeceraTable extends TableGateway
 {
     private $RUT;
     private $DV;
-    private $NOMBRE;
+    private $NOMBRES;
     private $AP_PATERNO;
     private $AP_MATERNO;
     private $ESTADO;
@@ -28,7 +28,7 @@ class ProspectoCabeceraTable extends TableGateway
     {    
         $this->RUT=$datos['RUT'];
         $this->DV=$datos['DV'];   
-        $this->NOMBRE=$datos['NOMBRE'];
+        $this->NOMBRES=$datos['NOMBRES'];
         $this->AP_PATERNO=$datos['AP_PATERNO'];
         $this->AP_MATERNO=$datos['AP_MATERNO'];        
         
@@ -41,14 +41,12 @@ class ProspectoCabeceraTable extends TableGateway
              (
                 'RUT'=>$this->RUT,
                 'DV'=>$this->DV,
-                'NOMBRES'=>$this->NOMBRE,
+                'NOMBRES'=>$this->NOMBRES,
                 'AP_PATERNO'=>$this->AP_PATERNO,
                 'AP_MATERNO'=>$this->AP_MATERNO,
                 'ESTADO'=>'Cargado',
              );
                $this->insert($array);
-               $id = $this->lastInsertValue;
-               return $id;
                              
     } 
     

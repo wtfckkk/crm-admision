@@ -28,6 +28,7 @@ use Sistema\Model\Entity\Crm\TipoFeedbackTable;
 use Sistema\Model\Entity\Crm\FeedbackTable;
 
 
+
 class CargasController extends AbstractActionController
 {
     public function indexAction()
@@ -40,20 +41,95 @@ class CargasController extends AbstractActionController
     }
     
     public function prospectosAction()
-    {
-        
+    {                        
         $this->layout('layout/admincentral');        
         return new ViewModel();
         
         
     }
     
-    public function cargaprospectosAction()
+    public function checkprospectosAction()
     {
-            //Definimos ruta DEBE EXISTIR PREVIAMENTE
-            $ruta = $_SERVER['DOCUMENT_ROOT'].'/crm/upload2s'; 
-                                 
-            //Obtenemos y guardamos File    
+        //Conectamos con BBDD
+        $this->dbAdapter=$this->getServiceLocator()->get('Zend/Db/Adapter');  
+        
+        //Instancias                             
+        $pcabecera     = new ProspectoCabeceraTable($this->dbAdapter);         
+        
+        //Definimos ruta DEBE EXISTIR PREVIAMENTE
+        $ruta = $_SERVER['DOCUMENT_ROOT'].'/crm/excel/tmp';
+        //Obtenemos y guardamos File    
+        $file = $this->params()->fromFiles();                                
+        $adapterFile = new \Zend\File\Transfer\Adapter\Http();
+        $adapterFile->setDestination($ruta);
+        $adapterFile->receive($file['file-0']['name']);            
+        
+        //Buscamos el file
+        $inputFileName = $ruta."/".$file['file-0']['name'];
+        
+        //Obtenemos clase PHPExcel
+            $objPHPExcel = new \PHPExcel();
+                                                             
+            //Llamamos Clase PHPExcel
+            $objReader = \PHPExcel_IOFactory::createReader('Excel2007');
+            $objReader->setReadDataOnly(TRUE);
+            $objPHPExcel = $objReader->load($inputFileName);
+            //Obtenemos Hoja de trabajo
+            $objWorksheet = $objPHPExcel->getActiveSheet();
+            // Obtenemos los rangos de celdas de planilla excel
+            $highestRow = $objWorksheet->getHighestRow(); // e.g. 10
+            $highestColumn = $objWorksheet->getHighestColumn(); // e.g 'F'
+            $highestColumnIndex = (\PHPExcel_Cell::columnIndexFromString($highestColumn))-1; // e.g. 5  
+            //Asociamos data con Indices de BBDD
+            $indices = array('RUT'); 
+            
+            //Recorremos excel                             
+            for ($row = 3; $row <= $highestRow; ++$row) {                                                           
+                    
+                   $lista[$row][0] = $objWorksheet->getCellByColumnAndRow(0,$row)->getValue();                                                                     
+               
+                    //Agregamos indices a array 
+                    error_reporting(E_ERROR);                   
+                    $data = array_combine($indices,$lista[$row]);
+                            if (!$data){                        
+                                $result = new JsonModel(array('status'=>'error','descripcion'=>"ERROR! Archivo no corresponde a ".ucfirst($flag)));
+                                $result->setTerminal(true);
+                                return $result;                                         
+                            }
+                    $existe = $pcabecera->getDatoxRut($data['RUT']);                             
+                    //Validamos si rut existe en BBDD                            
+                    if(count($existe)>0){
+                                $result = new JsonModel(array('status'=>'nok','descr'=>'Rut '.$data['RUT'].' ya existe en el sistema'));
+                                $result->setTerminal(true);
+                                return $result;
+                    }         
+                                                
+                  } 
+        unlink($inputFileName);                            
+        //Retornamos a la vista            
+        $result = new JsonModel(array('status'=>'ok','data'=>$existe));
+        $result->setTerminal(true);
+        return $result;
+                            
+                              
+    }
+    
+    public function cargaprospectosAction()
+    {               
+           
+           //Conectamos con BBDD
+           $this->dbAdapter=$this->getServiceLocator()->get('Zend/Db/Adapter');  
+           
+           //Instancias                  
+           $sid = new Container('base');
+           $pcabecera     = new ProspectoCabeceraTable($this->dbAdapter);  
+           $pdetalle      = new ProspectoDetalleTable($this->dbAdapter);
+           $pcabedetalle  = new ProsCabeceraDetalleTable($this->dbAdapter);
+            
+           //Definimos ruta DEBE EXISTIR PREVIAMENTE
+           $ruta = $_SERVER['DOCUMENT_ROOT'].'/crm/excel';                        
+                                              
+           //Obtenemos y guardamos File    
             $file = $this->params()->fromFiles();                                
             $adapterFile = new \Zend\File\Transfer\Adapter\Http();
             $adapterFile->setDestination($ruta);
@@ -61,30 +137,63 @@ class CargasController extends AbstractActionController
             
             //Buscamos el file
             $inputFileName = $ruta."/".$file['file-0']['name'];
-        
-        
-        /*
-        
-        //Obtenemos clase PHPExcel
+                                
+            //Obtenemos clase PHPExcel
             $objPHPExcel = new \PHPExcel();
-            
-            //Buscamos el file
-            $inputFileName = $_SERVER['DOCUMENT_ROOT'].'/files/db/'.$id_db.'/'.$modulo[0]['url'].'/copropietario/Copropietario.xlsx';            
-             
+                                                             
             //Llamamos Clase PHPExcel
             $objReader = \PHPExcel_IOFactory::createReader('Excel2007');
             $objReader->setReadDataOnly(TRUE);
             $objPHPExcel = $objReader->load($inputFileName);
             //Obtenemos Hoja de trabajo
             $objWorksheet = $objPHPExcel->getActiveSheet();
-
-            //Insertamos valores en celdas
-            for($i=3;$i<count($unidades)+3;$i++){
-                $objWorksheet->setCellValue('A'.$i, $unidades[0]['nombre']);   
-            } */
-            
-            $this->layout('layout/admincentral');
-        $result = new JsonModel(array('test'=>$inputFileName));
+            // Obtenemos los rangos de celdas de planilla excel
+            $highestRow = $objWorksheet->getHighestRow(); // e.g. 10
+            $highestColumn = $objWorksheet->getHighestColumn(); // e.g 'F'
+            $highestColumnIndex = (\PHPExcel_Cell::columnIndexFromString($highestColumn))-1; // e.g. 5
+            //Asociamos data con Indices de BBDD
+            $indices = array('RUT','DV','NOMBRES','AP_PATERNO','AP_MATERNO','CORREO','TELEFONO','CELULAR','EMPRESA_ESTABLEC','DIRECCION');            
+            $html="";                        
+            //Recorremos excel                             
+            for ($row = 3; $row <= $highestRow; ++$row) {                
+                 
+                 for ($col = 0; $col <= $highestColumnIndex; ++$col) {         
+                    
+                   $lista[$row][$col] = $objWorksheet->getCellByColumnAndRow($col,$row)->getValue();                                                                     
+                }
+                    //Agregamos indices a array 
+                    error_reporting(E_ERROR);                   
+                    $data = array_combine($indices,$lista[$row]);
+                            if (!$data){                        
+                                $result = new JsonModel(array('status'=>'error','descripcion'=>"ERROR! Archivo no corresponde a ".ucfirst($flag)));
+                                $result->setTerminal(true);
+                                return $result;
+                            }                        
+                    //Agregamos estado y usuario al array
+                    $data['ESTADO'] = "Cargado";
+                    $data['USERNAME_ACTUALIZACION'] = $sid->offsetGet('usuario');     
+                                    
+                    //Insertamos nuevo prospecto en PROSPECTO_CABECERA                               
+                    $pcabecera->nuevoProsCabecera($data);                        
+                    //Insertamos detalle de prospecto en tabla ProspectoDetalle            
+                    $id_detalle = $pdetalle->nuevoProsDetalle($data);
+                    //Insertamos en tabla ProspectoDetalle            
+                    $pcabedetalle->nuevoProsCabeceraDet($data['RUT'],$id_detalle);   
+                    //Agregamos fila para mostrar en la vista
+                    $html.="<tr>";
+                    $html.="<td>".number_format($data['RUT'],-3,"",".")."-".$data['DV']
+                         ."</td><td>".$data['NOMBRES']
+                         ."</td><td>".$data['AP_PATERNO']." ".$data['AP_MATERNO']."</td><td>".$data['CORREO']
+                         ."</td><td>".$data['TELEFONO']."</td><td>".$data['EMPRESA_ESTABLEC']
+                         ."</td><td>".$data['ESTADO'];
+                    $html.="</tr>";                              
+            } 
+        //Cambiamos nombre y hacemos tar a file para historico                      
+        rename($inputFileName,$inputFileName.'.'.date('Ymd').str_replace(":","",date('H:i:s')));
+        //Retornamos a la vista 
+        $descr = "Se han ingresado <strong>".($highestRow-2)."</strong> prospectos exitosamente";   
+        $this->layout('layout/admincentral');
+        $result = new JsonModel(array('status'=>'ok','html'=>$html,'descr'=>$descr));
         return $result;
         
         
@@ -95,6 +204,155 @@ class CargasController extends AbstractActionController
         
         $this->layout('layout/admincentral');
         return new ViewModel();
+        
+        
+    }
+    
+        public function checkoportunidadesAction()
+    {
+        //Conectamos con BBDD
+        $this->dbAdapter=$this->getServiceLocator()->get('Zend/Db/Adapter');  
+        
+        //Instancias                             
+        $pcabecera     = new ProspectoCabeceraTable($this->dbAdapter);         
+        
+        //Definimos ruta DEBE EXISTIR PREVIAMENTE
+        $ruta = $_SERVER['DOCUMENT_ROOT'].'/crm/excel/tmp';
+        //Obtenemos y guardamos File    
+        $file = $this->params()->fromFiles();                                
+        $adapterFile = new \Zend\File\Transfer\Adapter\Http();
+        $adapterFile->setDestination($ruta);
+        $adapterFile->receive($file['file-0']['name']);            
+        
+        //Buscamos el file
+        $inputFileName = $ruta."/".$file['file-0']['name'];
+        
+        //Obtenemos clase PHPExcel
+            $objPHPExcel = new \PHPExcel();
+                                                             
+            //Llamamos Clase PHPExcel
+            $objReader = \PHPExcel_IOFactory::createReader('Excel2007');
+            $objReader->setReadDataOnly(TRUE);
+            $objPHPExcel = $objReader->load($inputFileName);
+            //Obtenemos Hoja de trabajo
+            $objWorksheet = $objPHPExcel->getActiveSheet();
+            // Obtenemos los rangos de celdas de planilla excel
+            $highestRow = $objWorksheet->getHighestRow(); // e.g. 10
+            $highestColumn = $objWorksheet->getHighestColumn(); // e.g 'F'
+            $highestColumnIndex = (\PHPExcel_Cell::columnIndexFromString($highestColumn))-1; // e.g. 5  
+            //Asociamos data con Indices de BBDD
+            $indices = array('RUT'); 
+            
+            //Recorremos excel                             
+            for ($row = 3; $row <= $highestRow; ++$row) {                                                           
+                    
+                   $lista[$row][1] = $objWorksheet->getCellByColumnAndRow(1,$row)->getValue();                                                                     
+               
+                    //Agregamos indices a array 
+                    error_reporting(E_ERROR);                   
+                    $data = array_combine($indices,$lista[$row]);
+                            if (!$data){                        
+                                $result = new JsonModel(array('status'=>'error','descripcion'=>"ERROR! Archivo no corresponde a ".ucfirst($flag)));
+                                $result->setTerminal(true);
+                                return $result;                                         
+                            }
+                    $existe = $pcabecera->getDatoxRut($data['RUT']);                             
+                    //Validamos si rut existe en BBDD                            
+                    if(count($existe)>0){
+                                $result = new JsonModel(array('status'=>'nok','descr'=>'Rut '.$data['RUT'].' ya existe en el sistema'));
+                                $result->setTerminal(true);
+                                return $result;
+                    }         
+                                                
+                  } 
+        unlink($inputFileName);                            
+        //Retornamos a la vista            
+        $result = new JsonModel(array('status'=>'ok','data'=>$existe));
+        $result->setTerminal(true);
+        return $result;
+                            
+                              
+    }
+    
+     public function cargaoportunidadesAction()
+    {               
+           
+           //Conectamos con BBDD
+           $this->dbAdapter=$this->getServiceLocator()->get('Zend/Db/Adapter');  
+           
+           //Instancias                  
+           $sid = new Container('base');
+           $pcabecera     = new ProspectoCabeceraTable($this->dbAdapter);  
+           $pdetalle      = new ProspectoDetalleTable($this->dbAdapter);
+           $pcabedetalle  = new ProsCabeceraDetalleTable($this->dbAdapter);
+            
+           //Definimos ruta DEBE EXISTIR PREVIAMENTE
+           $ruta = $_SERVER['DOCUMENT_ROOT'].'/crm/excel';                        
+                                              
+           //Obtenemos y guardamos File    
+            $file = $this->params()->fromFiles();                                
+            $adapterFile = new \Zend\File\Transfer\Adapter\Http();
+            $adapterFile->setDestination($ruta);
+            $adapterFile->receive($file['file-0']['name']);
+            
+            //Buscamos el file
+            $inputFileName = $ruta."/".$file['file-0']['name'];
+                                
+            //Obtenemos clase PHPExcel
+            $objPHPExcel = new \PHPExcel();
+                                                             
+            //Llamamos Clase PHPExcel
+            $objReader = \PHPExcel_IOFactory::createReader('Excel2007');
+            $objReader->setReadDataOnly(TRUE);
+            $objPHPExcel = $objReader->load($inputFileName);
+            //Obtenemos Hoja de trabajo
+            $objWorksheet = $objPHPExcel->getActiveSheet();
+            // Obtenemos los rangos de celdas de planilla excel
+            $highestRow = $objWorksheet->getHighestRow(); // e.g. 10
+            $highestColumn = $objWorksheet->getHighestColumn(); // e.g 'F'
+            $highestColumnIndex = (\PHPExcel_Cell::columnIndexFromString($highestColumn))-1; // e.g. 5
+            //Asociamos data con Indices de BBDD
+            $indices = array('RUT','DV','NOMBRES','AP_PATERNO','AP_MATERNO','CORREO','TELEFONO','CELULAR','EMPRESA_ESTABLEC','DIRECCION');            
+            $html="";                        
+            //Recorremos excel                             
+            for ($row = 3; $row <= $highestRow; ++$row) {                
+                 
+                 for ($col = 0; $col <= $highestColumnIndex; ++$col) {         
+                    
+                   $lista[$row][$col] = $objWorksheet->getCellByColumnAndRow($col,$row)->getValue();                                                                     
+                }
+                    //Agregamos indices a array 
+                    error_reporting(E_ERROR);                   
+                    $data = array_combine($indices,$lista[$row]);
+                            if (!$data){                        
+                                $result = new JsonModel(array('status'=>'error','descripcion'=>"ERROR! Archivo no corresponde a ".ucfirst($flag)));
+                                $result->setTerminal(true);
+                                return $result;
+                            }                        
+                    //Agregamos estado y usuario al array
+                    $data['ESTADO'] = "Cargado";
+                    $data['USERNAME_ACTUALIZACION'] = $sid->offsetGet('usuario');     
+                                    
+                    //Insertamos nuevo prospecto en PROSPECTO_CABECERA                               
+                    $pcabecera->nuevoProsCabecera($data);                        
+                    //Insertamos detalle de prospecto en tabla ProspectoDetalle            
+                    $id_detalle = $pdetalle->nuevoProsDetalle($data);
+                    //Insertamos en tabla ProspectoDetalle            
+                    $pcabedetalle->nuevoProsCabeceraDet($data['RUT'],$id_detalle);   
+                    //Agregamos fila para mostrar en la vista
+                    $html.="<tr>";
+                    $html.="<td>".number_format($data['RUT'],-3,"",".")."-".$data['DV']
+                         ."</td><td>".$data['NOMBRES']
+                         ."</td><td>".$data['AP_PATERNO']." ".$data['AP_MATERNO']."</td><td>".$data['CORREO']
+                         ."</td><td>".$data['TELEFONO']."</td><td>".$data['EMPRESA_ESTABLEC']
+                         ."</td><td>".$data['ESTADO'];
+                    $html.="</tr>";                              
+            }  
+        //Retornamos a la vista 
+        $descr = "Se han ingresado <strong>".($highestRow-2)."</strong> prospectos exitosamente";   
+        $this->layout('layout/admincentral');
+        $result = new JsonModel(array('status'=>'ok','html'=>$html,'descr'=>$descr));
+        return $result;
         
         
     }

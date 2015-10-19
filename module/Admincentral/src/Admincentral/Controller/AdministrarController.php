@@ -59,7 +59,8 @@ class AdministrarController extends AbstractActionController
                 for ($i=0;$i<count($campanas);$i++){
                     if($campanas[$i]['ACTIVO']=="s"){$activo="Si";}else{$activo="No";}                    
                     $html .= '<tr>';
-                  $html = $html.'<td>'.$campanas[$i]['NOMBRE_CAMPANA'].'</td>
+                    $html = $html.'<td>'.$campanas[$i]['ID_CAMPANA'].'</td>
+                                 <td>'.$campanas[$i]['NOMBRE_CAMPANA'].'</td>
                                  <td>'.$campanas[$i]['DESC_TIPO'].'</td>
                                  <td>'.$activo.'</td>
                                  <td>'.$campanas[$i]['NOMBRE_SEDE'].'</td>
