@@ -72,10 +72,12 @@ toastr.options = {
   "positionClass": "toast-top-center",
 }
 function ValidaRUT(){
+if($('#fileprospectos').val()!=""){
 var data = new FormData();
     jQuery.each(jQuery('#fileprospectos')[0].files, function(i, file) {
     data.append('file-'+i, file);
-    });     
+    });    
+       
 $.ajax( {
 	    url : '<?php echo $this->basePath()."/admincentral/cargas/checkprospectos"?>',
 		data : data,
@@ -97,7 +99,8 @@ $.ajax( {
             toastr.error('Error ! Favor contactar con administrador del sistema');            
            // $("#alertnok").html('<span class="alert alert-success">Error en el env&iacute;o de datos al servidor</span>');      
         }
-	});         
+	}); 
+}       
 }
 function cargaProspectos(){    
 var data = new FormData();
@@ -112,13 +115,13 @@ var data = new FormData();
         processData: false,
         type: 'POST',   
 		success : function(response) {		  
-          if(response.status = 'ok'){
+          if(response.status == 'ok'){
             $("#tabla_carga").removeClass("hide"); 
             $("#body_tabla_carga").append(response.html); 
             toastr.success(response.descr)                                     
           }else
           {
-
+            toastr.warning(response.descr);
           }
 		}
 	}); 

@@ -27,7 +27,7 @@
 										</div>          
                                         <div class="form-group form-md-line-input">										
 											<div class="col-md-offset-4">																								
-                                                <a id="btn_carga" onclick="cargaOportunidades()" class="btn green hide"><i class="fa fa-spinner"></i> &nbsp;Cargar Prospectos</a>                                                											
+                                                <a id="btn_carga" onclick="cargaOportunidades()" class="btn green hide"><i id="icon_btn_carga" class="fa fa-spinner"></i> &nbsp;Cargar Oportunidades</a>                                                											
 										   </div>
                                         </div>                              										          
                                         <br />
@@ -56,6 +56,9 @@
 										</th>
                                         <th>
 											 Tipo de Feedback
+										</th>
+                                        <th>
+											 Estado
 										</th>
 									</tr>
 									</thead>
@@ -86,7 +89,7 @@ $.ajax( {
 		success : function(response) {		  
           if(response.status == 'ok'){
             $("#btn_carga").removeClass("hide");              
-            toastr.success("Todos los rut pueden ser cargados");                                     
+            toastr.success("Todas las oportunidades pueden ser cargadas");                                     
           }else
           {
             toastr.warning(response.descr);
@@ -99,28 +102,31 @@ $.ajax( {
         }
 	});         
 }
-function cargaProspectos(){    
+function cargaOportunidades(){  
+if($('#fileoportunidades').val()!=""){    
 var data = new FormData();
-    jQuery.each(jQuery('#fileprospectos')[0].files, function(i, file) {
+    jQuery.each(jQuery('#fileoportunidades')[0].files, function(i, file) {
     data.append('file-'+i, file);
     });        
 	$.ajax( {
-	    url : '<?php echo $this->basePath()."/admincentral/cargas/cargaprospectos"?>',
+	    url : '<?php echo $this->basePath()."/admincentral/cargas/cargaoportunidades"?>',
 		data : data,
         cache: false,
         contentType: false,
         processData: false,
         type: 'POST',   
 		success : function(response) {		  
-          if(response.status = 'ok'){
+          if(response.status == 'ok'){
             $("#tabla_carga").removeClass("hide"); 
+            $("#btn_carga").addClass("hide");                             
             $("#body_tabla_carga").append(response.html); 
             toastr.success(response.descr)                                     
-          }else
+           }else
           {
-
+            toastr.warning(response.descr);
           }
 		}
 	}); 
+}
 }
 </script>						
