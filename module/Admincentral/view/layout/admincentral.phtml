@@ -4,7 +4,7 @@ use Zend\Session\Container;
 $sid = new Container('base');
 $url = $this->basePath();
 $perfil = $sid->offsetGet('desc_perfil');
- if ($sid->offsetExists('usuario')!="adminsede"){
+ if ($sid->offsetExists('usuario')!="admcentral"){
     header ("Location: $url/application/login");
     exit;
  }
@@ -321,7 +321,7 @@ jQuery(document).ready(function() {
 <div class="clearfix">
 </div>
 <!-- BEGIN CONTAINER -->
-<div class="container">
+<div class="container"> 
 	<div class="page-container">
 		<!-- BEGIN SIDEBAR -->
 		<div class="page-sidebar-wrapper">
@@ -337,7 +337,7 @@ jQuery(document).ready(function() {
 				<!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
 				<ul class="page-sidebar-menu page-sidebar-menu-hover-submenu " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
 					<li class="start active ">
-						<a href="<?php echo $this->basePath()?>/adminsede">
+						<a href="<?php echo $this->basePath()?>/admincentral">
 						<i class="icon-home"></i>
 						<span class="title">Inicio</span>
 						<span class="selected"></span>
