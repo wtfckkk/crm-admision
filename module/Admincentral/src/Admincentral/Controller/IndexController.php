@@ -31,7 +31,8 @@ use Sistema\Model\Entity\Crm\FeedbackTable;
 class IndexController extends AbstractActionController
 {
     public function indexAction()
-    {
+    {                
+
         
         $this->layout('layout/admincentral');
         return new ViewModel();

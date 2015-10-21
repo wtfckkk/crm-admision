@@ -1,0 +1,7 @@
+Hola Guido
+
+Envío credenciales VPN y archivo *.pcf
+
+VPN_INDRA_gpuglisevich	epi9o096
+
+Saludos

@@ -69,7 +69,7 @@ class CargasController extends AbstractActionController
         // Validamos Extension del file
         $trozos = explode(".", $inputFileName);
          if (end($trozos) != "csv" && end($trozos) != "xls" && end($trozos) != "xlsx"){
-                 $result = new JsonModel(array('status'=>'nok','descr'=>'Archivo Inválido'));
+                 $result = new JsonModel(array('status'=>'nok','descr'=>'Archivo Inv&aacute;lido'));
                                 $result->setTerminal(true);
                                 return $result;
                 
