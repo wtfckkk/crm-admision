@@ -78,14 +78,14 @@ class ProspectoCabeceraTable extends TableGateway
         return $recorre;
     }
     
-    public function fetchAll()
-{
-    $resultSet = $this->select(function(Select $select){
-        $select->quantifier('TOP 15 ')
-            ->order('id ASC');
-    });
-    return $resultSet;
-}
+    
+    public function countProspecto(Adapter $dbAdapter)
+    {
+       $this->dbAdapter = $dbAdapter;
+       $query = "SELECT count(*) as count FROM PROSPECTO_CABECERA";                
+       $result=$this->dbAdapter->query($query,Adapter::QUERY_MODE_EXECUTE);
+       return $result->toArray();
+    }
     
     public function getDatos(Adapter $dbAdapter)
     {

@@ -132,5 +132,13 @@ class OportunidadTable extends TableGateway
         
         return $result->toArray();
     }
+    
+        public function countOportunidades(Adapter $dbAdapter)
+    {
+       $this->dbAdapter = $dbAdapter;
+       $query = "SELECT count(*) as count FROM OPORTUNIDADES";                
+       $result=$this->dbAdapter->query($query,Adapter::QUERY_MODE_EXECUTE);
+       return $result->toArray();
+    }
                
 }

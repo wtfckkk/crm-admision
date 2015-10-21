@@ -54,7 +54,7 @@ class CargasController extends AbstractActionController
         $this->dbAdapter=$this->getServiceLocator()->get('Zend/Db/Adapter');  
         
         //Instancias                             
-        $pcabecera     = new ProspectoCabeceraTable($this->dbAdapter);         
+        $pcabecera  = new ProspectoCabeceraTable($this->dbAdapter);         
         
         //Definimos ruta DEBE EXISTIR PREVIAMENTE
         $ruta = $_SERVER['DOCUMENT_ROOT'].'/crm/excel/tmp';

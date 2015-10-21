@@ -63,13 +63,12 @@ class FeedbackTable extends TableGateway
         return $recorre;
     }
     
-    public function getDatos(Adapter $dbAdapter)
+    public function countFeedback(Adapter $dbAdapter)
     {
        $this->dbAdapter = $dbAdapter;
-       $query = "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='dbo' AND TABLE_NAME='CARRERAS'";
-                
-        $result=$this->dbAdapter->query($query,Adapter::QUERY_MODE_EXECUTE);
-        return $result->toArray();
+       $query = "SELECT count(*) as count FROM FEEDBACKS";                
+       $result=$this->dbAdapter->query($query,Adapter::QUERY_MODE_EXECUTE);
+       return $result->toArray();
     }
     
 

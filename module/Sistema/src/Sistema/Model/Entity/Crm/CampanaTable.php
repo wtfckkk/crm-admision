@@ -118,4 +118,11 @@ class CampanaTable extends TableGateway
         return $recorre;
     }            
     
+    public function countCampana(Adapter $dbAdapter)
+    {
+       $this->dbAdapter = $dbAdapter;
+       $query = "SELECT count(*) as count FROM CAMPANAS";                
+       $result=$this->dbAdapter->query($query,Adapter::QUERY_MODE_EXECUTE);
+       return $result->toArray();
+    }
 }
