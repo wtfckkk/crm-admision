@@ -16,9 +16,9 @@ return array(
                                             // 'platform' => 'SqlServer',
                                         'platform' => 'SqlServer',
                                         'driver'   => 'Pdo',
-                                        'dsn'      => 'dblib:host=CRMSQL:1433;dbname=crm;',
-                                        'username' => 'crm',
-                                        'password' => 'crm',
+                                        'dsn'      => 'dblib:host=CRMSQL:1433;dbname=CRM;',
+                                        'username' => 'usrcrm',
+                                        'password' => 'Passusrcrm.,',
                                         'pdotype'  => 'dblib',
                                        // 'pdotype'  => 'dblib',  
       /*  'adapters' => array (

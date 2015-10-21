@@ -316,24 +316,36 @@ $.ajax(
         type: "POST",
         data : postData,
         dataType : 'json',
-        success : function(response) {         
-        var combo1 = $("#combo_campana");
-        var combo2 = $("#combo_carrera");                  
-         // Limpiamos combos
-         combo1.find('option').remove();
-         combo2.find('option').remove();         
-         //Cagamos combo1
-         $(response.campanas).each(function(i, v){ // indice, valor                    
-         combo1.append('<option value="' + response.campanas[i]['ID_CAMPANA'] + '">' + response.campanas[i]['NOMBRE_CAMPANA'] + '</option>');
-         })
-         combo1.prop('disabled', false);
+        success : function(response) {
+        if(response.status=="ok"){
+            var combo1 = $("#combo_campana");
+            var combo2 = $("#combo_carrera");                  
+            // Limpiamos combos
+            combo1.find('option').remove();
+            combo2.find('option').remove();         
+            //Cagamos combo1
+            $(response.campanas).each(function(i, v){ // indice, valor                    
+            combo1.append('<option value="' + response.campanas[i]['ID_CAMPANA'] + '">' + response.campanas[i]['NOMBRE_CAMPANA'] + '</option>');
+            })
+            combo1.prop('disabled', false);
         
-         //Cagamos combo2
-         $(response.carreras).each(function(i, v){ // indice, valor                    
-         combo2.append('<option value="' + response.carreras[i]['COD_CARRERA'] + '">' + response.carreras[i]['NOMBRE_CARRERA'] + '</option>');
-         })
-         combo2.prop('disabled', false);
-         buscaJornada()
+            //Cagamos combo2
+            $(response.carreras).each(function(i, v){ // indice, valor                    
+            combo2.append('<option value="' + response.carreras[i]['COD_CARRERA'] + '">' + response.carreras[i]['NOMBRE_CARRERA'] + '</option>');
+             })
+            combo2.prop('disabled', false);
+            buscaJornada()
+         }else{            
+            toastr.warning(response.descr);
+            var combo2 = $("#combo_carrera"); 
+            combo2.find('option').remove();
+            //Cagamos combo2
+            $(response.carreras).each(function(i, v){ // indice, valor                    
+            combo2.append('<option value="' + response.carreras[i]['COD_CARRERA'] + '">' + response.carreras[i]['NOMBRE_CARRERA'] + '</option>');
+             })
+            combo2.prop('disabled', false);
+            buscaJornada()
+         }                  
         },
         error: function(jqXHR, textStatus, errorThrown) 
         {            
@@ -443,10 +455,15 @@ bootbox.confirm("<strong>Estas Seguro ?</strong>", function(result) {
             type: "POST",
             data : postData,
             dataType : 'json',
-            success : function(response) {                        
+            success : function(response) {
+                if(response.status =="ok"){
                          $("#nueva_rut").attr('disabled',true);
                          $("#nueva_estado").attr('disabled',true);
                         toastr.success(response.descr);
+                }else{
+                    toastr.warning(response.descr);                    
+                }
+                        
         },
         error: function(jqXHR, textStatus, errorThrown) 
         {

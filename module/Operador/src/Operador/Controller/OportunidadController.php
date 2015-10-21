@@ -174,15 +174,27 @@ class OportunidadController extends AbstractActionController
            $sedecarr  = new SedeCarreraTable($this->dbAdapter);
            $carrera   = new CarrerasTable($this->dbAdapter);
            
+           
+           
+           
            //Consultamos codigo de sedes por usuario       
            $codesede = $usersede->getSede($lista['user']);
-           //Consultamos Campañas por usuario para combo
-           $idcampanas = $sedecamp->getIDCampana($codesede[0]['COD_SEDE']);           
-           $combocamp = $campana->getCombo($this->dbAdapter,implode(',',$idcampanas));
            //Consultamos Carreras por sede para combo
            $idcarreras = $sedecarr->getIDCarrera($codesede[0]['COD_SEDE']);            
            $in ="'".implode("','", $idcarreras)."'";
            $combocarr = $carrera->getCombo($this->dbAdapter,$in);
+           //Consultamos si existen campañas
+           $campanas = $campana->getCampanas($this->dbAdapter);
+           //Respondemos false si no hay campanas asociadas a la sede
+              if (count($campanas)<1){
+                //Retornamos a la Vista            
+                $result = new JsonModel(array('status'=>'nok','carreras'=>$combocarr,'descr'=>'No existen campa&ntilde;as creadas en el sistema')); 
+                $result->setTerminal(true);            
+                return $result; 
+              } 
+           //Consultamos Campañas por usuario para combo
+           $idcampanas = $sedecamp->getIDCampana($codesede[0]['COD_SEDE']);                     
+           $combocamp = $campana->getCombo($this->dbAdapter,implode(',',$idcampanas));           
            
            
           // $test= implode(',',$idcampanas);
@@ -244,6 +256,13 @@ class OportunidadController extends AbstractActionController
         $sid = new Container('base');
         $lista['COD_SEDE'] = $sid->offsetGet('cod_sede');
         $lista['USERNAME'] = $sid->offsetGet('usuario');
+              //Respondemos false si no hay campanas seleccionadas
+              if ($lista['ID_CAMPANA'] == null){
+                //Retornamos a la Vista            
+                $result = new JsonModel(array('status'=>'nok','descr'=>'No se puede ingresar oportunidad sin seleccionar campa&ntilde;a')); 
+                $result->setTerminal(true);            
+                return $result; 
+              } 
         //Ingresamos nueva oportunidad y la consultamos  
         $oportunidad = new OportunidadTable($this->dbAdapter);  
         $id_oportunidad = $oportunidad->nuevaOportunidad($lista);
