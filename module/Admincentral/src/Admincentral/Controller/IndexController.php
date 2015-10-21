@@ -16,25 +16,37 @@ use Zend\View\Model\JsonModel;
 use Zend\Session\Container;
 
 use Sistema\Model\Entity\Crm\ProspectoCabeceraTable;
-use Sistema\Model\Entity\Crm\ProspectoDetalleTable;
-use Sistema\Model\Entity\Crm\ProsCabeceraDetalleTable;
-use Sistema\Model\Entity\Crm\UsuarioSedeTable;
-use Sistema\Model\Entity\Crm\SedeCampanaTable;
-use Sistema\Model\Entity\Crm\CampanaTable;
-use Sistema\Model\Entity\Crm\CarrerasTable;
-use Sistema\Model\Entity\Crm\SedeCarreraTable;
 use Sistema\Model\Entity\Crm\OportunidadTable;
-use Sistema\Model\Entity\Crm\TipoFeedbackTable;
 use Sistema\Model\Entity\Crm\FeedbackTable;
+use Sistema\Model\Entity\Crm\CampanaTable;
 
 
 class IndexController extends AbstractActionController
 {
     public function indexAction()
     {
+        //Conectamos con BBDD
+        $this->dbAdapter=$this->getServiceLocator()->get('Zend/Db/Adapter'); 
+        
+        //Tablas
+        $feedback = new FeedbackTable($this->dbAdapter);
+        $prospecto = new ProspectoCabeceraTable($this->dbAdapter);
+        $oportunidad = new OportunidadTable($this->dbAdapter);
+        $campana = new CampanaTable($this->dbAdapter);
+        
+        //
+        $countProspecto    = $prospecto->countProspecto($this->dbAdapter);    
+        $countFeedback     = $feedback->countFeedback($this->dbAdapter);   
+        $countOportunidad  = $oportunidad->countOportunidades($this->dbAdapter);           
+        $countCampana      = $campana->countCampana($this->dbAdapter); 
         
         $this->layout('layout/admincentral');
-        return new ViewModel();
+        return new ViewModel(array(
+                            'countfeedback'=>$countFeedback[0]['count'],
+                            'countprospecto'=>$countProspecto[0]['count'],
+                            'countoportunidad'=>$countOportunidad[0]['count'],
+                            'countcampana'=>$countCampana[0]['count'],
+                            ));
         
         
     }
@@ -42,3 +54,4 @@ class IndexController extends AbstractActionController
     
    
 }
+

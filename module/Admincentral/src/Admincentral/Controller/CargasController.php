@@ -54,7 +54,7 @@ class CargasController extends AbstractActionController
         $this->dbAdapter=$this->getServiceLocator()->get('Zend/Db/Adapter');  
         
         //Instancias                             
-        $pcabecera     = new ProspectoCabeceraTable($this->dbAdapter);         
+        $pcabecera  = new ProspectoCabeceraTable($this->dbAdapter);         
         
         //Definimos ruta DEBE EXISTIR PREVIAMENTE
         $ruta = $_SERVER['DOCUMENT_ROOT'].'/crm/excel/tmp';
@@ -69,7 +69,7 @@ class CargasController extends AbstractActionController
         // Validamos Extension del file
         $trozos = explode(".", $inputFileName);
          if (end($trozos) != "csv" && end($trozos) != "xls" && end($trozos) != "xlsx"){
-                 $result = new JsonModel(array('status'=>'nok','descr'=>'Archivo Inválido'));
+                 $result = new JsonModel(array('status'=>'nok','descr'=>'Archivo Inv&aacute;lido'));
                                 $result->setTerminal(true);
                                 return $result;
                 

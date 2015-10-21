@@ -3,15 +3,16 @@
 use Zend\Session\Container;
 $sid = new Container('base');
 $url = $this->basePath();
-$perfil = $sid->offsetGet('desc_perfil');
- if ($sid->offsetExists('usuario')!="operador"){
-    header ("Location: $url/application/login");
-    exit;
- }
+$perfil = $sid->offsetGet('desc_perfil');   
 if ($sid->offsetGet('logueado')!="si"){     
      header ("Location: $url/application/login");
     exit;
 };
+$modulo = $sid->offsetGet('perfil');
+if ($modulo!="operador"){
+    header ("Location: $url/$modulo");
+    exit;
+ }
 ?>
 <!DOCTYPE html>
 <!-- 
