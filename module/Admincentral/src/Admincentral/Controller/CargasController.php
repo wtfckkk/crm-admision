@@ -66,14 +66,21 @@ class CargasController extends AbstractActionController
         
         //Buscamos el file
         $inputFileName = $ruta."/".$file['file-0']['name'];
-        
+        // Validamos Extension del file
+        $trozos = explode(".", $inputFileName);
+         if (end($trozos) != "csv" && end($trozos) != "xls" && end($trozos) != "xlsx"){
+                 $result = new JsonModel(array('status'=>'nok','descr'=>'Archivo Inválido'));
+                                $result->setTerminal(true);
+                                return $result;
+                
+         }
         //Obtenemos clase PHPExcel
             $objPHPExcel = new \PHPExcel();
                                                              
             //Llamamos Clase PHPExcel
             $objReader = \PHPExcel_IOFactory::createReader('Excel2007');
             $objReader->setReadDataOnly(TRUE);
-            $objPHPExcel = $objReader->load($inputFileName);
+            $objPHPExcel = $objReader->load($inputFileName);    
             //Obtenemos Hoja de trabajo
             $objWorksheet = $objPHPExcel->getActiveSheet();
             // Obtenemos los rangos de celdas de planilla excel
@@ -105,9 +112,9 @@ class CargasController extends AbstractActionController
                     }         
                                                 
                   } 
-        unlink($inputFileName);                            
+        unlink($inputFileName);                           
         //Retornamos a la vista            
-        $result = new JsonModel(array('status'=>'ok','data'=>$existe));
+        $result = new JsonModel(array('status'=>'ok','data'=>$objPHPExcel));
         $result->setTerminal(true);
         return $result;
                             
@@ -227,6 +234,15 @@ class CargasController extends AbstractActionController
         //Buscamos el file
         $inputFileName = $ruta."/".$file['file-0']['name'];
         
+        // Validamos Extension del file
+        $trozos = explode(".", $inputFileName);
+         if (end($trozos) != "csv" && end($trozos) != "xls" && end($trozos) != "xlsx"){
+                 $result = new JsonModel(array('status'=>'nok','descr'=>'Archivo Inválido'));
+                                $result->setTerminal(true);
+                                return $result;
+                
+         }
+        
         //Obtenemos clase PHPExcel
             $objPHPExcel = new \PHPExcel();
                                                              
@@ -252,14 +268,14 @@ class CargasController extends AbstractActionController
                     error_reporting(E_ERROR);                   
                     $data = array_combine($indices,$lista[$row]);
                             if (!$data){                        
-                                $result = new JsonModel(array('status'=>'error','descripcion'=>"ERROR! Archivo no corresponde a ".ucfirst($flag)));
+                                $result = new JsonModel(array('status'=>'error','descripcion'=>"El archivo no corresponde a Maestro de Prospectos"));
                                 $result->setTerminal(true);
                                 return $result;                                         
                             }
                     $existe = $pcabecera->getDatoxRut($data['RUT']);                             
                     //Validamos si rut existe en BBDD                            
-                    if(count($existe)>0){
-                                $result = new JsonModel(array('status'=>'nok','descr'=>'Rut '.$data['RUT'].' ya existe en el sistema'));
+                    if(count($existe)<1){
+                                $result = new JsonModel(array('status'=>'nok','descr'=>'Rut '.$data['RUT'].' no existe en el sistema'));
                                 $result->setTerminal(true);
                                 return $result;
                     }         
@@ -267,7 +283,7 @@ class CargasController extends AbstractActionController
                   } 
         unlink($inputFileName);                            
         //Retornamos a la vista            
-        $result = new JsonModel(array('status'=>'ok','data'=>$existe));
+        $result = new JsonModel(array('status'=>'ok'));
         $result->setTerminal(true);
         return $result;
                             
@@ -282,9 +298,9 @@ class CargasController extends AbstractActionController
            
            //Instancias                  
            $sid = new Container('base');
-           $pcabecera     = new ProspectoCabeceraTable($this->dbAdapter);  
-           $pdetalle      = new ProspectoDetalleTable($this->dbAdapter);
-           $pcabedetalle  = new ProsCabeceraDetalleTable($this->dbAdapter);
+           $oportunidad   = new OportunidadTable($this->dbAdapter);  
+           $feedback      = new FeedbackTable($this->dbAdapter);
+           $pcabecera     = new ProspectoCabeceraTable($this->dbAdapter);   
             
            //Definimos ruta DEBE EXISTIR PREVIAMENTE
            $ruta = $_SERVER['DOCUMENT_ROOT'].'/crm/excel';                        
@@ -312,7 +328,7 @@ class CargasController extends AbstractActionController
             $highestColumn = $objWorksheet->getHighestColumn(); // e.g 'F'
             $highestColumnIndex = (\PHPExcel_Cell::columnIndexFromString($highestColumn))-1; // e.g. 5
             //Asociamos data con Indices de BBDD
-            $indices = array('RUT','DV','NOMBRES','AP_PATERNO','AP_MATERNO','CORREO','TELEFONO','CELULAR','EMPRESA_ESTABLEC','DIRECCION');            
+            $indices = array('ID_CAMPANA','RUT','COD_SEDE','COD_CARRERA','JORNADA','OBSERVACION','ID_TIPO','ESTADO');            
             $html="";                        
             //Recorremos excel                             
             for ($row = 3; $row <= $highestRow; ++$row) {                
@@ -325,38 +341,32 @@ class CargasController extends AbstractActionController
                     error_reporting(E_ERROR);                   
                     $data = array_combine($indices,$lista[$row]);
                             if (!$data){                        
-                                $result = new JsonModel(array('status'=>'error','descripcion'=>"ERROR! Archivo no corresponde a ".ucfirst($flag)));
+                                $result = new JsonModel(array('status'=>'error','descr'=>"El archivo no corresponde a Maestro de Oportunidades"));
                                 $result->setTerminal(true);
                                 return $result;
-                            }                        
-                    //Agregamos estado y usuario al array
-                    $data['ESTADO'] = "Cargado";
-                    $data['USERNAME_ACTUALIZACION'] = $sid->offsetGet('usuario');     
-                                    
-                    //Insertamos nuevo prospecto en PROSPECTO_CABECERA                               
-                    $pcabecera->nuevoProsCabecera($data);                        
-                    //Insertamos detalle de prospecto en tabla ProspectoDetalle            
-                    $id_detalle = $pdetalle->nuevoProsDetalle($data);
-                    //Insertamos en tabla ProspectoDetalle            
-                    $pcabedetalle->nuevoProsCabeceraDet($data['RUT'],$id_detalle);   
+                            }
+                    //Replicamos para tabla feedback
+                    $data['ESTADO_GRABADO'] = $data['ESTADO'];                                                     
+                    //Agregamos estado y usuario al array                    
+                    $data['USERNAME'] = $sid->offsetGet('usuario');                                         
+                    //Insertamos nueva oportunidad en tabla OPORTUNIDADES                               
+                    $data['ID_OPORTUNIDAD'] = $oportunidad->nuevaOportunidad($data);                                            
+                    //Insertamos feedback de oportuinidad en tabla FEEDBACKS            
+                    $feedback->nuevoFeedback($data);   
                     //Agregamos fila para mostrar en la vista
                     $html.="<tr>";
-                    $html.="<td>".number_format($data['RUT'],-3,"",".")."-".$data['DV']
-                         ."</td><td>".$data['NOMBRES']
-                         ."</td><td>".$data['AP_PATERNO']." ".$data['AP_MATERNO']."</td><td>".$data['CORREO']
-                         ."</td><td>".$data['TELEFONO']."</td><td>".$data['EMPRESA_ESTABLEC']
+                    $html.="<td>".$data['ID_CAMPANA']."</td><td>".$data['RUT']
+                         ."</td><td>".$data['COD_SEDE']."</td><td>".$data['COD_CARRERA']."</td><td>".$data['JORNADA']
+                         ."</td><td>".$data['OBSERVACION']."</td><td>".$data['ID_TIPO']
                          ."</td><td>".$data['ESTADO'];
                     $html.="</tr>";                              
             }  
         //Retornamos a la vista 
-        $descr = "Se han ingresado <strong>".($highestRow-2)."</strong> prospectos exitosamente";   
+        $descr = "Se han ingresado <strong>".($highestRow-2)."</strong> oportunidades exitosamente";   
         $this->layout('layout/admincentral');
         $result = new JsonModel(array('status'=>'ok','html'=>$html,'descr'=>$descr));
         return $result;
         
         
-    }
-    
-    
-   
+    }    
 }

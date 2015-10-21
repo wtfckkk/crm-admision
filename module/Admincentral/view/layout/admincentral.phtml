@@ -63,6 +63,7 @@ License: You must have a valid license purchased only from themeforest(the above
 <link href="<?php echo $this->basePath()?>/metronic/theme/assets/admin/layout2/css/themes/grey.css" rel="stylesheet" type="text/css" id="style_color"/>
 <link href="<?php echo $this->basePath()?>/metronic/theme/assets/admin/layout2/css/custom.css" rel="stylesheet" type="text/css"/>
 <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath()?>/metronic/theme/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css"/>
+<link href="<?php echo $this->basePath()?>/metronic/theme/assets/admin/pages/css/inbox.css" rel="stylesheet" type="text/css"/>
 
 <!-- END THEME STYLES -->
 <link rel="shortcut icon" href="favicon.ico"/>
@@ -116,6 +117,8 @@ License: You must have a valid license purchased only from themeforest(the above
 <script src="<?php echo $this->basePath()?>/metronic/theme/assets/admin/pages/scripts/ui-toastr.js"></script>
 <script src="<?php echo $this->basePath()?>/metronic/theme/assets/admin/pages/scripts/ui-alert-dialog-api.js"></script>
 <script type="text/javascript" src="<?php echo $this->basePath()?>/metronic/theme/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js"></script>
+<script src="<?php echo $this->basePath()?>/metronic/theme/assets/admin/pages/scripts/inbox.js" type="text/javascript"></script>
+
 
 
 <script>
@@ -134,6 +137,8 @@ jQuery(document).ready(function() {
    Tasks.initDashboardWidget();
     UIToastr.init();
      UIAlertDialogApi.init();     
+      Inbox.init();
+
 
 
    
@@ -369,9 +374,9 @@ jQuery(document).ready(function() {
 						</ul>
 					</li>
                     <li>
-						<a href="javascript:;">
+						<a href="<?php echo $this->basePath()?>/admincentral/correo">
 						<i class="icon-envelope"></i>
-						<span class="title">Enviar Correos</span>
+						<span class="title">Correos</span>
 						<span class="arrow "></span>
 						</a>
 					</li>					

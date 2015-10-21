@@ -34,7 +34,7 @@ class OportunidadTable extends TableGateway
         $this->COD_SEDE=$datos["COD_SEDE"];
         $this->COD_CARRERA=$datos["COD_CARRERA"];
         $this->JORNADA=$datos["JORNADA"];
-      //  $this->ESTADO=$datos["ESTADO"];   
+        $this->ESTADO=$datos["ESTADO"];   
         $this->USERNAME=$datos["USERNAME"];           
         $fecha = time();
         $this->FECHA=date("Y-m-d H:i:s ",$fecha);        
@@ -51,7 +51,7 @@ class OportunidadTable extends TableGateway
                 'COD_SEDE'=>$this->COD_SEDE,
                 'COD_CARRERA'=>$this->COD_CARRERA,
                 'JORNADA'=>$this->JORNADA,                
-                'ESTADO'=>'Abierta',
+                'ESTADO'=>$this->JORNADA,
                 'USERNAME'=>$this->USERNAME,
                 'FECHA'=>$this->FECHA,
              );
