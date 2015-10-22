@@ -3,8 +3,7 @@
 use Zend\Session\Container;
 $sid = new Container('base');
 $url = $this->basePath();
-$modulo = $sid->offsetGet('perfil');
-if($modulo=="admcentral"){$modulo="admincentral";}
+$modulo = $sid->offsetGet('urlHome');
  if ($sid->offsetGet('logueado')!="si"){
     header ("Location: $url/application/login");
     exit;

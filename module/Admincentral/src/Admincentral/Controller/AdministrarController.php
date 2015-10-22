@@ -53,6 +53,7 @@ class AdministrarController extends AbstractActionController
         $ususede = new UsuarioSedeTable($this->dbAdapter); 
         //Consultamos campañas del sistema 
             $campanas = $campana->getCampanas($this->dbAdapter);
+            $campanas = str_replace("ñ","&ntilde;",$campanas);
             $com = "'";
             //Cargamos data para grilla             
             $html = '';

@@ -7,8 +7,8 @@ if ($sid->offsetGet('logueado')!="si"){
      header ("Location: $url/application/login");
     exit;
 };
-$modulo = $sid->offsetGet('perfil');
-if ($modulo!="admcentral"){
+$modulo = $sid->offsetGet('urlHome');
+if ($modulo!="admincentral"){
     header ("Location: $url/$modulo");
     exit;
  }
@@ -66,7 +66,7 @@ License: You must have a valid license purchased only from themeforest(the above
 <link href="<?php echo $this->basePath()?>/metronic/theme/assets/admin/pages/css/inbox.css" rel="stylesheet" type="text/css"/>
 
 <!-- END THEME STYLES -->
-<link rel="shortcut icon" href="favicon.ico"/>
+<link rel="shortcut icon" href="<?php echo $this->basePath()?>/img/favicon.ico">
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
 <!-- BEGIN CORE PLUGINS -->
 <!--[if lt IE 9]>
@@ -304,10 +304,6 @@ jQuery(document).ready(function() {
 					<!-- END USER LOGIN DROPDOWN -->
 					<!-- BEGIN USER LOGIN DROPDOWN -->
 					<!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
-					<li class="dropdown dropdown-extended quick-sidebar-toggler">
-	                    <span class="sr-only">Toggle Quick Sidebar</span>
-	                    <i class="icon-logout"></i>
-	                </li>
 					<!-- END USER LOGIN DROPDOWN -->
 				</ul>
 			</div>

@@ -42,8 +42,9 @@ class CargasController extends AbstractActionController
     
     public function prospectosAction()
     {                        
-        $this->layout('layout/admincentral');        
-        return new ViewModel();
+        $this->layout('layout/admincentral');
+        $result = new ViewModel();        
+        return $result;
         
         
     }

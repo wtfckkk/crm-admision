@@ -7,10 +7,11 @@ if ($sid->offsetGet('logueado')!="si"){
      header ("Location: $url/application/login");
     exit;
 };
-$modulo = $sid->offsetGet('perfil');
-if($modulo=="admcentral"){$modulo="admincentral";}
+$modulo = $sid->offsetGet('urlHome');
+if ($modulo!="adminsede"){
     header ("Location: $url/$modulo");
     exit;
+ }
 ?>
 <?php echo $this->doctype(); ?>
 <html lang="es">
