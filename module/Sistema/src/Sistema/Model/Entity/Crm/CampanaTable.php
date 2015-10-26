@@ -121,7 +121,7 @@ class CampanaTable extends TableGateway
     public function countCampana(Adapter $dbAdapter)
     {
        $this->dbAdapter = $dbAdapter;
-       $query = "SELECT count(*) as count FROM CAMPANAS";                
+       $query = "SELECT count(*) as count FROM CAMPANAS where ACTIVO = 's'";                
        $result=$this->dbAdapter->query($query,Adapter::QUERY_MODE_EXECUTE);
        return $result->toArray();
     }

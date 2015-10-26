@@ -181,16 +181,24 @@ class AdministrarController extends AbstractActionController
         //Conectamos con BBDD
         $this->dbAdapter=$this->getServiceLocator()->get('Zend/Db/Adapter');
         //Tablas
-        $tipocam = new TipoCampanaTable($this->dbAdapter);
-        //Obtenemos tipos de campañas   
-        $tipos =  $tipocam->getTipos();                        
-        //Retornamos a la vista                            
-        $result = new ViewModel(array('tipos'=>$tipos));
-        $result->setTerminal(true); 
-        return $result; 
+        $tipocam = new TipoCampanaTable($this->dbAdapter);        
+        if($lista['NOMBRE_CAMPANA']!=null){
+            //Insertamos nuevo tipo de Campaña
+            $tipocam->nuevoTipo($lista['NOMBRE_CAMPANA']); 
+            //Retornamos a la vista    
+            $descr = "Se ha ingresado nuevo tipo de campa&ntilde;a correctamente";                         
+            $result = new ViewModel(array('status'=>'ok','tipos'=>$tipos));
+            $result->setTerminal(true); 
+            return $result;            
+        }else{
+            //Obtenemos tipos de campañas   
+            $tipos =  $tipocam->getTipos();                        
+            //Retornamos a la vista                            
+            $result = new ViewModel(array('status'=>'ok','tipos'=>$tipos));
+            $result->setTerminal(true); 
+            return $result; 
          
-        
-        
+         }                
     }
     
    
