@@ -36,6 +36,30 @@
 <div class="form-group form-md-line-input">										
 											<div class="col-md-offset-6">												
 												<a class="btn red" data-dismiss="modal" aria-hidden="true"><i class="fa fa-close"></i> &nbsp; Cancelar</a>
-                                                <a onclick="validaInput()" class="btn green"><i class="fa fa-check"></i> &nbsp;Ingresar campa&ntilde;a</a>                                                											
+                                                <a onclick="ingresaNuevoTipo()" class="btn green"><i class="fa fa-check"></i> &nbsp;Ingresar campa&ntilde;a</a>                                                											
 										   </div>
 </div>
+<script>
+function ingresaNuevoTipo(){
+    $('#title_modal').text("Ingresar nuevo tipo de campa\u00f1a");
+    var dataPost = {'NOMBRE_CAMPANA':$('#NOMBRE_CAMPANA').val()}
+    $.ajax(
+        {
+            url : '<?php echo $this->basePath()."/admincentral/administrar/nuevotipo"?>',
+            data: dataPost,
+            type: "POST",                   
+		  success : function(response) {		      
+               $('#modal_nueva').modal('hide'); 
+                    if(response.status =='ok'){
+                        toastr.success(response.descr);
+                    }else{
+                        toastr.warning(response.descr);
+                    }                        		      
+	   	},
+         error: function(jqXHR, textStatus, errorThrown) 
+            {            
+                toastr.error('Error! Favor contactar con administrador del sistema'); 
+            }
+        });  
+}
+</script>

@@ -30,7 +30,11 @@ class TipoCampanaTable extends TableGateway
         }
         return $recorre;
     }
-    
+    public function nuevoTipo($nombre)
+    {             
+        $array=array('DESC_TIPO'=>$nombre);
+        $this->insert($array);
+    }
     public function getTipos()
     {   
         $datos = $this->select();

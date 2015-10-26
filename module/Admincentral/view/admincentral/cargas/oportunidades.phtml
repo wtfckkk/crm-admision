@@ -75,6 +75,7 @@ toastr.options = {
   "positionClass": "toast-top-center",
 }
 function ValidaRUT(){
+if($('#fileoportunidades').val()!=""){
 var data = new FormData();
     jQuery.each(jQuery('#fileoportunidades')[0].files, function(i, file) {
     data.append('file-'+i, file);
@@ -100,7 +101,8 @@ $.ajax( {
             toastr.error('Error ! Favor contactar con administrador del sistema');            
            // $("#alertnok").html('<span class="alert alert-success">Error en el env&iacute;o de datos al servidor</span>');      
         }
-	});         
+	});  
+ }       
 }
 function cargaOportunidades(){  
 if($('#fileoportunidades').val()!=""){    

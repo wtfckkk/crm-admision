@@ -116,9 +116,12 @@ class OportunidadController extends AbstractActionController
             $existe = $pcabecera->getDatoxRut($lista['RUT']);            
             if(count($existe)>0)
                {  
+                //Actualizamos datos de prospecto
+                $pcabecera->editarProsCabecera($lista,$lista['RUT']);
+                
                 //Insertamos en tabla ProspectoDetalle            
                 $id_detalle = $pdetalle->nuevoProsDetalle($lista);
-                
+                                
                 //Insertamos en tabla ProspectoDetalle            
                 $pcabedetalle->nuevoProsCabeceraDet($lista['RUT'],$id_detalle);                                
                 
