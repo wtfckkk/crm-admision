@@ -33,8 +33,7 @@ $sede = $sid->offsetGet('cod_sede');
                                                                         
 										<div class="form-group form-md-line-input">
 											<label class="col-md-2 control-label" for="nueva_rut">Rut</label>
-											<div class="col-md-2">
-												<input type="hidden" name="ESTADO" value="Abierta">
+											<div class="col-md-2">												
                                                 <input type="text" class="form-control" id="nueva_rut" name="RUT">
 												<div class="form-control-focus">
 												</div>
@@ -297,7 +296,7 @@ postData = {'RUT' : $('#nueva_rut').val()}
             else{
              //   Command: toastr[success]("No existe prospecto");
                 toastr.warning('No existe prospecto, ingresar datos'); 
-                $("#nueva_estado").val("Nuevo")
+                $("#nueva_estado").val("Nueva")
                 $("#actualizarDatos").html("<i class='fa fa-save'></i> &nbsp; Ingresar nuevo prospecto");
             // $("#alertok").html('<span class="alert alert-success"> '+response.desc+'</span>');                   
             }                                  
@@ -371,6 +370,7 @@ $('#actualizarDatos').click(function(){
 bootbox.confirm("<strong>Esta seguro ?", function(result) {
 if (result)
 {   $("#nueva_rut").attr('disabled',false);
+    $("#nueva_estado").attr('disabled',false);
     var postData = $("#form_prospecto").serializeArray();    
     $.ajax(
     {
@@ -384,8 +384,7 @@ if (result)
                       //  $("#alertnok").html('<span class="alert alert-danger">'+response.descripcion+'</span>'); 
                       
                     }else{
-                        toastr.success(response.descripcion);
-                        if($("#nueva_estado").val()=="Nuevo"){$("#nueva_estado").val("Cargado")}
+                        toastr.success(response.descripcion);                        
                         $("#nueva_rut").attr('disabled',true);
                         $("#mostrarpaso2").removeClass("hide");
                         $("#actualizarDatos").html("<i class='fa fa-save'></i> &nbsp; Actualizar datos");
@@ -448,6 +447,7 @@ bootbox.confirm("<strong>Estas Seguro ?</strong>", function(result) {
                          $("#nueva_rut").attr('disabled',true);
                          $("#nueva_estado").attr('disabled',true);
                         toastr.success(response.descr);
+                        $("html, body").animate({ scrollTop: 0 }, "slow");
         },
         error: function(jqXHR, textStatus, errorThrown) 
         {

@@ -5,7 +5,7 @@ var Inbox = function () {
     var listListing = '';
 
     var loadInbox = function (el, name) {
-        var url = 'inbox_inbox.html';
+        var url = 'http://172.25.6.65/crm/public/metronic/theme/templates/admin2/inbox_inbox.html';
         var title = $('.inbox-nav > li.' + name + ' a').attr('data-title');
         listListing = name;
 
@@ -52,7 +52,7 @@ var Inbox = function () {
     }
 
     var loadMessage = function (el, name, resetMenu) {
-        var url = 'inbox_view.html';
+        var url = 'http://172.25.6.65/crm/public/metronic/theme/templates/admin2/inbox_view.html';
 
         loading.show();
         content.html('');
@@ -90,7 +90,7 @@ var Inbox = function () {
 
     var initWysihtml5 = function () {
         $('.inbox-wysihtml5').wysihtml5({
-            "stylesheets": ["../../assets/global/plugins/bootstrap-wysihtml5/wysiwyg-color.css"]
+            "stylesheets": ["http://172.25.6.65/crm/public/metronic/theme/assets/global/plugins/bootstrap-wysihtml5/wysiwyg-color.css"]
         });
     }
 
@@ -99,14 +99,14 @@ var Inbox = function () {
         $('#fileupload').fileupload({
             // Uncomment the following to send cross-domain cookies:
             //xhrFields: {withCredentials: true},
-            url: '../../assets/global/plugins/jquery-file-upload/server/php/',
+            url: 'http://172.25.6.65/crm/public/metronic/theme/assets/global/plugins/jquery-file-upload/server/php/',
             autoUpload: true
         });
 
         // Upload server status check for browsers with CORS support:
         if ($.support.cors) {
             $.ajax({
-                url: '../../assets/global/plugins/jquery-file-upload/server/php/',
+                url: 'http://172.25.6.65/crm/public/metronic/theme/assets/global/plugins/jquery-file-upload/server/php/',
                 type: 'HEAD'
             }).fail(function () {
                 $('<span class="alert alert-error"/>')
@@ -118,7 +118,7 @@ var Inbox = function () {
     }
 
     var loadCompose = function (el) {
-        var url = 'inbox_compose.html';
+        var url = 'http://172.25.6.65/crm/public/metronic/theme/templates/admin2/inbox_compose.html';
 
         loading.show();
         content.html('');
@@ -138,6 +138,7 @@ var Inbox = function () {
                 $('.inbox-header > h1').text('Compose');
 
                 loading.hide();
+                console.log(content);
                 content.html(res);
 
                 initFileupload();
@@ -157,7 +158,7 @@ var Inbox = function () {
 
     var loadReply = function (el) {
         var messageid = $(el).attr("data-messageid");
-        var url = 'inbox_reply.html?messageid=' + messageid;
+        var url = 'http://172.25.6.65/crm/public/metronic/theme/templates/admin2/inbox_reply.html?messageid=' + messageid;
         
         loading.show();
         content.html('');
@@ -196,7 +197,7 @@ var Inbox = function () {
     }
 
     var loadSearchResults = function (el) {
-        var url = 'inbox_inbox.html';
+        var url = 'http://172.25.6.65/crm/public/metronic/theme/templates/admin2/inbox_inbox.html';
 
         loading.show();
         content.html('');

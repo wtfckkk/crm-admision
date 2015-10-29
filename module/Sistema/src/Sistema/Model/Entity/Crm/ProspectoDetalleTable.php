@@ -92,11 +92,22 @@ class ProspectoDetalleTable extends TableGateway
     {
         $this->dbAdapter = $dbAdapter;
         $query = "select * from PROSPECTO_DETALLE where ID_DETALLE = (select max(ID_DETALLE) from PROSP_CABECERA_DETALLE 
-                 where rut = '$rut')";
+                 where RUT = '$rut')";
                 
         $result=$this->dbAdapter->query($query,Adapter::QUERY_MODE_EXECUTE);
         return $result->toArray();
     }
+    
+    public function getCorreoSedeCampana(Adapter $dbAdapter,$cod_sede,$id_campana)
+    {
+        $this->dbAdapter = $dbAdapter;
+        $query = "SELECT CORREO FROM PROSPECTO_DETALLE where ID_DETALLE in (select max(ID_DETALLE) from PROSP_CABECERA_DETALLE 
+                 where RUT in (select RUT FROM OPORTUNIDADES OP WHERE OP.COD_SEDE = '$cod_sede' AND ID_CAMPANA='$id_campana'))";
+                
+        $result=$this->dbAdapter->query($query,Adapter::QUERY_MODE_EXECUTE);
+        return $result->toArray();
+    }
+    
     
 
     
