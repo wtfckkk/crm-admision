@@ -106,6 +106,7 @@ class LoginController extends AbstractActionController
                         //Iniciamos la session
                         $sid = new Container('base');
                         $sid->offsetSet('usuario', $listaUsuario[0]['USERNAME']);
+                        $sid->offsetSet('nombre', $listaUsuario[0]['NOMBRE_FULL']);
                         $sid->offsetSet('perfil', $listaperfil[0]['ID_PERFIL']);
                         $sid->offsetSet('desc_perfil', $listaperfil[0]['DESC_PERFIL']);
                         $sid->offsetSet('cod_sede', $listaUsuario[0]['COD_SEDE']);

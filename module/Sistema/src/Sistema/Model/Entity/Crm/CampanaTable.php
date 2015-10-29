@@ -85,6 +85,15 @@ class CampanaTable extends TableGateway
         
         return $result->toArray();
     }
+    
+    public function getComboFull()
+    {
+        $datos = $this->select(array('activo'=>'si'));
+        $recorre = $datos->toArray();
+                      
+        return $recorre;
+    }
+    
     public function getComboSede(Adapter $dbAdapter,$sede)
     {
        $this->dbAdapter = $dbAdapter;

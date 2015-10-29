@@ -4,6 +4,7 @@ use Zend\Session\Container;
 $sid = new Container('base');
 $url = $this->basePath();
 $perfil = $sid->offsetGet('desc_perfil');
+$nombre = $sid->offsetGet('nombre');
 if ($sid->offsetGet('logueado')!="si"){     
      header ("Location: $url/application/login");
     exit;
@@ -130,11 +131,7 @@ jQuery(document).ready(function() {
    Index.initMiniCharts();
    Tasks.initDashboardWidget();
     UIToastr.init();
-     UIAlertDialogApi.init();
-     UIBlockUI.init();
-
-
-   
+     UIAlertDialogApi.init();     
 });
 </script>
 <!-- END PAGE LEVEL SCRIPTS -->
@@ -257,7 +254,8 @@ jQuery(document).ready(function() {
 					<!-- BEGIN USER LOGIN DROPDOWN -->
 					<!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
 					<li class="dropdown dropdown-user">
-						<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                        <p style="display: inline-block;"> Bienvenido, <?php echo $nombre;?></p> &nbsp;&nbsp;&nbsp;
+						<a style="display: inline-block;" href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
 						<img alt="" class="img-circle" src="<?php echo $this->basePath()?>/metronic/theme/assets/admin/layout2/img/user-icon.png"/>
 						<span class="username username-hide-on-mobile">
 						<?php echo $this->perfil;?></span>
@@ -299,10 +297,6 @@ jQuery(document).ready(function() {
 					<!-- END USER LOGIN DROPDOWN -->
 					<!-- BEGIN USER LOGIN DROPDOWN -->
 					<!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
-					<li class="dropdown dropdown-extended quick-sidebar-toggler">
-	                    <span class="sr-only">Toggle Quick Sidebar</span>
-	                    <i class="icon-logout"></i>
-	                </li>
 					<!-- END USER LOGIN DROPDOWN -->
 				</ul>
 			</div>

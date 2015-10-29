@@ -51,7 +51,7 @@ class OportunidadTable extends TableGateway
                 'COD_SEDE'=>$this->COD_SEDE,
                 'COD_CARRERA'=>$this->COD_CARRERA,
                 'JORNADA'=>$this->JORNADA,                
-                'ESTADO'=>$this->JORNADA,
+                'ESTADO'=>$this->ESTADO,
                 'USERNAME'=>$this->USERNAME,
                 'FECHA'=>$this->FECHA,
              );

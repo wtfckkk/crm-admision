@@ -30,7 +30,8 @@ class ProspectoCabeceraTable extends TableGateway
         $this->DV=$datos['DV'];   
         $this->NOMBRES=$datos['NOMBRES'];
         $this->AP_PATERNO=$datos['AP_PATERNO'];
-        $this->AP_MATERNO=$datos['AP_MATERNO'];        
+        $this->AP_MATERNO=$datos['AP_MATERNO'];
+        $this->ESTADO=$datos['ESTADO'];        
         
     }
     
@@ -44,7 +45,7 @@ class ProspectoCabeceraTable extends TableGateway
                 'NOMBRES'=>$this->NOMBRES,
                 'AP_PATERNO'=>$this->AP_PATERNO,
                 'AP_MATERNO'=>$this->AP_MATERNO,
-                'ESTADO'=>'Cargado',
+                'ESTADO'=>$this->ESTADO,
              );
                $this->insert($array);
                              
@@ -60,6 +61,7 @@ class ProspectoCabeceraTable extends TableGateway
                 'NOMBRES'=>$this->NOMBRES,
                 'AP_PATERNO'=>$this->AP_PATERNO,
                 'AP_MATERNO'=>$this->AP_MATERNO,                
+                'ESTADO'=>$this->ESTADO,
              );               
                $this->update($array,array('RUT'=>$RUT));
     } 
