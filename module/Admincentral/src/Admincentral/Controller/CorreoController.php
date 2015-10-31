@@ -16,6 +16,7 @@ use Zend\Session\Container;
 
 
 use Sistema\Model\Entity\Crm\ProspectoDetalleTable;
+use Sistema\Model\Entity\Crm\SedeTable;
 use Sistema\Model\Entity\Crm\CampanaTable;
 
 use Zend\Mail\Message;
@@ -33,18 +34,29 @@ class CorreoController extends AbstractActionController
        //Conectamos con BBDD
         $this->dbAdapter=$this->getServiceLocator()->get('Zend/Db/Adapter'); 
         //Tablas         
-        $campana = new CampanaTable($this->dbAdapter);
-        
-       
-       
-       
-       
-       
-       
-       
-       
+        $sede = new SedeTable($this->dbAdapter);                
+        $sedes = $sede->getSedes();                                                                   
+           
        $this->layout('layout/admincentral');
-        return new ViewModel();
+        return new ViewModel(array('sedes'=>$sedes));
+        
+        
+    }
+    
+    public function getcampanasAction()
+    {        
+       //Obtenemos datos POST        
+        $lista = $this->request->getPost();
+       
+       //Conectamos con BBDD
+        $this->dbAdapter=$this->getServiceLocator()->get('Zend/Db/Adapter'); 
+        
+        //Tablas         
+        $campana = new CampanaTable($this->dbAdapter);
+        $campanas = $campana->getCampanaXsede($this->dbAdapter,$lista['COD_SEDE']);  
+        
+        //Retornamos a la vista                                                                                                
+        return new JsonModel(array('campanas'=>$campanas));
         
         
     }
@@ -61,23 +73,23 @@ class CorreoController extends AbstractActionController
         $correo = $prosdetalle->getCorreoSedeCampana($this->dbAdapter,$lista['COD_SEDE'],$lista['ID_CAMPANA']);
                                                                                    
             //Enviamos correo a cada prospecto 
-            for($i=0;$i<count($correo);$i++){
-                
-                $html->type = "text/html";
-                $body = $lista['CUERPO'];                
+            for($i=0;$i<count($correo);$i++){                                           
+                  
                 $message = new Message();
-                $message->addTo($correo[$i]['correo'])
-                ->addFrom('contacto@laaraucana.cl', 'La Araucana')
-                ->setSubject('Contacto de La araucana')
-                ->setBody($body);
-                $transport = new SendmailTransport();
-                $transport->send($message);
+             $message->addTo($correo[$i]['CORREO'])
+             ->addFrom('soporte@becheck.cl', 'Sistema be check')
+             ->setSubject('Recuperar Contraseña')
+             ->setBody($lista['CUERPO']);  
+              $transport = new SendmailTransport();
+                $transport->send($message);  
+                                                        
+                
                                                                 
-                sleep(2);        
+                sleep(2);      
             }                                                                                                                       
         
         $this->layout('layout/admincentral');
-        return new JsonModel(array('descr'=>'Correos enviados exitosamente'));
+        return new ViewModel(array('descr'=>'Correos enviados exitosamente'));
         
         
     }

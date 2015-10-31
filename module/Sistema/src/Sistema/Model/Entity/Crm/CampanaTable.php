@@ -126,6 +126,14 @@ class CampanaTable extends TableGateway
                       
         return $recorre;
     }            
+    public function getCampanaXsede(Adapter $dbAdapter,$cod_sede)
+    {
+       $this->dbAdapter = $dbAdapter;
+       $query = "SELECT ID_CAMPANA, NOMBRE_CAMPANA FROM CAMPANAS 
+                WHERE ID_CAMPANA IN (select ID_CAMPANA from SEDE_CAMPANA where COD_SEDE = '$cod_sede')";                
+       $result=$this->dbAdapter->query($query,Adapter::QUERY_MODE_EXECUTE);
+       return $result->toArray();
+    }
     
     public function countCampana(Adapter $dbAdapter)
     {

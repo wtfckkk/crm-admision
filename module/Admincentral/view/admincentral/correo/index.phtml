@@ -31,16 +31,19 @@ jQuery(document).ready(function() {
 						      <div class="form-body">
                               <div class="row">
 										<div class="col-md-4 col-md-push-1 form-group form-md-line-input has-info ">
-											<select onchange="buscaOportunidad()" class="form-control" id="combo_sede" name="COD_SEDE">
-                                            
+											<select onchange="buscaCampanas()" class="form-control" id="combo_sede" name="COD_SEDE">
+                                            <option value="0">Seleccione una Sede</option>
+                                            <?php for ($i=0;$i<count($sedes);$i++){                                                      
+                                                      echo "<option value=".$sedes[$i]['COD_SEDE'].">".$sedes  [$i]['NOMBRE_SEDE']."</option>\n";
+                                               }        
+                                                ?>
 
 											</select>
 											<label for="combo_sede"><strong>Sede</strong></label>
 										</div>
                                                                                 
                                         <div class="col-md-4 col-md-push-2 form-group form-md-line-input has-info ">
-											<select class="form-control" id="combo_campana" name="ID_CAMPANA">
-                                            
+											<select class="form-control" id="combo_campana" name="ID_CAMPANA">                                                                                 
 
 											</select>
 											<label for="combo_campanas"><strong>Campa&ntilde;as</strong></label>
@@ -102,13 +105,37 @@ setTimeout(function(){
   $(".note-editable").empty()
 }, 900);   
 }
-function enviaCorreos(){
+function buscaCampanas(){
+postData = {'COD_SEDE' : $("#combo_sede").val()}
+$.ajax(
+    {
+        url : '<?php echo $this->basePath()."/admincentral/correo/getcampanas"?>',
+        type: "POST",
+        data : postData,
+        dataType : 'json',
+        success : function(response) {         
+        var combo1 = $("#combo_campana");                          
+         // Limpiamos combos
+         combo1.find('option').remove();                
+         //Cagamos combo1
+         $(response.campanas).each(function(i, v){ // indice, valor                    
+         combo1.append('<option value="' + response.campanas[i]['ID_CAMPANA'] + '">' + response.campanas[i]['NOMBRE_CAMPANA'] + '</option>');
+         })
+         combo1.prop('disabled', false);              
+        },
+        error: function(jqXHR, textStatus, errorThrown) 
+        {            
+            toastr.warning("Error! Favor contactar con administrador del sistema"); 
+        }
+    });
+}
+function enviaCorreos(){    
 bootbox.confirm("<strong>Esta seguro ?", function(result) {
     if (result){      
       var postData = {
         'COD_SEDE': $("#combo_sede").val(),
         'ID_CAMPANA': $("#combo_campana").val(),
-        'CUERPO':  $(".note-editable").val()      
+        'CUERPO':  $(".note-editable").html()      
       }
       $.ajax(
         {
@@ -116,11 +143,7 @@ bootbox.confirm("<strong>Esta seguro ?", function(result) {
             type: "POST",
             data : postData,
             dataType : 'json',
-            success : function(response) {
-                $('#modal_nueva').modal('hide');
-                                  window.setTimeout(function() {
-                window.location.reload(true);
-                }, 1000)
+            success : function(response) {          
                 toastr.success(response.descr);
         },
         error: function(jqXHR, textStatus, errorThrown) 
