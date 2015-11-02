@@ -75,21 +75,33 @@ class CorreoController extends AbstractActionController
             //Enviamos correo a cada prospecto 
             for($i=0;$i<count($correo);$i++){                                           
                   
-                $message = new Message();
+               /*   $text = new MimePart($textContent);
+             $text->type = "text/plain";*/
+
+             $html = new MimePart($lista['CUERPO']);
+             $html->type = "text/html";
+
+            /* $image = new MimePart(fopen($pathToImage, 'r'));
+             $image->type = "image/jpeg";*/
+
+             $body = new MimeMessage();
+             $body->setParts(array($html));
+        
+             $message = new Message();
              $message->addTo($correo[$i]['CORREO'])
-             ->addFrom('soporte@becheck.cl', 'Sistema be check')
-             ->setSubject('Recuperar Contraseña')
-             ->setBody($lista['CUERPO']);  
-              $transport = new SendmailTransport();
-                $transport->send($message);  
-                                                        
+             ->addFrom('contacto@laaraucana.cl', 'Admisión 2016')
+             ->setSubject('Asunto del correo')
+             ->setBody($body);
+
+             $transport = new SendmailTransport();
+             $transport->send($message);                                             
                 
                                                                 
                 sleep(2);      
             }                                                                                                                       
         
         $this->layout('layout/admincentral');
-        return new ViewModel(array('descr'=>'Correos enviados exitosamente'));
+        return new JsonModel(array('descr'=>'Correos enviados exitosamente'));
         
         
     }
