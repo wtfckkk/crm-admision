@@ -43,13 +43,13 @@ jQuery(document).ready(function() {
 										</div>
                                                                                 
                                         <div class="col-md-4 col-md-push-2 form-group form-md-line-input has-info ">
-											<select class="form-control" id="combo_campana" name="ID_CAMPANA">                                                                                 
+											<select class="form-control" id="combo_campana" name="ID_CAMPANA" onclick="muestraCuerpo()">                                                                                 
 
 											</select>
 											<label for="combo_campanas"><strong>Campa&ntilde;as</strong></label>
 										</div>
                                 </div>
-                                <div class="row">
+                                <div id="cuerpo_correo" class="row hidden">
 					<div class="col-md-12">
 						<!-- BEGIN EXTRAS PORTLET-->
 						<div class="portlet box blue-hoki">
@@ -80,7 +80,7 @@ jQuery(document).ready(function() {
 						</div>
 					</div>
 				</div>
-                <div class="row">
+                <div  id="btn_correo" class="row hidden">
 					<div class="col-md-6 col-md-push-3 text-center">                                
                                 <a onclick="enviaCorreos()" class="btn green"><i class="fa fa-paper-plane"></i> &nbsp;Enviar Correo a X prospectos</a>
 					</div>
@@ -120,7 +120,7 @@ $.ajax(
          //Cagamos combo1
          $(response.campanas).each(function(i, v){ // indice, valor                    
          combo1.append('<option value="' + response.campanas[i]['ID_CAMPANA'] + '">' + response.campanas[i]['NOMBRE_CAMPANA'] + '</option>');
-         })
+         })                          
          combo1.prop('disabled', false);              
         },
         error: function(jqXHR, textStatus, errorThrown) 
@@ -128,6 +128,12 @@ $.ajax(
             toastr.warning("Error! Favor contactar con administrador del sistema"); 
         }
     });
+}
+function muestraCuerpo(){
+    if($("#combo_campana").val()>0){
+    $("#cuerpo_correo").removeClass("hidden");
+    $("#btn_correo").removeClass("hidden");   
+    }         
 }
 function enviaCorreos(){    
 bootbox.confirm("<strong>Esta seguro ?", function(result) {

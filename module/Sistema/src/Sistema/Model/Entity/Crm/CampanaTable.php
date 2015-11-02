@@ -54,19 +54,19 @@ class CampanaTable extends TableGateway
                return $id;
     } 
     
-    public function editarProsDetalle($data=array())
+    public function editarCampana($id,$data=array())
     {
              self::cargarCampos($data);
              $array=array
-             (  'ID_DETALLE'=>$id_detalle,
-                'CORREO'=>$this->CORREO,
-                'TELEFONO'=>$this->TELEFONO,
-                'CELULAR'=>$this->CELULAR,
-                'EMPRESA_ESTABLEC'=>$this->EMPRESA_ESTABLEC,
-                'DIRECCION'=>$this->DIRECCION,
-                'USERNAME_ACTUALIZACION'=>$this->USERNAME_ACTUALIZACION,
+             (  
+                'NOMBRE_CAMPANA'=>$this->NOMBRE_CAMPANA,
+                'ID_TIPO'=>$this->ID_TIPO,
+                'ACTIVO'=>$this->ACTIVO,
+                'USERNAME'=>$this->USERNAME,
+                'ANO_ACADEMICO'=>$this->ANO_ACADEMICO,                
+                'FECHA'=>$this->FECHA,
              );
-               $this->update($array,array('id'=>$id));
+               $this->update($array,array('ID_CAMPANA'=>$id));
     } 
     
     public function borraCampana($id_campana)
@@ -119,9 +119,9 @@ class CampanaTable extends TableGateway
         
         return $result->toArray();
     } 
-    public function getDetalle($id_detalle)
+    public function getCampanaxId($id)
     {
-        $datos = $this->select(array('ID_DETALLE'=>$id_detalle));
+        $datos = $this->select(array('ID_CAMPANA'=>$id));
         $recorre = $datos->toArray();
                       
         return $recorre;

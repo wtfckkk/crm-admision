@@ -50,6 +50,12 @@ class SedeCampanaTable extends TableGateway
         }             
         return $result;
     }
+    public function getSedexCampana($id_campana)
+    {        
+        $datos = $this->select(array('ID_CAMPANA'=>$id_campana));
+        $recorre = $datos->toArray();        
+        return $recorre;
+    }
     
     public function getDatos(Adapter $dbAdapter)
     {

@@ -150,26 +150,59 @@ class AdministrarController extends AbstractActionController
         return $result;
                         
     }
-        public function editaroperAction()
+        public function editarcampanaAction()
     {   
         //Obtenemos datos POST        
         $lista = $this->request->getPost();
         //Conectamos con BBDD
         $this->dbAdapter=$this->getServiceLocator()->get('Zend/Db/Adapter');
         //Tablas
-        $ususede = new UsuarioSedeTable($this->dbAdapter);    
-        //Perfil
-        $pefil = "operador";        
-        //Obtenemos datos de sesion           
-        $sid = new Container('base');
-        $cod_sede = $sid->offsetGet('cod_sede');  
-        //Obtenemos datos del usuario
-        $usuarios = $ususede->getUsuarioxSede($this->dbAdapter,$lista['user'],$pefil,$cod_sede);           
+        $campana = new CampanaTable($this->dbAdapter);      
+        $tipocam = new TipoCampanaTable($this->dbAdapter); 
+        $sede    = new SedeTable($this->dbAdapter);
+        $sedecam = new SedeCampanaTable($this->dbAdapter); 
+        if(isset($lista['NOMBRE_CAMPANA']))
+        {
+            
+            //Obtenemos datos de sesion           
+            $sid = new Container('base');
+            $lista['USERNAME'] = $sid->offsetGet('usuario');
+            $lista['ANO_ACADEMICO'] = date('Y');
+            //Editamos campaña           
+            $campana->editarCampana($lista['ID_CAMPANA'],$lista);
+            //Validamos si se asociaron nuevas sedes
+                if(isset($lista['COD_SEDE'])){
+                    //Asociamos campaña para cada sede
+                    for($i=0;$i<count($lista['COD_SEDE']);$i++)
+                    {
+                         $sedecam->nuevaSedeCampana($lista['ID_CAMPANA'],$lista['COD_SEDE'][$i]);   
+                    }
+                }                              
+            $descr = "Edici&oacute;n de campa&ntilde;a exitosa";              
+            $flag = "true";                    
+            //Retornamos a la vista
+            $result = new JsonModel(array('flag'=>$flag,'descr'=>$descr));                     
+            return $result;                                                                                      
+            
+        }                      
+        else{
+        //Consultamos tipo de campañas para combo
+        $combocampana = $tipocam->getCombo();   
+        //Consultamos Sedes para checkboxs
+        $sedes = $sede->getSedes();                           
+        //Obtenemos datos de Campana
+        $campanas = $campana->getCampanaxId($lista['ID']);
+        //Obtenemos sedes asociadas a la campaña
+        $sedecampanas = $sedecam->getSedexCampana($lista['ID']);           
         //Retornamos a la vista                            
-        $result = new ViewModel(array('usuarios'=>$usuarios));
+        $result = new ViewModel(array('campana'=>$campanas,
+                                      'combocampana'=>$combocampana,
+                                      'sedes'=>$sedes,
+                                      'sedecampanas'=>$sedecampanas,
+                                ));
         $result->setTerminal(true); 
         return $result; 
-        
+        }
         
     }
     
