@@ -89,7 +89,7 @@ class CorreoController extends AbstractActionController
         
              $message = new Message();
              $message->addTo($correo[$i]['CORREO'])
-             ->addFrom('contacto@laaraucana.cl', 'Admisión 2016')
+             ->addFrom('contacto@laaraucana.cl', 'Proceso 2016')
              ->setSubject('Asunto del correo')
              ->setBody($body);
 
@@ -101,7 +101,7 @@ class CorreoController extends AbstractActionController
             }                                                                                                                       
         
         $this->layout('layout/admincentral');
-        return new JsonModel(array('descr'=>'Correos enviados exitosamente'));
+        return new JsonModel(array('descr'=>count($correo).' correos enviados exitosamente'));
         
         
     }

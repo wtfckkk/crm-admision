@@ -460,14 +460,11 @@ bootbox.confirm("<strong>Estas Seguro ?</strong>", function(result) {
                          $("#nueva_rut").attr('disabled',true);
                          $("#nueva_estado").attr('disabled',true);
                         toastr.success(response.descr);
-<<<<<<< HEAD
                 }else{
-                    toastr.warning(response.descr);                    
+                    toastr.warning(response.descr);
+                    $("html, body").animate({ scrollTop: 0 }, "slow");                    
                 }
                         
-=======
-                        $("html, body").animate({ scrollTop: 0 }, "slow");
->>>>>>> 5d76c903c972f59da97aa63490c1ee5ba75d1242
         },
         error: function(jqXHR, textStatus, errorThrown) 
         {
