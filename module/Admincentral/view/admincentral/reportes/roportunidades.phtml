@@ -1,0 +1,62 @@
+                <div class="row">
+					<div class="col-md-12">
+						<!-- BEGIN SAMPLE FORM PORTLET-->
+						<div class="portlet light">
+							<div class="portlet-title">
+								<div class="caption font-green-haze">
+									<i class="fa fa-list-alt font-green-haze"></i>
+									<span class="caption-subject bold uppercase"> Generar y Descargar Reporte de Oportunidades</span>
+								</div>
+								<div class="actions">									
+									<a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title="">
+									</a>
+								</div>
+							</div>
+							<div class="portlet-body form">                            
+								<form id="form_oportunidades_full" method="post" action="<?php echo $this->basePath()?>/admincentral/reportes/exceloportunidades" role="form" class="form-horizontal">
+									<div class="form-body">                                                                        
+                                        <span id="span_genera_oportunidades" class="input-group-btn btn-right text-center">
+                                            <button type="submit" class="btn green-haze">
+                                                    <i class="fa fa-file"></i> &nbsp; Generar Excel
+                                            </button>
+			                                </span> 
+                                            
+										</div>
+                                        <span id="span_descarga_oportunidades" class="input-group-btn btn-right text-center hidden">
+                                            <a href="" id="descargar_excel_oportunidades" class="btn green-haze">
+                                                    <i class="fa fa-download"></i> &nbsp; Descargar Excel
+                                            </a>
+			                                </span>  
+                                    </div>
+                                  </form>  
+                            </div>
+                            </div>
+                        </div>
+                   </div>
+<script>
+$("#form_oportunidades_full").submit(function(e){
+    var postData = $(this).serializeArray();
+    var formURL = $(this).attr("action");
+    $.ajax( 
+    {
+        url : formURL,
+        type: "POST",
+        data : postData,
+        dataType : 'json',
+        success : function(response) {
+            if(response.status == 'ok'){  
+             $("#descargar_excel_oportunidades").attr("href",response.ruta);
+             $("#span_genera_oportunidades").fadeOut();
+             $("#span_descarga_oportunidades").removeClass("hidden");   
+             toastr.success(response.desc)             
+            }                                           
+        },
+        error: function(jqXHR, textStatus, errorThrown) 
+        {            
+            toastr.error('Error! Favor contactar con administrador del sistema'); 
+        }
+    });
+    e.preventDefault(); //STOP default action
+}); 
+</script>                   
+                   

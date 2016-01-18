@@ -1,0 +1,80 @@
+                <div class="row">
+					<div class="col-md-12">
+						<!-- BEGIN SAMPLE FORM PORTLET-->
+						<div class="portlet light">
+							<div class="portlet-title">
+								<div class="caption font-green-haze">
+									<i class="fa fa-list-alt font-green-haze"></i>
+									<span class="caption-subject bold uppercase"> Informe de Agendamientos</span>
+								</div>
+								<div class="actions">									
+									<a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title="">
+									</a>
+								</div>
+							</div>
+							<div class="portlet-body form">                            
+								<form id="form_agendamientos" method="post" action="<?php echo $this->basePath()?>/operador/oportunidad/excelagendamientos" role="form" class="form-horizontal">
+									<div class="form-body">                                                                        
+										<div class="form-group form-md-line-input">
+											<div class="row text-center">
+										<div class="col-md-4 col-md-push-2 form-group form-md-line-input has-info ">
+										      <input id="fecha_inicial" onchange="checkFecha()" name="fecha_inicial" type="date" class="form-control" style="margin-top: 15px;"/>
+											<label for="form_control_1" >Fecha inicial</label>
+										</div>
+                                        <div class="col-md-4 col-md-push-3 form-group form-md-line-input has-info ">
+										      <input id="fecha_final" onchange="checkFecha()" name="fecha_final" type="date" class="form-control" style="margin-top: 15px;"/>
+											<label for="form_control_1" >Fecha final</label>
+										</div>
+                                        
+                                        </div>
+                                        <span id="span_genera" class="input-group-btn btn-right text-center">
+                                            <button type="submit" id="genera_excel_agenda" class="btn green-haze" disabled>
+                                                    <i class="fa fa-file"></i> &nbsp; Generar Excel
+                                            </button>
+			                                </span> 
+                                            
+										</div>
+                                        <span id="span_descarga" class="input-group-btn btn-right text-center hidden">
+                                            <a href="" id="descargar_excel_agendamiento" class="btn green-haze">
+                                                    <i class="fa fa-download"></i> &nbsp; Descargar Excel
+                                            </a>
+			                                </span> 
+                                    </div>
+                                  </form>  
+                                </div>
+                            </div>
+                        </div>
+                   </div>
+<script>
+function checkFecha(){
+    var fecha_inicio = $("#fecha_inicial").val();
+    var fecha_fin = $("#fecha_final").val();
+    if(fecha_inicio!=""&&fecha_fin!=""){
+        $("#genera_excel_agenda").removeAttr("disabled");
+    }
+}
+$("#form_agendamientos").submit(function(e){
+    var postData = $(this).serializeArray();
+    var formURL = $(this).attr("action");
+    $.ajax( 
+    {
+        url : formURL,
+        type: "POST",
+        data : postData,
+        dataType : 'json',
+        success : function(response) {
+            if(response.status == 'ok'){  
+             $("#descargar_excel_agendamiento").attr("href",response.ruta);
+             $("#span_genera").fadeOut();
+             $("#span_descarga").removeClass("hidden");   
+             toastr.success(response.desc)             
+            }                                           
+        },
+        error: function(jqXHR, textStatus, errorThrown) 
+        {            
+            toastr.error('Error! Favor contactar con administrador del sistema'); 
+        }
+    });
+    e.preventDefault(); //STOP default action
+}); 
+</script>
