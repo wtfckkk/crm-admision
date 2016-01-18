@@ -34,7 +34,7 @@ jQuery(document).ready(function() {
 											<select onchange="buscaCampanas()" class="form-control" id="combo_sede" name="COD_SEDE">
                                             <option value="0">Seleccione una Sede</option>
                                             <?php for ($i=0;$i<count($sedes);$i++){                                                      
-                                                      echo "<option value=".$sedes[$i]['COD_SEDE'].">".$sedes  [$i]['NOMBRE_SEDE']."</option>\n";
+                                                      echo "<option value='".$sedes[$i]['COD_SEDE']."'>".$sedes  [$i]['NOMBRE_SEDE']."</option>\n";
                                                }        
                                                 ?>
 
@@ -42,7 +42,7 @@ jQuery(document).ready(function() {
 											<label for="combo_sede"><strong>Sede</strong></label>
 										</div>
                                                                                 
-                                        <div class="col-md-4 col-md-push-2 form-group form-md-line-input has-info ">
+                                        <div id="div_campana" class="col-md-4 col-md-push-2 form-group form-md-line-input has-info hidden ">
 											<select class="form-control" id="combo_campana" name="ID_CAMPANA" onclick="muestraCuerpo()">                                                                                 
 
 											</select>
@@ -108,6 +108,7 @@ setTimeout(function(){
   $(".note-editable").empty()
 }, 900);   
 }
+
 function buscaCampanas(){
 postData = {'COD_SEDE' : $("#combo_sede").val()}
 $.ajax(
@@ -116,20 +117,28 @@ $.ajax(
         type: "POST",
         data : postData,
         dataType : 'json',
-        success : function(response) {         
-        var combo1 = $("#combo_campana");                          
-         // Limpiamos combos
-         combo1.find('option').remove();                
-         //Cagamos combo1
-         $(response.campanas).each(function(i, v){ // indice, valor                    
-         combo1.append('<option value="' + response.campanas[i]['ID_CAMPANA'] + '">' + response.campanas[i]['NOMBRE_CAMPANA'] + '</option>');
-         })                          
-         combo1.prop('disabled', false);              
-        },
-        error: function(jqXHR, textStatus, errorThrown) 
-        {            
-            toastr.warning("Error! Favor contactar con administrador del sistema"); 
-        }
+        success : function(response) {
+            if(response.campanas.length==0){
+                $("#div_campana").addClass("hidden")
+                $("#cuerpo_correo").addClass("hidden");
+                $("#btn_correo").addClass("hidden"); 
+                toastr.info("No existen campañas para esta sede!")                
+            }else{
+                $("#div_campana").removeClass("hidden")
+                var combo1 = $("#combo_campana");                          
+                // Limpiamos combos
+                combo1.find('option').remove();                
+                //Cagamos combo1
+                $(response.campanas).each(function(i, v){ // indice, valor                    
+                combo1.append('<option value="' + response.campanas[i]['ID_CAMPANA'] + '">' + response.campanas[i]['NOMBRE_CAMPANA'] + '</option>');
+                })                          
+                combo1.prop('disabled', false);              
+            }
+            },
+                error: function(jqXHR, textStatus, errorThrown) 
+            {            
+                toastr.warning("Error! Favor contactar con administrador del sistema"); 
+            }
     });
 }
 function muestraCuerpo(){

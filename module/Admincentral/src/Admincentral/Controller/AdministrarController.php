@@ -69,9 +69,9 @@ class AdministrarController extends AbstractActionController
                                              $html .= '</tr>';                                                                                                                                                                                                             
                         }                                         
             
-            //Retornamos a la vista                
-            $this->layout('layout/admincentral');
+            //Retornamos a la vista                            
             $result = new ViewModel(array('html'=>$html));             
+            $result->setTerminal(true);   
             return $result; 
         
         

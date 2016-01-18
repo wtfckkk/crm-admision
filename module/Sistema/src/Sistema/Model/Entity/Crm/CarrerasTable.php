@@ -32,7 +32,7 @@ class CarrerasTable extends TableGateway
     public function getCombo(Adapter $dbAdapter,$data)
     {
        $this->dbAdapter = $dbAdapter;
-       $query = "select COD_CARRERA, NOMBRE_CARRERA from CARRERAS WHERE COD_CARRERA IN($data)";
+       $query = "select COD_CARRERA, NOMBRE_CARRERA from CARRERAS WHERE COD_CARRERA IN($data) order by NOMBRE_CARRERA asc ";
                 
         $result=$this->dbAdapter->query($query,Adapter::QUERY_MODE_EXECUTE);
         

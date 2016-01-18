@@ -133,12 +133,54 @@ class OportunidadTable extends TableGateway
         return $result->toArray();
     }
     
-        public function countOportunidades(Adapter $dbAdapter)
+    public function countOportunidades(Adapter $dbAdapter)
     {
        $this->dbAdapter = $dbAdapter;
        $query = "SELECT count(*) as count FROM OPORTUNIDADES";                
        $result=$this->dbAdapter->query($query,Adapter::QUERY_MODE_EXECUTE);
        return $result->toArray();
     }
+    
+    public function getAgendamientos(Adapter $dbAdapter,$fecha_inicial,$fecha_final,$usuario)
+    {
+       $this->dbAdapter = $dbAdapter;
+       $query = "select distinct a.id_oportunidad, a.id_campana, 
+                    dbo.SacaNombreCampana(a.id_campana) nombre_campana, a.rut, b.dv,
+                    upper(b.nombres) nombres, upper(b.ap_paterno) ap_paterno, 
+                    upper(b.ap_materno) ap_materno, a.cod_sede,
+                    dbo.SacaNombreSede(a.cod_sede) nombre_sede, a.cod_carrera, 
+                    dbo.SacaNombreCarrera(a.cod_carrera) nombre_carrera,
+                    a.jornada, a.estado, a.fecha, dbo.SacaEstadoUMAS(a.rut) matriculado_umas, 
+                    c.observacion, c.username operador,
+                    c.fecha_agendamiento
+                    from oportunidades a, prospecto_cabecera b, feedbacks c
+                    where a.rut = b.rut
+                    and a.id_oportunidad = c.id_oportunidad
+                    and c.id_tipo = 3
+                    and c.fecha_agendamiento between '$fecha_inicial' and '$fecha_final'
+                    and a.cod_sede in (select cod_sede from usuario_sede where username = 
+                    '$usuario')
+                    order by a.id_oportunidad asc";                
+       $result=$this->dbAdapter->query($query,Adapter::QUERY_MODE_EXECUTE);
+       return $result->toArray();
+    }
+    
+    public function getOportunidadesFull(Adapter $dbAdapter)
+    {
+       $this->dbAdapter = $dbAdapter;
+       $query = "select distinct a.id_oportunidad, a.id_campana, 
+                    dbo.SacaNombreCampana(a.id_campana) nombre_campana, a.rut, b.dv,
+                    upper(b.nombres) nombres, upper(b.ap_paterno) ap_paterno, 
+                    upper(b.ap_materno) ap_materno, a.cod_sede,
+                    dbo.SacaNombreSede(a.cod_sede) nombre_sede, a.cod_carrera, 
+                    dbo.SacaNombreCarrera(a.cod_carrera) nombre_carrera,
+                    a.jornada, a.estado, a.fecha, dbo.SacaEstadoUMAS(a.rut) matriculado_umas
+                    from oportunidades a, prospecto_cabecera b
+                    where a.rut = b.rut
+                    order by id_oportunidad asc";                
+       $result=$this->dbAdapter->query($query,Adapter::QUERY_MODE_EXECUTE);
+       return $result->toArray();
+    }
+    
                
 }

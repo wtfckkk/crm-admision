@@ -36,9 +36,10 @@ class CorreoController extends AbstractActionController
         //Tablas         
         $sede = new SedeTable($this->dbAdapter);                
         $sedes = $sede->getSedes();                                                                   
-           
-       $this->layout('layout/admincentral');
-        return new ViewModel(array('sedes'=>$sedes));
+                  
+        $result = new ViewModel(array('sedes'=>$sedes));
+        $result->setTerminal(true);  
+        return $result;
         
         
     }
@@ -89,8 +90,9 @@ class CorreoController extends AbstractActionController
         
              $message = new Message();
              $message->addTo($correo[$i]['CORREO'])
-             ->addFrom('contacto@laaraucana.cl', 'Proceso 2016')
-             ->setSubject('Asunto del correo')
+             ->setEncoding("UTF-8")
+             ->addFrom('<admision@iplaaraucana.cl>', 'Admisión 2016')
+             ->setSubject('Instituto Profesional La Araucana')
              ->setBody($body);
 
              $transport = new SendmailTransport();

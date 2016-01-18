@@ -27,14 +27,14 @@
 												<input type="text" class="form-control" id="seg_rut" name="RUT" required>
 												<div class="form-control-focus">
 												</div>
-                                                <span class="help-block">Sin puntos ni DV</span>
+                                                <span class="help-block">Sin puntos ni gui&oacute;n</span>
 											</div>
 										</div>
                                         
                                         </div>
                                         <span class="input-group-btn btn-right text-center">
-                                            <a id="existe_rut" class="btn green-haze">
-                                                    <i class="fa fa-search"></i> &nbsp; Buscar oportunidades creadas
+                                            <a id="existe_rut" class="btn green-haze disabled">
+                                                    <i id="icnBuscarOport" class="fa fa-search"></i> &nbsp; Buscar oportunidades creadas
                                             </a>
 			                                </span> 
 										</div>
@@ -47,6 +47,20 @@
 
                                         
 <script>
+toastr.options = {
+  "positionClass": "toast-top-center",
+}
+$(function () {
+  $('[data-toggle="popover"]').popover()
+})
+$("input#seg_rut").rut({validateOn: 'change'}).on('rutInvalido', function(){ 
+   $('#existe_rut').addClass("disabled"); 
+   $("input#seg_rut").attr('data-content','Rut Incorrecto').css("background","#FD8C92").popover('show');    
+});
+$("input#seg_rut").rut({validateOn: 'blur'}).on('rutValido', function(){
+    $('#existe_rut').removeClass("disabled");
+   $("input#seg_rut").popover('destroy').css("background","#fff");   
+}); 
 $("#existe_rut").click(function(){
     if($("#seg_rut").val()<1) {
         toastr.warning('Debe ingresar un valor');    
@@ -57,9 +71,15 @@ $("#existe_rut").click(function(){
             type: "POST",
             data : {'RUT' : $("#seg_rut").val()},
             dataType : 'json',
+            beforeSend: function(){               ;
+               $("#existe_rut").addClass("disabled");
+               $("#existe_rut").html('<i id="icnBuscarOport" class="fa fa-circle-o-notch fa-spin"></i> Buscando...');               
+            },
             success : function(response) {                        
               if(response.flag!="true")
-                        {
+                        {          
+                        $("#existe_rut").removeClass("disabled");
+                        $("#existe_rut").html('<i id="icnBuscarOport" class="fa fa-search"></i> Buscar oportunidades creadas');
                          toastr.warning(response.descr);  
               }else{
                 $("#form_seguimiento").submit(); 

@@ -41,10 +41,10 @@ class CargasController extends AbstractActionController
     }
     
     public function prospectosAction()
-    {                        
-        $this->layout('layout/admincentral');
-        $result = new ViewModel();        
-        return $result;
+    {                                
+        $result = new ViewModel();
+        $result->setTerminal(true);                  
+        return $result;        
         
         
     }
@@ -211,8 +211,9 @@ class CargasController extends AbstractActionController
     public function oportunidadesAction()
     {
         
-        $this->layout('layout/admincentral');
-        return new ViewModel();
+        $result = new ViewModel();
+        $result->setTerminal(true);                  
+        return $result;
         
         
     }
@@ -354,7 +355,7 @@ class CargasController extends AbstractActionController
                     //Insertamos nueva oportunidad en tabla OPORTUNIDADES                               
                     $data['ID_OPORTUNIDAD'] = $oportunidad->nuevaOportunidad($data);                                            
                     //Insertamos feedback de oportuinidad en tabla FEEDBACKS            
-                    $feedback->nuevoFeedback($data);   
+// No se inserta FEEBACK (29-12-2015)                    $feedback->nuevoFeedback($data);   
                     //Agregamos fila para mostrar en la vista
                     $html.="<tr>";
                     $html.="<td>".$data['ID_CAMPANA']."</td><td>".$data['RUT']

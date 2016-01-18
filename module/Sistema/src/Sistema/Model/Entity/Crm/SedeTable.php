@@ -33,7 +33,10 @@ class SedeTable extends TableGateway
     
     public function getSedes()
     {   
-        $datos = $this->select();
+        $datos = $this->select(function (Select $select) {
+                    $select->order('NOMBRE_SEDE ASC');                                        
+        });     
+        //$datos = $this->select();
         $recorre = $datos->toArray();        
                 
         return $recorre;

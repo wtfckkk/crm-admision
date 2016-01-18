@@ -78,7 +78,8 @@ return array(
             'Admincentral\Controller\Index' => 'Admincentral\Controller\IndexController',
             'Admincentral\Controller\Administrar' => 'Admincentral\Controller\AdministrarController',  
             'Admincentral\Controller\Cargas' => 'Admincentral\Controller\CargasController',
-            'Admincentral\Controller\Correo' => 'Admincentral\Controller\CorreoController',            
+            'Admincentral\Controller\Correo' => 'Admincentral\Controller\CorreoController',
+            'Admincentral\Controller\Reportes' => 'Admincentral\Controller\ReportesController',            
         ),
     ),
     'view_manager' => array(

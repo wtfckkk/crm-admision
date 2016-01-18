@@ -24,6 +24,8 @@ use Sistema\Model\Entity\Crm\CampanaTable;
 use Sistema\Model\Entity\Crm\CarrerasTable;
 use Sistema\Model\Entity\Crm\SedeCarreraTable;
 use Sistema\Model\Entity\Crm\OportunidadTable;
+
+
 use Sistema\Model\Entity\Crm\TipoFeedbackTable;
 use Sistema\Model\Entity\Crm\FeedbackTable;
 
@@ -53,6 +55,10 @@ class OportunidadController extends AbstractActionController
     {                                             
         //Obtenemos datos POST
         $lista = $this->request->getPost();
+        //Quitamos formato RUT
+        $lista['RUT'] = explode("-",$lista['RUT']);
+        $lista['DV']  = $lista['rut'][1];
+        $lista['RUT'] = str_replace(".","",$lista['RUT'][0]); 
         //Conectamos con BBDD
         $this->dbAdapter=$this->getServiceLocator()->get('Zend/Db/Adapter');        
         //Instancia de Tablas
@@ -103,6 +109,9 @@ class OportunidadController extends AbstractActionController
     {
         //Obtenemos datos POST
         $lista = $this->request->getPost();
+        $lista['RUT'] = explode("-",$lista['RUT']);
+        $lista['DV']  = $lista['RUT'][1];
+        $lista['RUT'] = str_replace(".","",$lista['RUT'][0]); 
         //Conectamos con BBDD
         $this->dbAdapter=$this->getServiceLocator()->get('Zend/Db/Adapter');
             
@@ -111,7 +120,7 @@ class OportunidadController extends AbstractActionController
            $pdetalle     = new ProspectoDetalleTable($this->dbAdapter);
            $pcabedetalle = new ProsCabeceraDetalleTable($this->dbAdapter);           
            //Calculamos DV
-           $lista['DV'] =  \Utils::calculaDV($lista['RUT']); 
+//DV lo ingresa usuario // $lista['DV'] =  \Utils::calculaDV($lista['RUT']); 
             //Validamos si existe prospecto       
             $existe = $pcabecera->getDatoxRut($lista['RUT']);            
             if(count($existe)>0)
@@ -234,6 +243,9 @@ class OportunidadController extends AbstractActionController
     {
         //Obtenemos datos POST
         $lista = $this->request->getPost();
+        $lista['RUT'] = explode("-",$lista['RUT']);
+        $lista['DV']  = $lista['rut'][1];
+        $lista['RUT'] = str_replace(".","",$lista['RUT'][0]); 
         //Conectamos con BBDD
         $this->dbAdapter=$this->getServiceLocator()->get('Zend/Db/Adapter');            
         //Tablas
@@ -253,6 +265,9 @@ class OportunidadController extends AbstractActionController
     {
         //Obtenemos datos POST
         $lista = $this->request->getPost();
+        $lista['RUT'] = explode("-",$lista['RUT']);
+        $lista['DV']  = $lista['rut'][1];
+        $lista['RUT'] = str_replace(".","",$lista['RUT'][0]); 
         //Conectamos con BBDD
         $this->dbAdapter=$this->getServiceLocator()->get('Zend/Db/Adapter');            
         //Obtenemos datos de sesion        
@@ -293,6 +308,10 @@ class OportunidadController extends AbstractActionController
     {
         //Obtenemos datos POST
         $lista = $this->request->getPost();
+        //Quitamos formato RUT
+        $lista['RUT'] = explode("-",$lista['RUT']);
+        $lista['DV']  = $lista['rut'][1];
+        $lista['RUT'] = str_replace(".","",$lista['RUT'][0]); 
         //Conectamos con BBDD
         $this->dbAdapter=$this->getServiceLocator()->get('Zend/Db/Adapter');
         //Tablas
@@ -330,6 +349,10 @@ class OportunidadController extends AbstractActionController
     {
         //Obtenemos datos POST
         $lista = $this->request->getPost();
+        //Quitamos formato RUT
+        $lista['RUT'] = explode("-",$lista['RUT']);
+        $lista['DV']  = $lista['rut'][1];
+        $lista['RUT'] = str_replace(".","",$lista['RUT'][0]); 
         //Conectamos con BBDD
         $this->dbAdapter=$this->getServiceLocator()->get('Zend/Db/Adapter');
         //Tablas
@@ -355,6 +378,10 @@ class OportunidadController extends AbstractActionController
     {
         //Obtenemos datos POST
         $lista = $this->request->getPost();
+        //Quitamos formato RUT
+        $lista['RUT'] = explode("-",$lista['RUT']);
+        $lista['DV']  = $lista['rut'][1];
+        $lista['RUT'] = str_replace(".","",$lista['RUT'][0]);  
         //Conectamos con BBDD
         $this->dbAdapter=$this->getServiceLocator()->get('Zend/Db/Adapter');
         //Tablas
@@ -488,6 +515,9 @@ class OportunidadController extends AbstractActionController
         $i = array_rand($campanas);
         //Consultamos datos de Prospecto         
         $prospecto = $pcabecera->getDatoxRut($campanas[$i]['RUT']);
+        //Damos formato a RUT
+        $dv = \Utils::calculaDV($prospecto[0]['RUT']);
+        $prospecto['0']['RUT'] = number_format($prospecto['0']['RUT'],-3,"",".")."-".$dv;
         //Consultamos detalle de Prospecto         
         $prdetalle   = $pdetalle->getDetallexRUT($this->dbAdapter,$campanas[$i]['RUT']);
         //Consultamos detalle de Oportunidad         
@@ -520,8 +550,93 @@ class OportunidadController extends AbstractActionController
                                         'opor_detalle'=>$opor_detalle,
                                         'html'=>$html,
                                         'combofeedback'=>$combofeedback));        
-        return $result; ; 
+        return $result; 
         
+        
+    }
+    
+    public function agendamientosAction(){
+        
+        //Retornamos a la vista
+        $this->layout('layout/operador');               
+        $result =  new ViewModel();        
+        return $result; 
+    }
+    
+    public function excelagendamientosAction()
+    {
+      //Obtenemos datos POST
+      $lista = $this->request->getPost();
+      //Conectamos con BBDD
+      $this->dbAdapter=$this->getServiceLocator()->get('Zend/Db/Adapter');  
+      //Instancias
+      $opor = new OportunidadTable($this->dbAdapter);
+      $sid = new Container('base');
+      //Quitamos - a Fechas
+      $fecha_inicio = str_replace("-","",$lista['fecha_inicial']);  
+      $fecha_final = str_replace("-","",$lista['fecha_final']); 
+      $array = $opor->getAgendamientos($this->dbAdapter,$fecha_inicio,$fecha_final,$sid->offsetGet('usuario'));
+      
+      //Creamos excel
+        $objPHPExcel = new \PHPExcel();
+        $campos = array_keys($array[0]);   
+
+        // Set document properties
+        $objPHPExcel->getProperties()->setCreator("CRM La Araucana")
+                             ->setTitle("Informe de Agendamientos")                             
+                             ->setDescription("Agendamientos por fecha")
+                             ->setCategory("");
+                             
+                //Cargamos Nombre de campos
+            $objPHPExcel->getActiveSheet()->setCellValue('A1',$campos[0]);
+            $objPHPExcel->getActiveSheet()->setCellValue('B1',$campos[1]);
+            $objPHPExcel->getActiveSheet()->setCellValue('C1',$campos[2]);
+            $objPHPExcel->getActiveSheet()->setCellValue('D1',$campos[3]);
+            $objPHPExcel->getActiveSheet()->setCellValue('E1',$campos[4]);
+            $objPHPExcel->getActiveSheet()->setCellValue('F1',$campos[5]);
+            $objPHPExcel->getActiveSheet()->setCellValue('G1',$campos[6]);
+            $objPHPExcel->getActiveSheet()->setCellValue('H1',$campos[7]);
+            $objPHPExcel->getActiveSheet()->setCellValue('I1',$campos[8]);
+            $objPHPExcel->getActiveSheet()->setCellValue('J1',$campos[9]);
+            $objPHPExcel->getActiveSheet()->setCellValue('K1',$campos[10]);
+            $objPHPExcel->getActiveSheet()->setCellValue('L1',$campos[11]);            
+            $objPHPExcel->getActiveSheet()->setCellValue('M1',$campos[12]);
+            $objPHPExcel->getActiveSheet()->setCellValue('N1',$campos[13]);
+            $objPHPExcel->getActiveSheet()->setCellValue('O1',$campos[14]);
+            $objPHPExcel->getActiveSheet()->setCellValue('P1',$campos[15]);
+            $objPHPExcel->getActiveSheet()->setCellValue('Q1',$campos[16]);
+            $objPHPExcel->getActiveSheet()->setCellValue('R1',$campos[17]);
+            $objPHPExcel->getActiveSheet()->setCellValue('S1',$campos[18]);                     
+            //Alineamos y coloreamos excel
+            $ews = $objPHPExcel->getSheet(0);
+            $header = 'a1:s1';
+            $ews->getStyle($header)->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setARGB('00ffff00');
+            $style = array(
+               'font' => array('bold' => true,),
+               'alignment' => array('horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER,),
+               );
+            $ews->getStyle($header)->applyFromArray($style);
+            for ($col = ord('a'); $col <= ord('s'); $col++)
+            {
+                $ews->getColumnDimension(chr($col))->setAutoSize(true);
+            }
+
+            // Agregamos array al excel
+            $objPHPExcel->setActiveSheetIndex(0);
+            $objPHPExcel->getActiveSheet()->fromArray($array, null, 'A2');
+            
+            //Grabamos Excel
+            $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+            $filename='/var/www/html/crm/excel/agendamientos/Agendamiento_'.$sid->offsetGet('usuario').'_'.date('YmdGis').'.xlsx';
+            $objWriter->save($filename);   
+      
+
+      //Retornamos a la Vista            
+      $desc = "test";
+      $result =  new JsonModel(array('status'=>'ok','ruta'=>str_replace("/var/www/html","",$filename),'desc'=>"Planilla excel lista para descarga"));        
+      return $result;
+      
+      
         
     }
 }

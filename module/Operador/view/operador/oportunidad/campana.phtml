@@ -47,6 +47,9 @@
                    </div>
 
 <script>
+toastr.options = {
+  "positionClass": "toast-top-center",
+}
 $("#busca_campana").click(function(){
     if($("#combo_campana").val()<1) {
         toastr.warning('Debe seleccionar una campaña');    

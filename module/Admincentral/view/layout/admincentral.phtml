@@ -322,7 +322,7 @@ jQuery(document).ready(function() {
 						<span class="selected"></span>
 						</a>
 					</li>
-					<li>
+					<li id="campanas">
 						<a href="javascript:;">
 						<i class="icon-star"></i>
 						<span class="title">Administrar</span>
@@ -330,32 +330,39 @@ jQuery(document).ready(function() {
 						</a>
 						<ul class="sub-menu">
 							<li>
-								<a href="<?php echo $this->basePath()?>/admincentral/administrar/campanas">								
+								<a onclick="menu('administrar','campanas')">								
 								Campa&ntilde;as</a>
 							</li>							
 						</ul>
 					</li>
-                    <li>
+                    <li id="prospectos">
 						<a href="javascript:;">
 						<i class="icon-docs"></i>
 						<span class="title">Cargas Masivas</span>
 						<span class="arrow "></span>
 						</a>
 						<ul class="sub-menu">
-							<li>
-								<a href="<?php echo $this->basePath()?>/admincentral/cargas/prospectos">								
+							<li id="prospectos">
+								<a  onclick="menu('cargas','prospectos')">								
 								Prospectos</a>
 							</li>
-                            <li>
-								<a href="<?php echo $this->basePath()?>/admincentral/cargas/oportunidades">								
+                            <li id="oportunidades">
+								<a onclick="menu('cargas','oportunidades')">								
 								Oportunidades</a>
 							</li>							
 						</ul>
 					</li>
-                    <li>
-						<a href="<?php echo $this->basePath()?>/admincentral/correo">
+                    <li id="index">
+						<a  onclick="menu('correo','index')">
 						<i class="icon-envelope"></i>
 						<span class="title">Correos</span>
+						<span class="arrow "></span>
+						</a>
+					</li>
+                    <li id="roportunidades">
+						<a onclick="menu('reportes','roportunidades')">
+						<i class="fa fa-list-alt"></i>
+						<span class="title">Reporte Oportunidades</span>
 						<span class="arrow "></span>
 						</a>
 					</li>					
@@ -366,7 +373,7 @@ jQuery(document).ready(function() {
 		<!-- END SIDEBAR -->
 		<!-- BEGIN CONTENT -->
 <div class="page-content-wrapper">
-    <div class="page-content">
+    <div id="page-content" class="page-content">
     <?php echo $this->content; ?>    
   	</div>
 </div>
@@ -392,3 +399,24 @@ jQuery(document).ready(function() {
 </body>
 <!-- END BODY -->
 </html>
+<script>
+toastr.options = {
+  "positionClass": "toast-top-center",
+   "newestOnTop": true,
+}
+function menu(co,ac){
+    var route = co+'/'+ac;
+	$.ajax( {  
+        url  : '<?php echo $this->basePath()."/admincentral/"?>'+route,        
+		type : 'post',      
+        beforeSend: function(){
+            $("#page-content").html("<div class='text-center'><i class='fa fa-spinner fa-spin' style='font-size:20px;'></i></div>");
+        },
+		success : function(response) {		  
+  		$("#page-content").empty().html(response);    
+          $("li").removeClass("active");           
+          $("#"+ac).addClass("active");                     
+       }   
+});    
+}
+</script>

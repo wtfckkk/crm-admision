@@ -134,6 +134,11 @@ jQuery(document).ready(function() {
      UIAlertDialogApi.init();     
 });
 </script>
+<script>
+toastr.options = {
+  "positionClass": "toast-top-center",
+}
+</script>
 <!-- END PAGE LEVEL SCRIPTS -->
 
 </head>
@@ -350,6 +355,12 @@ jQuery(document).ready(function() {
 							<li>
 								<a href="<?php echo $this->basePath()?>/operador/oportunidad/campana">								
 								Seguimiento Oportunidad por Campa&ntilde;a</a>
+							</li>
+                            <li>
+								<a href="<?php echo $this->basePath()?>/operador/oportunidad/agendamientos">								
+								Ver Agendamientos
+                                <span class="badge badge-roundless badge-success">*</span>
+                                </a>
 							</li>
 						</ul>
 					</li>					

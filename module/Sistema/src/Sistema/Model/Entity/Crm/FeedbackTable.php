@@ -15,7 +15,8 @@ class FeedbackTable extends TableGateway
     private $OBSERVACION;
     private $ID_TIPO;
     private $ESTADO_GRABADO;
-    private $USERNAME;    
+    private $USERNAME;  
+    private $FECHA_AGENDAMIENTO;     
     private $FECHA;
     
     public $dbAdapter;
@@ -31,7 +32,8 @@ class FeedbackTable extends TableGateway
         $this->OBSERVACION=$datos["OBSERVACION"];   
         $this->ID_TIPO=$datos["ID_TIPO"];
         $this->ESTADO_GRABADO=$datos["ESTADO_GRABADO"];
-        $this->USERNAME=$datos["USERNAME"];        
+        $this->USERNAME=$datos["USERNAME"];
+        $this->FECHA_AGENDAMIENTO=$datos["FECHA_AGENDAMIENTO"];        
         $fecha = time();
         $this->FECHA=date("Y-m-d H:i:s",$fecha);        
         
@@ -46,7 +48,8 @@ class FeedbackTable extends TableGateway
                 'OBSERVACION'=>$this->OBSERVACION,
                 'ID_TIPO'=>$this->ID_TIPO,
                 'ESTADO_GRABADO'=>$this->ESTADO_GRABADO,
-                'USERNAME'=>$this->USERNAME,                
+                'USERNAME'=>$this->USERNAME,
+                'FECHA_AGENDAMIENTO'=>$this->FECHA_AGENDAMIENTO,                
                 'FECHA'=>$this->FECHA,
              );
                $this->insert($array);

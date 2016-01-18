@@ -55,7 +55,7 @@ class SedeCarreraTable extends TableGateway
     public function getIDCarrera($codesede)
     {
         
-        $datos = $this->select(array('COD_SEDE'=>$codesede));
+        $datos = $this->select(array('COD_SEDE'=>$codesede,'activo'=>'s'));
         $recorre = $datos->toArray();
          for($i=0;$i<count($recorre);$i++)
         {
@@ -67,7 +67,7 @@ class SedeCarreraTable extends TableGateway
     public function getJornada($codecarrera,$codesede)
     {
         
-        $datos = $this->select(array('COD_CARRERA'=>$codecarrera,'COD_SEDE'=>$codesede));
+        $datos = $this->select(array('COD_CARRERA'=>$codecarrera,'COD_SEDE'=>$codesede,'activo'=>'s'));
         $recorre = $datos->toArray();
          for($i=0;$i<count($recorre);$i++)
         {

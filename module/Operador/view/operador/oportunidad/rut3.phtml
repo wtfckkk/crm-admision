@@ -155,7 +155,7 @@
 						             </div>                                    
                                     <div class="row text-center">
 										<div class="col-md-4 col-md-push-4 form-group form-md-line-input has-info ">
-											<select class="form-control" id="combo_feedback" name="ID_TIPO">
+											<select class="form-control" onchange="fechaFeedback()" id="combo_feedback" name="ID_TIPO">
                                             <option value="0">Seleccione un tipo de feedback</option>
                                             <?php for ($i=0;$i<count($combofeedback);$i++){                                                      
                                                       echo "<option value=".$combofeedback[$i]['ID_TIPO'].">".$combofeedback[$i]['DESC_TIPO']."</option>\n";
@@ -164,8 +164,13 @@
 	
  
 											</select>
-											<label for="combo_feedback"><strong>Feedback</strong></label>
+											<label for="combo_feedback"><strong>Feedback</strong></label>                                            
+                                            <input id="fecha_agendamiento" type="datetime" name="FECHA_AGENDAMIENTO" hidden disabled/>
+                                            <span id="span_fecha_agendamiento" class="btn green-haze hidden">
+                                            Fecha Agendamiento: <span id="span_date"></span>
+                                            </span>
 										</div>
+                                        
 						             </div>                                                                                                                                                   
 								</form>
 							</div>
@@ -207,5 +212,43 @@ if(combo1<1 || combo2<1){
             }
         });
 }    
+}
+function Today(){
+    var now = new Date();
+
+var day = ("0" + now.getDate()).slice(-2);
+var month = ("0" + (now.getMonth() + 1)).slice(-2);
+
+var today = now.getFullYear()+"-"+(month)+"-"+(day)+" "+now.getHours()+":"+now.getMinutes()+":"+now.getSeconds();
+return today;
+
+}
+function TodayChile(){
+    var now = new Date();
+
+var day = ("0" + now.getDate()).slice(-2);
+var month = ("0" + (now.getMonth() + 1)).slice(-2);
+
+var today = (day)+"-"+(month)+"-"+now.getFullYear();
+return today;
+
+}
+function fechaFeedback(){
+    var value = $("#combo_feedback").val();
+    var texto = $("#combo_feedback").text();
+    if (value==3||texto=="Agendamiento"){
+        
+        $("#span_fecha_agendamiento").removeClass("hidden");
+        $("#fecha_agendamiento").removeAttr("disabled");
+        var today = Today();
+        $('#fecha_agendamiento').val(today); 
+        $('#span_date').text(TodayChile());
+               
+}else{
+     $("#span_fecha_agendamiento").addClass("hidden");    
+     $("#fecha_agendamiento").attr("disabled","true");     
+    
+}
+    
 }
 </script>            

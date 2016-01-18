@@ -8,4 +8,7 @@ nbproject
 .project
 .settings
 vendor
+monitor
+monitor.tar
+WSAdmision.php
 composer.phar
